@@ -1,0 +1,608 @@
+ID,LAND_NR,Partei_NR,Partei_ABK,Name,TW_acc,TW_user,TW_id,TW_verif,gescraped?
+1,5,2,SPD,"Abdi, Sanae",1,_sanaeabdi,200695422,1,ja
+2,8,4,FDP,"Abel, Valentin Christian",1,Valentin_C_Abel,1699863337,1,ja
+20,6,4,FDP,"Adler, Katja",1,katjadler,712941191,2,ja
+25,8,6,GRÜNE,"Aeffner, Stephanie",1,s_aeffner,982288614,2,ja
+43,8,5,DIE LINKE,"Akbulut, Gökay",1,AkbulutGokay,8.00457587510477E+017,1,ja
+50,13,2,SPD,"Alabali-Radovan, Reem",1,ReemAlabali,1.21745677764366E+018,2,ja
+51,3,1,CDU,"Albani, Stephan Theodor Johannes",1,Stephan_Albani,884120154,2,ja
+61,6,5,DIE LINKE,"Al-Dailami, Ali Abass Yahya",1,ali_aldailami,9.89599708917137E+017,2,ja
+66,9,4,FDP,"Al-Halak, Muhanad",1,HalakMuhanad,1.08401625032448E+018,1,ja
+75,8,4,FDP,"Alt, Renata",1,RenataAlt_MdB,1.00183720127624E+018,1,ja
+78,6,1,CDU,"Altenkamp, Norbert Maria",1,NAltenkamp,1.31957057695715E+018,2,ja
+100,5,2,SPD,"Andres, Dagmar",1,DagmarAndres,126421442,2,ja
+107,2,2,SPD,"Annen, Niels",1,NielsAnnen,42401449,1,ja
+130,13,2,SPD,"Arlt, Johannes",1,arlt_johannes,1.26245143810347E+018,2,ja
+155,1,4,FDP,"Aschenberg-Dugnus, Christine Irene",1,cad59,25980076,1,ja
+166,11,6,GRÜNE,"Audretsch, Andreas",1,AnAudretsch,995519538,1,ja
+173,9,7,CSU,"Aumer, Peter",1,PeterAumer,348460907,1,ja
+174,5,6,GRÜNE,"Außendorf, Maik",1,maik_aussendorf,24253731,1,ja
+187,8,6,GRÜNE,"Bacherle, Tobias Björn",1,TBBacherle,2835233692,1,ja
+199,9,6,GRÜNE,"Badum, Lisa Hildegard",1,badulrichmartha,282195399,1,ja
+203,12,6,GRÜNE,"Baerbock, Annalena Charlotte Alma",1,ABaerbock,2179010672,1,ja
+206,9,2,SPD,"Bahr, Ulrike Renate Martina",1,MdB_Ulrike_Bahr,7.24565991104111E+017,2,ja
+210,7,2,SPD,"Baldy, Daniel",1,baldy_daniel,3305672686,2,ja
+217,5,6,GRÜNE,"Banaszak, Felix",1,fbanaszak,395209158,1,ja
+224,9,7,CSU,"Bär, Dorothee Gisela Renate Maria",1,DoroBaer,140821364,1,ja
+225,9,6,GRÜNE,"Bär, Karl",1,karlbaer,33172351,2,ja
+226,5,2,SPD,"Baradari, Nezahat",1,NBaradari,2773426719,2,ja
+228,8,1,CDU,"Bareiß, Thomas",1,Thomas_Bareiss,2797812265,1,ja
+252,6,2,SPD,"Bartol, Sören",1,soerenbartol,57293969,1,ja
+254,13,5,DIE LINKE,"Bartsch, Dr. Dietmar Gerhard",1,DietmarBartsch,2320519958,1,ja
+261,5,2,SPD,"Bas, Bärbel",1,baerbelbas,19438957,1,ja
+275,9,4,FDP,"Bauer, Nicole Anna Elisabeth",1,nicole_ae_bauer,1.06187397976026E+018,1,ja
+283,8,3,AfD,"Baum, Dr. Christina",1,DrChristinaBaum,9.55899834325701E+017,2,ja
+286,2,3,AfD,"Baumann, Dr. Bernd",1,BerndBaumannAfD,3043727333,2,ja
+309,11,6,GRÜNE,"Bayram, Canan",1,LieblingXhain,587862375,1,ja
+319,2,6,GRÜNE,"Beck, Katharina Barbara Maria",1,kathabeck,36052322,1,ja
+320,5,3,AfD,"Beckamp, Roger Friedrich Nikolaus",1,RogerBeckamp,4755310637,1,ja
+339,3,4,FDP,"Beeck, Jens",1,jensbeeck,179216369,1,ja
+400,1,2,SPD,"Bergt, Bengt Axel",1,BengtBergt,1.31994140842232E+018,0,ja
+406,8,3,AfD,"Bernhard, Marc Albert",1,MarcBernhardAfD,8.0582395025315E+017,1,ja
+431,5,1,CDU,"Beyer, Peter",1,Peter_Beyer,445375409,2,ja
+438,8,1,CDU,"Biadacz, Marc Josef",1,MBiadaczMdB,9.35815000006054E+017,1,ja
+457,8,1,CDU,"Bilger, Steffen Rudi",1,SteffenBilger,23925041,1,ja
+467,5,5,DIE LINKE,"Birkwald, Matthias Walter",1,MWBirkwald,748851762,1,ja
+478,3,2,SPD,"Blankenburg, Jakob",1,JakobBla,88495338,1,ja
+484,7,3,AfD,"Bleck, Andreas",1,andreasbleckmdb,9.1087865453575E+017,2,ja
+515,15,4,FDP,"Bodtke, Ingo",1,IngoBodtke,3418642394,2,ja
+518,9,3,AfD,"Boehringer, Peter Christian Pascal",1,PeterBoehringer,99268600,2,ja
+586,8,4,FDP,"Brandenburg, Dr. Jens",1,JBrandenburgFDP,8.57906951707128E+017,1,ja
+587,7,4,FDP,"Brandenburg, Mario",1,BraFDP,8.02968497831739E+017,2,ja
+591,9,7,CSU,"Brandl, Dr. Reinhard",1,reinhardbrandl,262730721,2,ja
+593,16,3,AfD,"Brandner, Stephan Günther",1,StBrandner,7.13361366858482E+017,1,ja
+599,8,6,GRÜNE,"Brantner, Dr. Franziska Katharina",1,fbrantner,32323724,1,ja
+606,6,1,CDU,"Braun, Dr. Helge Reinhold",1,HBraun,19108071,1,ja
+608,8,3,AfD,"Braun, Jürgen Friedrich",1,JuergenBraunAfD,9.17756296555893E+017,1,ja
+617,3,1,CDU,"Breher, Silvia Maria",1,BreherSilvia,1.33705681056655E+018,2,ja
+622,9,7,CSU,"Brehm, Sebastian",1,Brehm_inNBGNord,9.04304932257493E+017,1,ja
+623,15,1,CDU,"Brehmer, Heike Martina",1,HeikeBrehmerMdB,150372237,1,ja
+625,5,1,CDU,"Breilmann, Michael",1,m_breilmann,8.93027627568697E+017,2,ja
+639,8,2,SPD,"Breymaier, Leni",1,LeniBreymaier,7.48453543632331E+017,1,ja
+643,5,1,CDU,"Brinkhaus, Ralph",1,rbrinkhaus,38001527,1,ja
+677,8,6,GRÜNE,"Brugger, Agnes Monika",1,agnieszka_mdb,172269309,1,ja
+691,3,6,GRÜNE,"Bsirske, Frank",1,FBsirske,1.41975120446536E+018,0,ja
+692,9,4,FDP,"Bubendorfer-Licht, Sandra",1,Bubendorferfdp,8.87343634647003E+017,1,ja
+709,16,3,AfD,"Bühl, Marcus",1,Marcus_Buehl,7.29360191263781E+017,1,ja
+737,8,1,CDU,"Bury, Yannick",1,YannickBury,33738797,2,ja
+742,5,4,FDP,"Buschmann, Dr. Marco",1,MarcoBuschmann,106136813,1,ja
+745,5,4,FDP,"Busen, Karlheinz",1,busen_mdb,9.35554963639558E+017,1,ja
+753,9,3,AfD,"Bystron, Petr",1,PetrBystronAfD,8.10957560723505E+017,2,ja
+754,8,2,SPD,"Cademartori Dujisin, Isabel Andrea",1,isacademartori,204259229,1,ja
+768,8,2,SPD,"Castellucci, Dr. Lars",1,larscastellucci,17469649,1,ja
+786,8,6,GRÜNE,"Christmann, Dr. Anna Maria",1,annachristmann,1617177360,1,ja
+788,14,3,AfD,"Chrupalla, Tino",1,Tino_Chrupalla,7.97137333820785E+017,1,ja
+810,3,1,CDU,"Connemann, Gitta",1,gitta_connemann,1.12575144520526E+018,1,ja
+815,5,2,SPD,"Coße, Jürgen",1,juergencosse,161395160,1,ja
+817,6,3,AfD,"Cotar, Joana Eleonora",1,JoanaCotar,8.14970546366612E+017,1,ja
+824,5,4,FDP,"Cronenberg, Carl-Julius",1,cjcronenberg,1.32512697363146E+018,1,ja
+825,11,3,AfD,"Curio, Dr. Gottfried",1,GottfriedCurio,8.48618993015501E+017,1,ja
+829,11,1,CDU,"Czaja, Mario",1,MarioCzaja,115666099,1,ja
+837,5,5,DIE LINKE,"Dagdelen, Sevim",1,SevimDagdelen,139407967,1,ja
+840,5,6,GRÜNE,"Dahmen, Dr. Janosch",1,janoschdahmen,16697497,1,ja
+843,5,2,SPD,"Daldrup, Bernhard",1,BernhardDaldrup,1.32901916312648E+018,2,ja
+864,2,1,CDU,"de Vries, Christoph Bernhard",1,VriesChristoph,1.1939250694767E+018,2,ja
+871,9,6,GRÜNE,"Deligöz, Ekin",1,ekindeligoez,22125770,1,ja
+874,11,2,SPD,"Demir, Hakan",1,HakanDemirNK,2942564267,1,ja
+888,8,6,GRÜNE,"Detzer, Dr. Sandra",1,detzer_sandra,7.97777115689132E+017,2,ja
+893,15,2,SPD,"Diaby, Dr. Karamba",1,KarambaDiaby,316355056,1,ja
+903,7,2,SPD,"Diedenhofen, Martin",1,MDiedenhofen,7.85136227775345E+017,1,ja
+906,5,2,SPD,"Dieren, Jan Ulrich",1,JanUlrichDieren,1.32104347922988E+018,2,ja
+914,14,3,AfD,"Dietz, Thomas",1,tommylukoil,1117821932,2,ja
+917,6,2,SPD,"Dilcher, Esther",1,EstherDilcher,9.39092636165689E+017,2,ja
+929,9,2,SPD,"Dittmar, Sabine",1,dittmarsabine,1872648764,2,ja
+932,5,4,FDP,"Djir-Sarai, Bijan",1,DjirSarai,9.60463104537657E+017,1,ja
+949,12,5,DIE LINKE,"Domscheit-Berg, Anke Margarete",1,anked,16557497,1,ja
+1001,5,6,GRÜNE,"Dröge, Katharina",1,katdro,15722010,1,ja
+1018,6,6,GRÜNE,"Düring, Deborah Saskia",1,DeborahDuering,1.24908827012803E+018,2,ja
+1020,3,4,FDP,"Dürr, Christian",1,christianduerr,17535941,1,ja
+1021,9,7,CSU,"Durz, Hansjörg",1,Hansjoerg_Durz,1662533040,1,ja
+1036,8,6,GRÜNE,"Ebner, Harald",1,ebner_sha,52431948,1,ja
+1043,9,6,GRÜNE,"Eckert, Leon",1,Leckert_,714742039,1,ja
+1047,9,7,CSU,"Edelhäußer, Ralph",1,edelhaeusser,152339060,2,ja
+1067,3,3,AfD,"Ehrhorn, Thomas Ludwig Walter",1,Thomas_Ehrhorn,3242322815,2,ja
+1076,12,2,SPD,"Eichwede, Sonja Katharina",1,sonjaeichwede,2532432664,2,ja
+1110,8,6,GRÜNE,"Emmerich, Marcel",1,herr_emmerich,16695267,1,ja
+1131,9,7,CSU,"Englhardt-Kopf, Martina",1,EnglhardtKopf,1.33567686906106E+018,2,ja
+1149,9,7,CSU,"Erndl, Thomas Maximilian",1,TErndl,2192588903,1,ja
+1150,9,5,DIE LINKE,"Ernst, Klaus Friedrich",1,ernst_klaus,64994645,1,ja
+1157,5,2,SPD,"Esdar, Dr. Wiebke",1,wiebkeesdar1,1.04210988760456E+018,2,ja
+1159,8,2,SPD,"Esken, Saskia Christina",1,EskenSaskia,1423622834,1,ja
+1162,5,3,AfD,"Espendiller, Dr. Michael",1,DrMEspendiller,8.8516784968534E+017,2,ja
+1180,15,4,FDP,"Faber, Dr. Marcus",1,MarcusFaber,22364234,1,ja
+1184,3,2,SPD,"Fahimi, Yasmin",1,FahimiYasmin,1.03803443138525E+018,1,ja
+1192,15,3,AfD,"Farle, Robert",1,robert_farle,2958611710,2,ja
+1194,12,2,SPD,"Fäscher, Ariane",1,ArianeFaescher,1.37158018900049E+018,2,ja
+1200,8,2,SPD,"Fechner, Dr. Johannes",1,FechnerJohannes,1.10575472710149E+018,2,ja
+1206,12,1,CDU,"Feiler, Uwe Wolfgang Werner",1,UweFe,47151012,2,ja
+1217,9,3,AfD,"Felser, Peter",1,PeterFelser,3384789731,2,ja
+1224,9,5,DIE LINKE,"Ferschl, Susanne",1,SusanneFerschl,1.09606318924933E+018,2,ja
+1225,2,6,GRÜNE,"Fester, Emilia Johanna",1,emiliafester,9.56609533312463E+017,2,ja
+1233,5,2,SPD,"Fiedler, Sebastian",1,fiedelseb,417280296,2,ja
+1296,9,4,FDP,"Föst, Daniel Wolfgang",1,DFoest,422569574,1,ja
+1307,6,2,SPD,"Franke, Dr. Edgar Konrad Hartmut",1,FrankeEdgar,481393623,1,ja
+1320,8,1,CDU,"Frei, Thorsten",1,thorsten_frei,1.18159857850821E+018,2,ja
+1324,8,1,CDU,"Freiherr von Stetten, Christian Alexander",1,CvStetten,1334019378,2,ja
+1336,5,4,FDP,"Fricke, Otto",1,Otto_Fricke,18044683,1,ja
+1352,9,7,CSU,"Frieser, Michael",1,MichaelFrieser,4577700622,1,ja
+1372,8,3,AfD,"Frohnmaier, Markus-Cornel",1,Frohnmaier_AfD,4130621842,2,ja
+1374,11,3,AfD,"Frömming, Dr. Götz",1,GtzFrmming,809895794,1,ja
+1391,9,4,FDP,"Funke genannt Kaiser, Maximilian Ludwig",1,max_fksr,2237664229,1,ja
+1392,14,2,SPD,"Funke, Fabian",1,funke_fabian,9.4160753696852E+017,1,ja
+1409,1,1,CDU,"Gädechens, Ingo Adolf August",1,gadechens,1.1572986707459E+018,2,ja
+1417,5,6,GRÜNE,"Gambir, Schahina",1,schahinag,1.28480202038231E+018,1,ja
+1420,9,6,GRÜNE,"Ganserer, Markus (Tessa)",1,GansGruen,41365109,1,ja
+1434,8,6,GRÜNE,"Gastel, Matthias",1,MatthiasGastel,727782559,1,ja
+1447,7,1,CDU,"Gebhart, Dr. Thomas",1,thomasgebhart,51483238,1,ja
+1452,5,6,GRÜNE,"Gehring, Kai",1,KaiGehring,110368456,1,ja
+1464,9,7,CSU,"Geissler, Dr. Jonas Alexander Tecumseh",1,GeisslerJonas,3375074608,2,ja
+1467,11,6,GRÜNE,"Gelbhaar, Stefan",1,StefanGelbhaar,426582569,1,ja
+1476,5,2,SPD,"Gerdes, Michael",1,GerdesMdB,2468956470,2,ja
+1500,5,6,GRÜNE,"Gesenhues, Dr. Jan-Niclas",1,JN_Gesenhues,370585284,1,ja
+1537,7,2,SPD,"Glöckner, Angelika",1,A_Gloeckner,976421048,1,ja
+1543,12,3,AfD,"Gnauck, Hannes",1,Hannes_Gnauck,1.32585965601568E+018,2,ja
+1554,9,5,DIE LINKE,"Gohlke, Nicole Stephanie",1,NicoleGohlke,866425075,1,ja
+1579,16,6,GRÜNE,"Göring-Eckardt, Katrin",1,GoeringEckardt,626287930,1,ja
+1580,12,5,DIE LINKE,"Görke, Christian",1,goerke_c,1.41167620322487E+018,1,ja
+1595,5,3,AfD,"Gottschalk, Kay",1,KayGottschalk1,1286011081,1,ja
+1605,5,4,FDP,"Graf Lambsdorff, Alexander",1,Lambsdorff,149299258,1,ja
+1613,8,1,CDU,"Gramling, Fabian Benedikt Meinrad",1,FabianGramling,7.38358276560151E+017,1,ja
+1621,8,1,CDU,"Gräßle, Dr. Ingeborg Gabriele",1,inge_graessle,429065822,1,ja
+1632,6,2,SPD,"Gremmels, Timon",1,Timon_Gremmels,494809842,1,ja
+1644,5,2,SPD,"Griese, Kerstin",1,KerstinGriese,39709752,1,ja
+1655,5,1,CDU,"Gröhe, Gottfried Hermann",1,groehe,94363834,1,ja
+1669,3,1,CDU,"Grosse-Brömer, Michael",1,MGrosseBroemer,574424501,1,ja
+1676,9,2,SPD,"Grötsch, Ulrich Peter",1,UliGroetsch,8.67351565757239E+017,1,ja
+1679,8,1,CDU,"Grübel, Markus",1,GruebelMdb,7.96691290016584E+017,1,ja
+1687,9,6,GRÜNE,"Grundl, Erhard",1,Erhard_Grundl,9.51773879822881E+017,1,ja
+1699,5,6,GRÜNE,"Grützmacher, Sabine",1,S_Gruetzmacher,1.22155909646331E+018,1,ja
+1709,5,1,CDU,"Güler, Serap",1,SerapGueler,2645960542,1,ja
+1724,3,1,CDU,"Güntzler, Fritz",1,FGuentzler,7.79601750789657E+017,2,ja
+1725,9,5,DIE LINKE,"Gürpinar, Ates Nils",1,AtesGuerpinar,8.3304053837072E+017,1,ja
+1732,8,1,CDU,"Gutting, Olav Steffen",1,olavgutting,58429842,1,ja
+1737,11,5,DIE LINKE,"Gysi, Gregor",1,GregorGysi,888289790,1,ja
+1743,5,1,CDU,"Haase, Christian",1,ChristianHaase6,1601699642,2,ja
+1757,9,4,FDP,"Hacker, Thomas",1,hacker_fdp,89209507,1,ja
+1767,9,2,SPD,"Hagl-Kehl, Rita Andrea",1,RitaHaglKehl,8.36553428042142E+017,1,ja
+1769,9,7,CSU,"Hahn, Florian Peter",1,hahnflo,403735368,1,ja
+1781,2,2,SPD,"Hakverdi, Metin",1,MetinHakverdi,1043288618,2,ja
+1824,6,3,AfD,"Harder-Kühnel, Mariana Iris",1,M_HarderKuehnel,8.15699423057637E+017,1,ja
+1825,5,1,CDU,"Hardt, Jürgen",1,juergenhardt,38467606,1,ja
+1840,14,4,FDP,"Hartewig, Philipp",1,philipphartewig,8.17772024697389E+017,1,ja
+1858,5,2,SPD,"Hartmann, Sebastian",1,sebast_hartmann,1076269195,1,ja
+1869,14,4,FDP,"Harzer, Ulrike",1,HarzerUlrike,1.23893717700389E+018,2,ja
+1873,5,6,GRÜNE,"Haßelmann, Britta Maria",1,BriHasselmann,1131092102,1,ja
+1877,5,1,CDU,"Hauer, Matthias",1,MatthiasHauer,1158585210,1,ja
+1878,5,3,AfD,"Haug, Jochen",1,Jochen_Haug,7.17077328669647E+017,1,ja
+1901,6,1,CDU,"Heck, Dr. Stefan",1,StHeck,2976064481,2,ja
+1909,5,2,SPD,"Heidenblut, Dirk",1,DHeidenblut,1.08337128978663E+018,1,ja
+1915,6,4,FDP,"Heidt, Peter",1,PeterHeidtFDP,1858621434,2,ja
+1923,7,1,CDU,"Heil, Mechthild",1,MechthildHeil,974367631,1,ja
+1924,3,2,SPD,"Heil, Wolfgang-Hubertus",1,hubertus_heil,15943222,1,ja
+1925,3,2,SPD,"Heiligenstadt, Frauke",1,FHeiligenstadt,20715527,1,ja
+1926,11,1,CDU,"Heilmann, Thomas",1,ThomasHeilmann,56806603,1,ja
+1942,9,2,SPD,"Heinrich, Gabriela",1,GaHeinrich,296121556,2,ja
+1955,2,6,GRÜNE,"Heitmann, Linda",1,linda_lobster,7.96076739642491E+017,1,ja
+1958,5,3,AfD,"Helferich, Matthias",1,Helferich_AfD,8.72422743597347E+017,2,ja
+1967,5,4,FDP,"Helling-Plahr, Katrin",1,KatrinHelling,21267421,1,ja
+1969,5,2,SPD,"Hellmich, Wolfgang",1,HellmichMdB,7.86498202832822E+017,1,ja
+1989,5,6,GRÜNE,"Henneberger, Kathrin",1,KathrinAnna,17152502,2,ja
+1990,3,2,SPD,"Hennig, Anke",1,AnkeHennigSPD,1.28338188837205E+018,2,ja
+1993,16,5,DIE LINKE,"Hennig-Wellsow, Susanne Marianne",1,SusanneHennig,60619687,1,ja
+1996,8,1,CDU,"Hennrich, Michael",1,MichaelHennric2,1.13226052737849E+018,2,ja
+1997,5,1,CDU,"Henrichmann, Marc",1,MarcHenrichmann,44608858,1,ja
+2012,5,4,FDP,"Herbrand, Markus",1,HerbrandMarkus,9.97138767763751E+017,1,ja
+2015,14,4,FDP,"Herbst, Torsten",1,torstenherbst,17561226,1,ja
+2029,14,6,GRÜNE,"Herrmann, Bernhard",1,BHerrmann_,1.37287185902541E+018,2,ja
+2042,5,2,SPD,"Heselhaus, Nadine",1,NHeselhaus,1.33561974490963E+018,2,ja
+2046,8,3,AfD,"Hess, Martin Alexander",1,Martin_Hess_AfD,8.72663038805017E+017,1,ja
+2050,9,4,FDP,"Hessel, Katja",1,fdp_hessel,107806591,1,ja
+2064,9,7,CSU,"Hierl, Susanne",1,HierlSusanne,1.35274256226053E+018,2,ja
+2078,14,3,AfD,"Hilse, Karsten",1,HilseMdb,9.20932259347214E+017,2,ja
+2092,16,1,CDU,"Hirte, Christian",1,ChristianHirte,37642893,1,ja
+2095,7,2,SPD,"Hitschler, Thomas",1,ThomasHitschler,292151515,1,ja
+2101,7,3,AfD,"Höchst, Nicole",1,Nicole_Hoechst,3105025175,2,ja
+2106,3,4,FDP,"Hocker, Dr. Gero Clemens",1,GeroHocker,9.66707365893558E+017,2,ja
+2113,7,4,FDP,"Höferlin, Manuel",1,ManuelHoeferlin,17483463,1,ja
+2116,9,7,CSU,"Hoffmann, Alexander",1,Hoffmann_MdB,1.19381684351917E+018,2,ja
+2119,6,6,GRÜNE,"Hoffmann, Dr. Bettina Martha Lieselotte",1,bhoffmann_mdb,9.71040144420721E+017,1,ja
+2120,8,4,FDP,"Hoffmann, Dr. Christoph",1,HoffmannForest,1.08549438140524E+018,1,ja
+2144,9,6,GRÜNE,"Hofreiter, Dr. Anton Gerhard",1,ToniHofreiter,442678902,1,ja
+2166,13,3,AfD,"Holm, Leif-Erik",1,Leif_Erik_Holm,7.39531034761499E+017,1,ja
+2177,1,6,GRÜNE,"Hönel, Bruno",1,Bruno_Hoenel,8.59112360228917E+017,1,ja
+2184,2,1,CDU,"Hoppermann, Franziska Christina Brigitte",1,FHoppermann,8.83059801747587E+017,1,ja
+2202,8,2,SPD,"Hostert, Jasmina",1,JasminaHostert,817937942,1,ja
+2205,5,4,FDP,"Houben, Reinhard Arnold",1,HoubenReinhard,8.25069798140834E+017,1,ja
+2215,9,3,AfD,"Huber, Johannes Josef",1,HuberMdB,9.2528674192119E+017,2,ja
+2220,7,2,SPD,"Hubertz, Verena Ute",1,verenahubertz,3591923477,1,ja
+2238,9,2,SPD,"Hümpfer, Markus Klaus",1,HumpferMarkus,7.09129502870409E+017,2,ja
+2246,5,5,DIE LINKE,"Hunko, Andrej Konstantin",1,AndrejHunko,87281380,1,ja
+2269,5,4,FDP,"in der Beek, Olaf Karl Wilhelm",1,olafinderbeek,9.13327957602693E+017,1,ja
+2285,5,3,AfD,"Jacobi, Fabian",1,Jacobi_AfD,9.44181149424898E+017,2,ja
+2320,9,6,GRÜNE,"Janecek, Dieter Gerald",1,DJanecek,52024480,1,ja
+2332,3,1,CDU,"Janssen, Anne",1,cdu_anne,1.34750298720013E+018,2,ja
+2336,5,1,CDU,"Jarzombek, Thomas",1,tj_tweets,37105136,1,ja
+2350,1,4,FDP,"Jensen-Bornhöft, Gyde",1,GydeJ,1530171613,1,ja
+2374,8,3,AfD,"Jongen, Dr. Marc Stephan",1,Marc_Jongen,4121053541,1,ja
+2387,8,4,FDP,"Jung, Dr. Christian",1,c_jung77,7.40178046649565E+017,1,ja
+2388,6,1,CDU,"Jung, Ingmar Ludwig",1,Ingmar_Jung,23296367,1,ja
+2391,13,2,SPD,"Junge, Frank Michael",1,jungeinberlin,77928749,2,ja
+2397,8,2,SPD,"Juratovic, Josip",1,josip_juratovic,7.38731811380077E+017,1,ja
+2399,8,4,FDP,"Jurisch, Dr. Ann-Veruschka",1,avjurisch,1.37717784615878E+018,2,ja
+2405,5,2,SPD,"Kaczmarek, Oliver",1,KaczmarekOliver,231440493,1,ja
+2406,5,6,GRÜNE,"Kaddor, Lamya",1,LamyaKaddor,1200442200,1,ja
+2416,16,2,SPD,"Kaiser, Elisabeth",1,Kaiser_SPD,1425035358,1,ja
+2449,4,6,GRÜNE,"Kappert-Gonther, Dr. Kirsten",1,KirstenKappert,9.55357684013953E+017,1,ja
+2452,8,2,SPD,"Karaahmetoǧlu, Macit",1,Macit_SPD,574582030,2,ja
+2455,5,1,CDU,"Karliczek, Anja Maria-Antonia",1,AnjaKarliczek,2521976694,1,ja
+2465,14,2,SPD,"Kasper, Carlos",1,CaKa_keinScheis,1.21313627343244E+018,2,ja
+2466,13,2,SPD,"Kassautzki, Anna Katharina",1,annakassautzki,2776064484,1,ja
+2472,8,2,SPD,"Katzmarek, Gabriele",1,GabyKatzmarek,3017602065,1,ja
+2480,8,3,AfD,"Kaufmann, Dr. Malte",1,MalteKaufmann,97530140,1,ja
+2482,16,3,AfD,"Kaufmann, Prof. Dr.Michael Heinz",1,KaufmannAfD,1595763756,2,ja
+2509,5,2,SPD,"Keller, Rainer Johannes",1,RainerKellerWES,9.12780367937049E+017,2,ja
+2512,12,6,GRÜNE,"Kellner, Michael",1,MiKellner,2221112390,1,ja
+2513,8,1,CDU,"Kemmer, Ronja Helene",1,RonjaKemmer,2405039875,1,ja
+2527,15,2,SPD,"Kersten, Dr. Franziska",1,kersten68,7.29399137272214E+017,2,ja
+2535,3,6,GRÜNE,"Keul, Katja",1,KatjaKeul,9.59105406416163E+017,1,ja
+2537,5,3,AfD,"Keuter, Stefan",1,StefanKeuterAfD,7.9462817257062E+017,2,ja
+2540,7,6,GRÜNE,"Khan, Misbah",1,Bina_Khan_,98756479,1,ja
+2552,8,1,CDU,"Kiesewetter, Roderich",1,RKiesewetter,42698498,1,ja
+2554,9,7,CSU,"Kießling, Michael",1,Kiessling_MdB,730314294,1,ja
+2559,3,6,GRÜNE,"Kindler, Sven-Christian",1,sven_kindler,17343047,1,ja
+2568,14,5,DIE LINKE,"Kipping, Katja",1,katjakipping,28066013,1,ja
+2587,11,2,SPD,"Kiziltepe, Cansel",1,CanselK,23248102,1,ja
+2602,11,2,SPD,"Kleebank, Helmut",1,helmut_kleebank,4185556127,2,ja
+2609,11,1,CDU,"Klein, Dr. Ottilie Paola",1,Ottilie_Klein,7.28577706489721E+017,2,ja
+2611,9,4,FDP,"Klein, Karsten",1,MdBKlein,9.95228494023086E+017,1,ja
+2614,5,1,CDU,"Klein, Volkmar",1,VolkmarKlein,33043294,1,ja
+2617,5,6,GRÜNE,"Klein-Schmeink, Maria Anna",1,MariaKlSchmeink,18103366,1,ja
+2618,12,3,AfD,"Kleinwächter, Norbert",1,NKleinwaechter,8.6592051966899E+017,2,ja
+2633,3,2,SPD,"Klingbeil, Lars",1,larsklingbeil,16255941,1,ja
+2645,7,1,CDU,"Klöckner, Julia",1,JuliaKloeckner,29858729,1,ja
+2649,11,2,SPD,"Klose, Annika Gisela",1,AnniKlose,1460753227,2,ja
+2653,11,4,FDP,"Kluckert, Daniela Kathrin",1,DanielaKluckert,28327765,1,ja
+2659,1,2,SPD,"Klüssendorf, Tim",1,timkluessendorf,19160769,1,ja
+2675,3,1,CDU,"Knoerig, Axel",1,axel_knoerig,9.28974816220254E+017,1,ja
+2692,8,4,FDP,"Kober, Pascal Felix Ernst",1,PascalKober,19909974,2,ja
+2712,12,1,CDU,"Koeppen, Jens",1,JensKoeppen,146376562,1,ja
+2714,9,2,SPD,"Kofler, Dr. Bärbel",1,BaerbelKofler,193629792,1,ja
+2721,9,4,FDP,"Köhler, Dr. Lukas Otto",1,koehler_fdp,8.98597063444877E+017,1,ja
+2744,13,3,AfD,"Komning, Enrico",1,EnricoKomning,7.81747720897892E+017,2,ja
+2748,5,1,CDU,"König, Anne",1,AnneKoenig_,4493363728,2,ja
+2753,3,3,AfD,"König, Jörn Harald",1,JoernKoenigAfD,9.60974630709285E+017,2,ja
+2762,7,4,FDP,"Konrad, Carina",1,carina_konrad,8.7430493590673E+017,1,ja
+2763,6,1,CDU,"Koob, Markus Benjamin",1,KoobMar,2664174617,2,ja
+2766,8,6,GRÜNE,"Kopf, Chantal Johanna Siglinde",1,chantal_kopf,8.20001178943627E+017,1,ja
+2777,14,1,CDU,"Körber, Carsten",1,CarstenKoerber,1.36237238181423E+018,1,ja
+2791,15,5,DIE LINKE,"Korte, Jan",1,jankortemdb,4164673821,1,ja
+2796,12,2,SPD,"Koß, Simona",1,KossSimona,1.35954965219917E+018,2,ja
+2811,12,3,AfD,"Kotré, Steffen",1,SteffenKotre,9.12223443231429E+017,1,ja
+2824,9,3,AfD,"Kraft, Dr. Rainer Detlef",1,Dr_Rainer_Kraft,8.04064797977444E+017,2,ja
+2826,5,6,GRÜNE,"Kraft, Laura Manuela",1,laura_kraft_,1.41067150367957E+018,1,ja
+2842,6,6,GRÜNE,"Krämer, Philip",1,PhiKraemer,7.46767453951234E+017,1,ja
+2845,9,2,SPD,"Kramme, Anette",1,AnetteKramme,1461705757,2,ja
+2869,3,2,SPD,"Kreiser, Dunja Eleonore Angelika",1,d_kreiser,3392540248,0,ja
+2881,8,1,CDU,"Krichbaum, Gunther",1,GuntherKrichba3,1.16109838402082E+018,2,ja
+2889,5,1,CDU,"Krings, Dr. Günter",1,guenterkrings,392312829,1,ja
+2891,5,6,GRÜNE,"Krischer, Oliver",1,Oliver_Krischer,88630242,1,ja
+2893,15,2,SPD,"Kröber, Martin",1,MartinKroeber,137036352,2,ja
+2928,2,4,FDP,"Kruse, Michael",1,krusehamburg,2823984824,1,ja
+2934,3,1,CDU,"Kuban, Tilman Moritz",1,TKuban96,970038451,1,ja
+2948,3,4,FDP,"Kuhle, Konstantin Elias",1,KonstantinKuhle,475275997,1,ja
+2951,8,6,GRÜNE,"Kühn, Christian",1,ChrisKuehn_mdb,1143130812,1,ja
+2965,11,2,SPD,"Kühnert, Kevin",1,KuehniKev,2764750474,1,ja
+2973,11,6,GRÜNE,"Künast, Renate Elly",1,RenateKuenast,1425265488,1,ja
+2992,5,6,GRÜNE,"Kurth, Markus",1,markuskurthmdb,150188536,1,ja
+3015,5,2,SPD,"Lahrkamp, Sarah",1,SLahrkamp,1.23805920352631E+018,2,ja
+3028,8,6,GRÜNE,"Lang, Ricarda",1,Ricarda_Lang,1405886484,1,ja
+3037,9,7,CSU,"Lange, Ulrich",1,UlrichLange,68172699,2,ja
+3066,5,1,CDU,"Laschet, Armin",1,ArminLaschet,835541664,1,ja
+3076,9,7,CSU,"Launert, Dr. Silke",1,DrLaunert,4926993244,2,ja
+3077,5,2,SPD,"Lauterbach, Dr. Karl Wilhelm",1,Karl_Lauterbach,3292982985,1,ja
+3083,14,5,DIE LINKE,"Lay, Caren Nicole",1,CarenLay,21404382,1,ja
+3087,9,4,FDP,"Lechte, Ulrich",1,ulrichlechte,9.88765113606918E+017,1,ja
+3099,5,6,GRÜNE,"Lehmann, Sven",1,svenlehmann,16706236,1,ja
+3100,12,2,SPD,"Lehmann, Sylvia",1,LehmannSpd,2320712427,2,ja
+3113,6,1,CDU,"Leikert, Dr. Katja Isabel",1,KLeikert,467381196,1,ja
+3118,8,2,SPD,"Leiser, Kevin",1,KLHohenlohe,1.36577181986156E+018,1,ja
+3127,15,6,GRÜNE,"Lemke, Steffi",1,SteffiLemke,17229513,1,ja
+3137,9,7,CSU,"Lenz, Dr. Andreas",1,DerLenzMdB,3635730797,1,ja
+3158,5,5,DIE LINKE,"Leye, Christian",1,christian_leye,8.26683982519611E+017,2,ja
+3165,5,2,SPD,"Licina-Bode, Luiza",1,BodeLuiza,1.39824046639561E+018,2,ja
+3168,6,4,FDP,"Lieb, Dr. Thorsten Willibald",1,ThorstenLieb,2411398358,2,ja
+3184,10,2,SPD,"Limbacher, Esra-Leon Ruben",1,EsraLimbacher,19139341,1,ja
+3186,3,6,GRÜNE,"Limburg, Helge Stefan",1,Helge_Limburg,63687144,2,ja
+3193,11,4,FDP,"Lindemann, Lars",1,LFLindemann,96146500,1,ja
+3196,5,2,SPD,"Lindh, Helge Frederik",1,helgelindh,454981027,1,ja
+3197,9,7,CSU,"Lindholz, Andrea",1,AndreaLindholz,1446031532,1,ja
+3199,5,4,FDP,"Lindner, Christian Wolfgang",1,c_lindner,122104353,1,ja
+3200,7,6,GRÜNE,"Lindner, Dr. Tobias",1,tobiaslindner,21197524,1,ja
+3211,8,4,FDP,"Link, Michael Georg",1,michael_g_link,3034092143,1,ja
+3250,1,6,GRÜNE,"Loop, Denise",1,denise_loop,7.97403769378132E+017,1,ja
+3276,11,5,DIE LINKE,"Lötzsch, Dr. Gesine",1,LoetzschMdB,24178198,1,ja
+3286,5,3,AfD,"Lucassen, Hans-Rüdiger",1,MdB_Lucassen,4875914470,2,ja
+3290,5,6,GRÜNE,"Lucks, Max",1,max_lucks,481428317,1,ja
+3291,11,1,CDU,"Luczak, Dr. Jan-Marco",1,JM_Luczak,22908417,1,ja
+3298,9,7,CSU,"Ludwig, Daniela",1,DaniLudwigMdB,1.01984660504494E+018,1,ja
+3304,5,2,SPD,"Lugk, Bettina",1,BettinaLugk,1.19399199019679E+018,1,ja
+3306,6,6,GRÜNE,"Lührmann, Anna Kristina",1,AnnaLuehrmann,1.17971530744062E+018,1,ja
+3307,10,4,FDP,"Luksic, Oliver",1,OlliLuksic,21144568,1,ja
+3315,9,4,FDP,"Lütke, Kristine",1,kristine_lutke,8.7543173525692E+017,1,ja
+3321,10,5,DIE LINKE,"Lutze, Thomas",1,thlutze,3667108397,2,ja
+3326,10,2,SPD,"Maas, Heiko Josef",1,HeikoMaas,24158261,1,ja
+3332,7,2,SPD,"Machalet, Dr. Tanja",1,TMachalet,23340320,2,ja
+3340,7,2,SPD,"Mackensen-Geis, Isabel Larissa",1,IsabelMackensen,2322165327,2,ja
+3346,14,1,CDU,"Magwas, Yvonne",1,YvonneMagwas,3852561082,1,ja
+3383,14,2,SPD,"Mann, Holger",1,HolgerMannLE,615488350,2,ja
+3391,6,4,FDP,"Mansmann, Till Berthold",1,TillMansmann,9.54049866283483E+017,1,ja
+3392,6,2,SPD,"Mansoori, Kaweh",1,El_KaWeh_,2149926365,2,ja
+3416,5,2,SPD,"Martens, Zanda",1,ZandaMartens,1.38382116315185E+018,1,ja
+3418,2,2,SPD,"Martin, Dorothee Katja Julia",1,Doro_Martin,241008237,1,ja
+3428,8,2,SPD,"Marvi, Parsa",1,ParsaMarvi,973597518,1,ja
+3434,14,2,SPD,"Mascheck, Franziska",1,f_mascheck,7.44152788746248E+017,2,ja
+3438,8,2,SPD,"Mast, Katja Wilma",1,KatjaMast,9.37678874095301E+017,1,ja
+3446,3,1,CDU,"Mattfeldt, Andreas",1,AMattfeldt,23447001,2,ja
+3468,8,6,GRÜNE,"Mayer, Zoe",1,zoe_gruene,1.24866269631842E+018,2,ja
+3469,8,1,CDU,"Mayer-Lay, Volker",1,VMayer_Lay,1.29036159042923E+018,2,ja
+3484,9,2,SPD,"Mehltretter, Andreas",1,Mehli,15820788,1,ja
+3485,8,2,SPD,"Mehmet Ali, Takis",1,TakisMehmetAli1,1.41353661206825E+018,2,ja
+3503,11,5,DIE LINKE,"Meiser, Pascal",1,pascalmeiser,314534724,1,ja
+3506,6,1,CDU,"Meister, Dr. Michael Günther",1,meister_schafft,34214048,1,ja
+3523,3,4,FDP,"Merten, Anikó",1,AnikoMerten,2490321900,2,ja
+3525,5,1,CDU,"Merz, Joachim-Friedrich Martin Josef",1,_FriedrichMerz,1.05939574828923E+018,1,ja
+3526,8,2,SPD,"Mesarosch, Robin",1,mesarosch,208413193,1,ja
+3533,7,1,CDU,"Metzler, Jan",1,JanMetzler,995653004,1,ja
+3542,11,4,FDP,"Meyer, Christoph Werner",1,Meyer_FDP,8.61992050358616E+017,1,ja
+3565,9,3,AfD,"Miazga, Corinna",1,CorinnaMiazga,8.68762469115847E+017,2,ja
+3568,3,6,GRÜNE,"Michaelsen, Swantje Henrike",1,SwantjeMichael1,1.08617831823019E+018,1,ja
+3573,14,2,SPD,"Michel, Susanne Kathrin",1,Kthrn_Mchl_SPD,1.16605576540214E+018,1,ja
+3582,5,6,GRÜNE,"Mihalic, Dr. Irene",1,IreneMihalic,143000381,1,ja
+3583,6,6,GRÜNE,"Mijatović, Boris",1,borismijatovic,7.1805020916351E+017,1,ja
+3607,3,5,DIE LINKE,"Mohamed Ali, Amira",1,Amira_M_Ali,9.34029228886065E+017,1,ja
+3611,1,5,DIE LINKE,"Möhring, Cornelia",1,Conni_Moehring,2596171296,1,ja
+3613,3,2,SPD,"Mohrs, Falko",1,FalkoMohrs,79228932,1,ja
+3620,5,2,SPD,"Moll, Claudia",1,ClaudiaMollMdB,1.07031222913903E+018,1,ja
+3629,3,2,SPD,"Möller, Siemtje Victoria Regine Ilse Santjer",1,SiemtjeMdB,1.11594023880174E+018,1,ja
+3634,14,3,AfD,"Moncsek, Mike",1,Mike_Moncsek,1.10430424275449E+018,2,ja
+3637,13,1,CDU,"Monstadt, Dietrich",1,MdBMonstadt,1.18010238927521E+018,2,ja
+3640,14,3,AfD,"Moosdorf, Matthias",1,MMoosdorf,50578509,2,ja
+3642,1,4,FDP,"Mordhorst, Maximilian",1,maxmordhorst,2174533082,1,ja
+3652,8,1,CDU,"Mörseburg, Maximilian Rick",1,maxmoerseburg,270435074,2,ja
+3678,6,4,FDP,"Müller, Alexander",1,alexmuellerfdp,9.36235058792485E+017,1,ja
+3687,6,2,SPD,"Müller, Bettina",1,BetMueller,2443895924,1,ja
+3688,3,1,CDU,"Müller, Carsten",1,MdbMuller,1.32281112963521E+018,2,ja
+3689,13,6,GRÜNE,"Müller, Claudia Heike",1,GruenClaudia,937403112,1,ja
+3690,14,2,SPD,"Müller, Detlef",1,MuellerChemnitz,7.84760007275516E+017,1,ja
+3695,5,1,CDU,"Müller, Florian Matthias",1,FlorianMM,45370052,2,ja
+3718,9,6,GRÜNE,"Müller, Sascha",1,SaschaMuller,52793798,1,ja
+3719,15,1,CDU,"Müller, Sepp",1,mueller_sepp,8.0180312776267E+017,1,ja
+3721,9,7,CSU,"Müller, Stefan",1,smuellermdb,17960911,1,ja
+3728,8,6,GRÜNE,"Müller-Gemmeke, Beate",1,GrueneBeate,53426644,1,ja
+3730,14,4,FDP,"Müller-Rosentritt, Frank",1,theliberalfrank,9.84048002967982E+017,1,ja
+3739,5,2,SPD,"Müntefering, Michelle-Jasmin Gabriele",1,Mi_Muentefering,9.47740210036642E+017,1,ja
+3743,7,3,AfD,"Münzenmaier, Sebastian",1,S_Muenzenmaier,8.63657874941256E+017,2,ja
+3758,5,6,GRÜNE,"Nanni, Sara",1,SaraNanni,81596596,1,ja
+3761,14,2,SPD,"Nasr, Rasha",1,rasha_nasr_,3697025955,1,ja
+3762,2,5,DIE LINKE,"Nastić, Zaklin Jadwiga",1,ZaklinNastic,2527808433,1,ja
+3767,14,3,AfD,"Naujok, Edgar",1,edgar_naujok,7.91991717717283E+017,2,ja
+3787,1,6,GRÜNE,"Nestle, Dr. Ingrid Johanna",1,Ingrid_Nestle,44359035,2,ja
+3820,5,6,GRÜNE,"Nick, Dr. Ophelia Johanna",1,OpheliaNick,2527051226,1,ja
+3821,5,2,SPD,"Nickholz, Brian",1,BrianNickholz,1970779310,1,ja
+3853,6,3,AfD,"Nolte, Jan Ralf",1,Jan_Nolte_AfD,3408940048,2,ja
+3861,6,6,GRÜNE,"Nouripour, Omid",1,nouripour,16674128,1,ja
+3867,9,2,SPD,"Nürnberger, Jörg Mathias",1,JorgNurnberger,1.35409052789815E+018,2,ja
+3882,6,2,SPD,"Oehl, Jan Lennard",1,leoehl,631226773,2,ja
+3885,5,1,CDU,"Oellers, Wilfried",1,WilfriedOellers,906847944,1,ja
+3908,8,1,CDU,"Oppelt, Moritz Paul Georg",1,moritz_oppelt,1.04234450277679E+018,2,ja
+3913,10,2,SPD,"Ortleb, Josephine Loulou",1,josephineortleb,21618829,1,ja
+3920,9,7,CSU,"Oßner, Florian",1,Florian_Ossner,1294532364,1,ja
+3921,7,1,CDU,"Oster, Josef",1,josefoster,28089973,1,ja
+3927,3,1,CDU,"Otte, Henning Rudolf Helmut",1,vtdgsprecher,1.41638870926463E+018,2,ja
+3928,3,6,GRÜNE,"Otte, Karoline",1,karo_otte,9.36673325950128E+017,1,ja
+3930,9,3,AfD,"Otten, Gerold Joachim",1,Gerold_Otten,7.74309860812919E+017,2,ja
+3936,8,6,GRÜNE,"Özdemir, Cem",1,cem_oezdemir,19108766,1,ja
+3938,5,2,SPD,"Özdemir, Mahmut",1,oezdemir_spd,1399764944,1,ja
+3943,2,2,SPD,"Özoğuz, Saliha Aydan",1,oezoguz,83342791,1,ja
+3949,3,6,GRÜNE,"Pahlke, Julian Nils Christoph",1,J_Pahlke,9.60825326132752E+017,1,ja
+3956,3,2,SPD,"Pantazis, Dr. Christos",1,Dr_Pantazis,25909814,2,ja
+3964,12,2,SPD,"Papendieck, Mathias",1,M_Papendieck,1673859822,2,ja
+3977,11,5,DIE LINKE,"Pau, Petra Angelika",1,PetraPauMaHe,560467206,1,ja
+3984,11,6,GRÜNE,"Paus, Elisabeth Maria",1,lisapaus,569166756,1,ja
+3987,6,2,SPD,"Pawlik, Natalie",1,natalie_pawlik,90452001,2,ja
+3991,5,2,SPD,"Peick, Jens",1,JensPeick,1.34861229025021E+018,2,ja
+3995,14,5,DIE LINKE,"Pellmann, Sören",1,LINKEPELLI,74837812,1,ja
+4003,3,5,DIE LINKE,"Perli, Victor Angelo",1,victorperli,3350681139,1,ja
+4012,9,3,AfD,"Peterka, Tobias Matthias",1,TobiasMPeterka,2496104640,2,ja
+4026,10,2,SPD,"Petry, Christian",1,CPetryMdB,64159881,1,ja
+4054,3,2,SPD,"Philippi, Dr. Andreas Milan Gerhard",1,PhilippiSpd,1.35262796966415E+018,2,ja
+4060,14,6,GRÜNE,"Piechotta, Dr. Paula Louise",1,PaulaPiechotta,52318801,1,ja
+4074,9,7,CSU,"Pilsinger, Stephan Nikolaus",1,StephPilsinger,8.19914159915668E+017,1,ja
+4088,9,2,SPD,"Plobner, Jan Heinz Stefan",1,JanPlobner,1.02797689864163E+018,2,ja
+4091,2,1,CDU,"Ploß, Dr. Christoph Johannes",1,christophploss,9.28335737803723E+017,1,ja
+4098,16,3,AfD,"Pohl, Jürgen Hans",1,Pohl_MdB,175071092,2,ja
+4102,3,6,GRÜNE,"Polat, Filiz",1,filizgreen,194535434,1,ja
+4115,5,2,SPD,"Poschmann, Sabine",1,SabinePoschmann,7.38636568760554E+017,2,ja
+4118,5,2,SPD,"Post, Achim Jürgen",1,Achim_P,1117749912,1,ja
+4146,9,3,AfD,"Protschka, Stephan",1,AfDProtschka,1412287272,1,ja
+4167,5,1,CDU,"Rachel, Thomas Walther",1,_ThomasRachel,1.05252417271738E+018,1,ja
+4174,9,7,CSU,"Radwan, Alexander Gamal",1,AlexanderRadwan,2831760211,1,ja
+4181,9,7,CSU,"Rainer, Alois Georg Josef",1,AloisRainer,1.31049178061856E+018,2,ja
+4208,4,4,FDP,"Redder, Dr. Volker",1,docredder,65658028,2,ja
+4214,5,1,CDU,"Rehbaum, Henning",1,HenningRehbaum,1.33856761178162E+018,2,ja
+4222,15,3,AfD,"Reichardt, Martin",1,M_Reichardt_AfD,2545743991,1,ja
+4223,14,1,CDU,"Reichel, Dr. Markus",1,MarkusReichelDD,1.35478817615028E+018,2,ja
+4229,3,5,DIE LINKE,"Reichinnek, Heidi",1,HeidiReichinnek,3417281013,1,ja
+4241,8,6,GRÜNE,"Reinalter, Prof. Dr.Anja Margit",1,AnjaReinalter,1.39892266606987E+018,2,ja
+4252,13,4,FDP,"Reinhold, Hagen",1,reinholdmdb,9.25657781759332E+017,1,ja
+4270,5,3,AfD,"Renner, Martin Erwin",1,Renner_AfD,2535401947,1,ja
+4271,16,5,DIE LINKE,"Renner, Martina Erika",1,MartinaRenner,68920005,1,ja
+4281,5,4,FDP,"Reuther, Bernd",1,reuther_bernd,9.30422173478609E+017,1,ja
+4285,5,2,SPD,"Rhie, Ye-One",1,YeOne_Rhie,7.22757627877335E+017,2,ja
+4325,8,5,DIE LINKE,"Riexinger, Bernd Karl",1,b_riexinger,849012308,1,ja
+4328,5,2,SPD,"Rimkus, Andreas",1,Andreas_Rimkus,30838821,1,ja
+4343,1,2,SPD,"Rix, Sönke",1,SoenkeRix,36327895,1,ja
+4357,3,2,SPD,"Rohde, Dennis",1,DennisRohde,18160122,1,ja
+4378,9,2,SPD,"Roloff, Sebastian Jörg",1,SebRoloff,482763399,2,ja
+4397,8,2,SPD,"Rosemann, Dr. Martin",1,MartinRosemann,28784085,1,ja
+4408,5,2,SPD,"Rosenthal, Jessica",1,jessi_rosenthal,1.25066330628682E+018,1,ja
+4419,7,6,GRÜNE,"Rößner, Tabea",1,TabeaRoessner,53351462,1,ja
+4427,6,2,SPD,"Roth, Michael",1,MiRo_SPD,1114675538,1,ja
+4438,5,1,CDU,"Röttgen, Dr. Norbert Alois",1,n_roettgen,1.04016079920816E+018,1,ja
+4439,9,6,GRÜNE,"Rottmann, Dr. Manuela",1,ManuelaRottman,9.84735466783232E+017,2,ja
+4442,5,1,CDU,"Rouenhoff, Stefan",1,StefanRouenhoff,963904327,1,ja
+4443,4,1,CDU,"Röwekamp, Thomas",1,TR_Bremen,1.10868095810085E+018,2,ja
+4457,7,1,CDU,"Rüddel, Erwin Josef",1,Erwin_Rueddel,33071479,1,ja
+4461,7,2,SPD,"Rudolph, Dr. Thorsten",1,jethoru,540276932,1,ja
+4468,7,6,GRÜNE,"Rüffer, Corinna Martina",1,crueffer,1524735194,1,ja
+4496,9,2,SPD,"Rützel, Bernd Ferdinand",1,ruetzelbernd,1.11300474373399E+018,2,ja
+4497,4,2,SPD,"Ryglewski, Sarah Janina",1,RyglewskiS,4858227178,1,ja
+4500,3,2,SPD,"Saathoff, Johann",1,Johann_Saathoff,159217491,1,ja
+4511,14,6,GRÜNE,"Saleh, Kassem Taher",1,kassem_ts,1.16226856248175E+018,1,ja
+4539,9,4,FDP,"Sattelberger, Thomas Michael",1,th_sattelberger,1296544153,1,ja
+4549,5,4,FDP,"Sauter, Christian",1,Chr_Sauter,9.97033716324094E+017,1,ja
+4565,8,6,GRÜNE,"Schäfer, Dr. Sebastian",1,sebastian_es_,3367452609,1,ja
+4566,5,2,SPD,"Schäfer, Ingo",1,ingoschaeferspd,1.38010789909202E+018,2,ja
+4567,9,6,GRÜNE,"Schäfer, Jamila Anna",1,jamila_anna,859883348,1,ja
+4575,5,4,FDP,"Schäffler, Frank Uwe",1,f_schaeffler,18189342,1,ja
+4591,7,3,AfD,"Schattner, Bernd Hans",1,Herbstbernd27,8.6893163848661E+017,2,ja
+4598,5,6,GRÜNE,"Schauws, Ursula",1,ulle_schauws,17363943,1,ja
+4600,1,2,SPD,"Scheer, Dr. Nina",1,NinaScheer_SPD,8.45213960060244E+017,1,ja
+4632,9,7,CSU,"Scheuer, Andreas Franz",1,andreasscheuer,50315139,1,ja
+4639,9,2,SPD,"Schieder, Marianne",1,m_schieder,1.30650398679145E+018,1,ja
+4640,5,2,SPD,"Schiefner, Udo",1,UdoSchiefner,3823042877,2,ja
+4643,13,3,AfD,"Schielke-Ziesing, Ulrike",1,ulschzi,866924100,1,ja
+4665,12,1,CDU,"Schimke, Jana",1,JanaSchimke,728990858,1,ja
+4719,9,2,SPD,"Schmid, Christoph Florian",1,kratermensch,2615401245,2,ja
+4720,8,2,SPD,"Schmid, Dr. Nils Hermann",1,NilsSchmid,83795057,1,ja
+4736,6,2,SPD,"Schmidt, Dagmar",1,dieschmidt,95905207,1,ja
+4752,15,3,AfD,"Schmidt, Jan Wenzel",1,jws_afd,3321753670,1,ja
+4770,9,6,GRÜNE,"Schmidt, Stefan",1,Schmidt_MdB,9.30725836482929E+017,1,ja
+4802,16,2,SPD,"Schneider, Carsten",1,schneidercar,96783215,1,ja
+4811,5,3,AfD,"Schneider, Jörg",1,Schneider_AfD,7.19975730784956E+017,2,ja
+4828,7,1,CDU,"Schnieder, Patrick",1,PSchnieder,368334555,1,ja
+4846,12,2,SPD,"Scholz, Olaf",1,OlafScholz,38150247,1,ja
+4849,10,1,CDU,"Schön, Nadine",1,NadineSchoen,41840905,1,ja
+4851,9,6,GRÜNE,"Schönberger, Marlene Edeltraud",1,lime_green_leni,314230960,2,ja
+4867,3,2,SPD,"Schraps, Johannes",1,jschraps,1356753444,1,ja
+4873,8,1,CDU,"Schreiner, Felix",1,felixschreiner,162398888,1,ja
+4877,3,6,GRÜNE,"Schröder, Christina-Johanne",1,cj_schroeder,724395216,1,ja
+4883,2,4,FDP,"Schröder, Ria Irmtraut Claudia",1,ria_schroeder,3064795323,1,ja
+4886,9,2,SPD,"Schrodi, Michael Georg",1,mischrodi,8.06975237766136E+017,1,ja
+4923,3,4,FDP,"Schulz, Anja",1,_anja_schulz,8.25776827352367E+017,1,ja
+4932,6,3,AfD,"Schulz, Uwe",1,Uwe_Schulz_AfD,19177808,2,ja
+4933,6,6,GRÜNE,"Schulz-Asche, Kordula Anna Paula",1,K_SA,17870195,1,ja
+4938,5,2,SPD,"Schulze, Svenja",1,SvenjaSchulze68,7.57979230244368E+017,1,ja
+4975,5,2,SPD,"Schwabe, Frank",1,FrankSchwabe,30050484,1,ja
+4984,5,2,SPD,"Schwartze, Stefan",1,s_schwartze,1117526742,1,ja
+4985,9,2,SPD,"Schwarz, Andreas",1,Schwarz_MdB,2226815116,1,ja
+4987,6,1,CDU,"Schwarz, Armin",1,ArminSchwarz,1.20412723179629E+018,2,ja
+4996,8,2,SPD,"Schwarzelühr-Sutter, Rita Berta",1,rischwasu,50932086,1,ja
+5028,3,4,FDP,"Seestern-Pauly, Matthias",1,mseesternpauly,1.00609979388884E+018,2,ja
+5042,1,37,SSW,"Seidler, Stefan",1,stefan_seidler,1.30975473404004E+018,2,ja
+5050,8,4,FDP,"Seiter, Prof. Dr.Stephan",1,StSeiter,7.4335536036737E+017,1,ja
+5053,8,3,AfD,"Seitz, Thomas Michael Konrad",1,Th_Seitz_AfD,9.1335883873631E+017,2,ja
+5054,8,2,SPD,"Seitzl, Dr. Lina",1,Lina_Seitzl,2474314748,1,ja
+5055,8,6,GRÜNE,"Sekmen, Melis",1,Melis_S,289583425,2,ja
+5060,8,4,FDP,"Semet, Rainer",1,RainerSemet,1.26378676337138E+018,2,ja
+5088,9,3,AfD,"Sichert, Martin Johannes",1,Martin_Sichert,9.18405860862382E+017,2,ja
+5114,9,7,CSU,"Silberhorn, Thomas",1,SilberhornMdB,9.51489275312443E+017,1,ja
+5117,6,1,CDU,"Simon, Björn Manuel",1,BjoernSimon,93845554,2,ja
+5128,15,5,DIE LINKE,"Sitte, Dr. Petra",1,Petra_Sitte_MdB,293522998,1,ja
+5132,8,4,FDP,"Skudelny, Judith Sandra",1,JudithSkudelny,9.48958759560376E+017,1,ja
+5135,5,6,GRÜNE,"Slawik, Nyke",1,nyke_slawik,3002271760,1,ja
+5167,15,1,CDU,"Sorge, Tino",1,TinoSorge,110385973,1,ja
+5169,5,1,CDU,"Spahn, Jens Georg",1,jensspahn,299650387,1,ja
+5170,5,6,GRÜNE,"Spallek, Dr. Anne Monika",1,AnneSpallek,1.06641853797E+018,2,ja
+5171,8,3,AfD,"Spaniel, Dr. Dirk",1,DirkSpaniel,8.10537151729373E+017,2,ja
+5178,14,6,GRÜNE,"Spellerberg, Merle",1,spellerberg_m,9.05109355586101E+017,1,ja
+5192,12,3,AfD,"Springer, René",1,Rene_Springer,8.31541837965967E+017,1,ja
+5198,3,2,SPD,"Stadler, Svenja",1,stadler_svenja,3337459024,1,ja
+5202,9,7,CSU,"Staffler, Katrin",1,katrin_staffler,8.25019912083038E+017,1,ja
+5206,11,6,GRÜNE,"Stahr, Nina",1,ninastahr,19530651,1,ja
+5213,9,2,SPD,"Stamm-Fibich, Martina Margarete",1,stamm_fibich,4017796049,1,ja
+5219,6,4,FDP,"Stark-Watzinger, Bettina",1,starkwatzinger,38228691,1,ja
+5234,2,6,GRÜNE,"Steffen, Dr. Till Benjamin",1,till_steffen,1125962791,1,ja
+5239,9,7,CSU,"Stefinger, Dr. Wolfgang Dieter",1,StefingerMdB,4866955749,1,ja
+5240,3,1,CDU,"Stegemann, Albert",1,StegemannAlbert,1.12796124849313E+018,2,ja
+5245,1,2,SPD,"Stegner, Dr. Ralf",1,Ralf_Stegner,16808099,1,ja
+5255,1,2,SPD,"Stein, Jens Mathias",1,stonie_kiel,46498076,1,ja
+5268,7,1,CDU,"Steiniger, Johannes Eberhard",1,JoSteiniger,83474160,1,ja
+5272,11,6,GRÜNE,"Steinmüller, Hanna",1,HanSteinmueller,1.091742295572E+018,1,ja
+5290,14,2,SPD,"Sthamer, Nadja",1,nadjasthamer,1.32532033601603E+018,2,ja
+5291,15,1,CDU,"Stier, Dieter",1,dieter_stier,1156156982,2,ja
+5312,1,1,CDU,"Storjohann, Gero",1,gero_storjohann,20534846,1,ja
+5319,5,4,FDP,"Strack-Zimmermann, Dr. Marie-Agnes",1,MAStrackZi,3047392319,1,ja
+5322,8,4,FDP,"Strasser, Benjamin",1,bstrasser,29540300,1,ja
+5335,6,6,GRÜNE,"Strengmann-Kuhn, Dr. Wolfgang",1,W_SK,20840049,1,ja
+5357,11,2,SPD,"Stüwe, Ruppert Fritz Johannes",1,stuewer,94592987,2,ja
+5393,8,5,DIE LINKE,"Tatti, Jessica Nadine",1,jessica_tatti,1.02029708797044E+018,2,ja
+5415,6,6,GRÜNE,"Tesfaiesus, Awet",1,AwetTesfaiesus,1.03557777185305E+018,1,ja
+5417,12,4,FDP,"Teuteberg, Linda",1,LindaTeuteberg,170964436,1,ja
+5418,5,4,FDP,"Teutrine, Jens",1,jensteutrine,8.01549587144176E+017,1,ja
+5427,8,4,FDP,"Theurer, Michael Alexander",1,EUTheurer,1108382916,1,ja
+5429,5,2,SPD,"Thews, Michael Eckardt",1,michael_thews,409258073,1,ja
+5446,9,4,FDP,"Thomae, Stephan",1,StephanThomae,75005687,1,ja
+5455,8,1,CDU,"Throm, Alexander Richard",1,alexander_throm,8.29056811974144E+017,1,ja
+5474,16,1,CDU,"Tillmann, Antje",1,AntjeTillmann,1.08292576331637E+018,1,ja
+5480,14,4,FDP,"Tippelt, Nico",1,tippelt21,53369932,2,ja
+5486,5,4,FDP,"Todtenhausen, Manfred",1,MTodtenhausen,563706584,1,ja
+5490,8,4,FDP,"Toncar, Dr. Florian",1,florian_toncar,17462171,1,ja
+5492,5,2,SPD,"Töns, Markus",1,Toens_NRW04,3522875063,1,ja
+5504,9,2,SPD,"Träger, Carsten Dietmar",1,CarstenTraeger,3577737256,1,ja
+5527,3,6,GRÜNE,"Trittin, Jürgen",1,JTrittin,485751594,1,ja
+5546,8,2,SPD,"Türk-Nachbaur, Derya",1,derya_tn,1.16268937451089E+018,1,ja
+5557,10,1,CDU,"Uhl, Markus Alexander",1,uhl_markus,1391875208,2,ja
+5558,5,6,GRÜNE,"Uhlig, Katrin Babette",1,katrinuhligbn,1.34646273466219E+018,2,ja
+5562,9,4,FDP,"Ullmann, Prof. Dr.Andrew John",1,UllmannMdB,609972369,1,ja
+5564,9,7,CSU,"Ullrich, Dr. Volker Michael",1,VolkerUllrich,28446356,1,ja
+5566,16,4,FDP,"Ullrich, Gerald",1,G_UllrichFDP,9.35456332655874E+017,1,ja
+5602,3,6,GRÜNE,"Verlinden, Dr. Julia Maria Kornelia",1,julia_verlinden,1475734592,1,ja
+5616,5,4,FDP,"Vogel, Johannes",1,johannesvogel,15630931,1,ja
+5621,5,5,DIE LINKE,"Vogler, Kathrin",1,voglerk,21287514,1,ja
+5637,3,2,SPD,"Völlers, Marja-Liisa",1,MarjaVoellers,1.00945779155428E+018,1,ja
+5670,13,2,SPD,"von Malottki, Erik",1,EVMGreifswald,63240190,2,ja
+5672,1,6,GRÜNE,"von Notz, Dr. Konstantin",1,KonstantinNotz,17752770,1,ja
+5679,11,3,AfD,"von Storch, Beatrix",1,Beatrix_vStorch,805308596,1,ja
+5683,5,2,SPD,"Vöpel, Dirk",1,VoepelDirk,8.29029719941247E+017,2,ja
+5697,1,1,CDU,"Wadephul, Dr. Johann David",1,JoWadephul,389682667,1,ja
+5699,9,6,GRÜNE,"Wagener, Niklas",1,WagenerNiklas,1166603377,1,ja
+5700,5,6,GRÜNE,"Wagener, Robin Till Nils Johannes",1,robinwagener,392302434,1,ja
+5701,5,5,DIE LINKE,"Wagenknecht, Dr. Sahra",1,SWagenknecht,47375691,1,ja
+5712,9,6,GRÜNE,"Wagner, Johannes",1,yooHannes,8.37741064052216E+017,1,ja
+5737,12,2,SPD,"Wallstein, Maja Scarlett",1,Krawallstein,2423392771,1,ja
+5749,9,6,GRÜNE,"Walter-Rosenheimer, Beate",1,BeateWaRo,47049428,1,ja
+5754,14,1,CDU,"Wanderwitz, Marco",1,wanderwitz,16361044,1,ja
+5763,8,1,CDU,"Warken, Nina Ingrid",1,ninawarken,65413134,1,ja
+5798,7,4,FDP,"Weeser, Sandra",1,sandra_weeser,8.5836289507534E+017,1,ja
+5801,9,2,SPD,"Wegge, Carmen",1,CarmenWegge,1.08617471523912E+018,1,ja
+5811,8,3,AfD,"Weidel, Alice Elisabeth",1,Alice_Weidel,8.33398209053606E+017,1,ja
+5839,7,2,SPD,"Weingarten, Dr. Joe",1,DrJoeWeingarten,8.1196024335378E+017,2,ja
+5852,9,7,CSU,"Weisgerber, Dr. Anja",1,anjaweisgerber,133770069,1,ja
+5853,9,6,GRÜNE,"Weishaupt, Saskia Lea Raquel",1,SaskiaLeaRaquel,574285449,1,ja
+5858,8,1,CDU,"Weiss, Maria-Lena",1,MariaLenaWeiss,2654324832,2,ja
+5892,3,6,GRÜNE,"Wenzel, Peer Stefan",1,StefWenzel,61729247,1,ja
+5902,7,2,SPD,"Werner, Lena",1,thereallenzii,38250199,2,ja
+5920,5,4,FDP,"Westig, Nicole",1,NicoleWestig,9.89145249682526E+017,2,ja
+5922,3,2,SPD,"Westphal, Bernd Helmut",1,BerndWestphal4,1.07166542314025E+018,2,ja
+5931,5,3,AfD,"Weyel, Dr. Harald",1,h_weyel,8.41412635270763E+017,2,ja
+5935,8,1,CDU,"Whittaker, Kai Thorsten",1,Kai_Whittaker,2479436480,1,ja
+5940,8,1,CDU,"Widmann-Mauz, Annette",1,AWidmannMauz,3351905747,1,ja
+5951,9,3,AfD,"Wiehle, Wolfgang",1,WolfgangWiehle,1.00365629958913E+018,2,ja
+5955,5,1,CDU,"Wiener, Dr. Klaus",1,KlausWiener,8.62247639584317E+017,2,ja
+5957,5,2,SPD,"Wiese, Dirk",1,DirkWieseSPD,8.15469233090023E+017,2,ja
+5995,5,1,CDU,"Winkelmeier-Becker, Elisabeth",1,ElisabethWinke4,1.38607572978016E+018,2,ja
+6000,9,7,CSU,"Winkler, Tobias",1,TW_EP,2811445750,2,ja
+6001,9,6,GRÜNE,"Winklmann, Tina",1,TinaWinklmann,1.40988974066554E+018,1,ja
+6012,10,3,AfD,"Wirth, Dr. Christian Friedrich",1,ChrWirthMdB,9.2019396793702E+017,2,ja
+6019,7,4,FDP,"Wissing, Dr. Volker",1,Wissing,20593301,1,ja
+6020,6,5,DIE LINKE,"Wißler, Janine Natalie",1,Janine_Wissler,143484553,1,ja
+6026,1,3,AfD,"Witt, Uwe",1,Witt_Uwe,4503658823,2,ja
+6097,3,1,CDU,"Wulf, Mareike Lotte",1,MareikeWulf,1.03779110651841E+018,2,ja
+6104,3,3,AfD,"Wundrak, Franz Josef Joachim",1,JoachimWundrak,1.38998017803881E+018,2,ja
+6160,15,3,AfD,"Ziegler, Kay-Uwe",1,KayUweZiegler71,8.46770487480996E+017,2,ja
+6166,5,1,CDU,"Ziemiak, Paul",1,PaulZiemiak,288696645,1,ja
+6168,12,2,SPD,"Zierke, Stefan",1,zierke,64220313,1,ja
+6175,6,2,SPD,"Zimmermann, Dr. Jens",1,JensZSPD,449619355,1,ja
+6189,8,1,CDU,"Zippelius, Nicolas Benjamin",1,NZippelius,1560104953,2,ja
+6198,6,2,SPD,"Zorn, Armand",1,ArmandZorn,1.31318737637891E+018,1,ja
