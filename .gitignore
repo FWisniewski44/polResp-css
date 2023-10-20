@@ -2,3 +2,5 @@
 mergerDaten/
 *.csv
 .~lock*
+auswertungRfiles/politikerdaten/
+auswertungRfiles/mediendaten/
