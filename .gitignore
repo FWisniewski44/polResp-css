@@ -1,6 +1,8 @@
 .ipynb_checkpoints/
 mergerDaten/
-*.csv
+csvs/*
 .~lock*
 auswertungRfiles/politikerdaten/
 auswertungRfiles/mediendaten/
+auswertungRfiles/.RData
+auswertungRfiles/.Rhistory
