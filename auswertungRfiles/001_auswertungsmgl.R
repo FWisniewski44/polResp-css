@@ -90,7 +90,7 @@ filelistNames_medien <- mgsub(filelist_medien, c("./mediendaten/","Kategorisiert
 dat_medien <- list()
 
 for (i in unique(filelist_medien)){
-  dat_medien[[i]] <- readr::read_csv(i)
+  dat_medien[[i]] <- readr::read_csv(i, )
 }
 
 dat_medien <- dat_medien %>% purrr::set_names(filelistNames_medien)

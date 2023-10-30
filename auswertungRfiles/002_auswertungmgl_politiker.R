@@ -38,8 +38,8 @@ library(ggpubr)
 
 ################################################################################
 
-library(knitr) 
-library(kableExtra) 
+library(knitr)
+library(kableExtra)
 library(DT)
 # library(tm)
 # library(topicmodels)
@@ -52,7 +52,7 @@ library(DT)
 # library(ldatuning)
 library(flextable)
 # activate klippy for copy-to-clipboard button
-klippy::klippy()
+# klippy::klippy()
 
 # emoji clipping
 # library(emoji)
@@ -89,15 +89,15 @@ View(dat_politiker)
 # filelist_medien <- list.files(path = "./mediendaten",
 #                               pattern=".csv",
 #                               full.names = T)
-# 
+#
 # filelistNames_medien <- mgsub(filelist_medien, c("./mediendaten/","Kategorisiert.csv"), c("",""))
-# 
+#
 # dat_medien <- list()
-# 
+#
 # for (i in unique(filelist_medien)){
 #   dat_medien[[i]] <- readr::read_csv(i)
 # }
-# 
+#
 # dat_medien <- dat_medien %>% purrr::set_names(filelistNames_medien)
 # gc()
 # View(dat_medien)
@@ -126,44 +126,59 @@ datumsrange_alternativ <- ymd("2022-10-01") %m+% days(x = seq.int(from = 0, to =
 
 ################################################################################
 
+apply(politikerBerlin[,28:61], MARGIN = 2, FUN = sum)
+
 # alternativen datensatz erstellen zur abbildung der themen im zeitverlauf
-alternative <- politikerBerlin %>% aggregate(covidImpfung ~ dateTime, sum) %>% as_tidytable(alternative)
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(covidInfektionsgeschehen ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(covidMaßnahmen ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(covidVirus ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(ukraineAllgemein ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(ukraineBewaffnung ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(ukraineReaktion ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(energieAllgemein ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(energieAtomdiskurs ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(energieKrise ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(energieNordstream ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(sozialesAllgemein ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(sozialesEntlastungen ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(sozialesKinder ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(sozialesWohnen ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(verteidigungspolitik ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(polizistenmordKusel ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(politikEuropa ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(politikInternational ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(politikNational ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(klimaAktivismus ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(klimaKlimawandel ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(klimaPolitisch ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(klimaTechnologien ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(protesteIran ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(verkehrAutomobil ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(verkehrFahrrad ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(verkehrPolitik ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(verkehrÖpnv ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(pluralismusMedien ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(zukunftEntwicklung ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(zukunftVersprechen ~ dateTime, sum)))
-alternative <- full_join(x = alternative, y = (politikerBerlin %>% aggregate(verfassungsfeindlich ~ dateTime, sum)))
+alternativeBER <- politikerBerlin %>% aggregate(covidImpfung ~ dateTime, sum) %>% as_tidytable(alternativeBER)
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(covidInfektionsgeschehen ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(covidMaßnahmen ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(covidVirus ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(ukraineAllgemein ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(ukraineBewaffnung ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(ukraineReaktion ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(energieAllgemein ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(energieAtomdiskurs ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(energieKrise ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(energieNordstream ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(sozialesAllgemein ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(sozialesEntlastungen ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(sozialesKinder ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(sozialesWohnen ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(verteidigungspolitik ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(polizistenmordKusel ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(politikEuropa ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(politikInternational ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(politikNational ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(klimaAktivismus ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(klimaKlimawandel ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(klimaPolitisch ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(klimaTechnologien ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(protesteIran ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(verkehrAutomobil ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(verkehrFahrrad ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(verkehrPolitik ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(verkehrÖpnv ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(pluralismusMedien ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(zukunftEntwicklung ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(zukunftVersprechen ~ dateTime, sum)))
+alternativeBER <- full_join(x = alternativeBER, y = (politikerBerlin %>% aggregate(verfassungsfeindlich ~ dateTime, sum)))
 
-alternative
+alternativeBER
 
-plot1 <- alternative %>% as.data.table(alternative) %>% ggplot() +
+# ANZEIGEN: wie viele tweets gibt es insgesamt pro thema bei den berliner politikern?
+apply(alternative[,2:34], MARGIN = 2, FUN = sum)
+
+df <- data.frame(apply(alternativeBER[,2:34], MARGIN = 2, FUN = sum))
+df <- df %>% dplyr::rename(ct = apply.alternativeBER...2.34...MARGIN...2..FUN...sum.)
+df$variable <- rownames(df)
+
+df %>% ggplot() +
+  geom_col(aes(x=variable, y=ct)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+save(alternativeBER, file = "zwischenspeicherung/BER_alternativeZeitreihendaten.RData")
+
+plot1 <- alternativeBER %>% as.data.table(alternativeBER) %>% ggplot() +
   geom_point(aes(dateTime, covidImpfung, colour = "Impfung")) +
   geom_step(aes(dateTime, covidImpfung, colour = "Impfung")) +
   scale_x_date(date_breaks = "months", date_labels = "%b") +
@@ -174,7 +189,7 @@ plot1 <- alternative %>% as.data.table(alternative) %>% ggplot() +
   ggtitle(label = "CORONA-IMPFUNG", subtitle = "Häufigkeit der Erwähnung über Zeit – Referenzgruppe: PolitikerInnen") +
   theme_bw()
 
-plot2 <- alternative %>% as.data.table(alternative) %>% ggplot() +
+plot2 <- alternativeBER %>% as.data.table(alternativeBER) %>% ggplot() +
   geom_point(aes(dateTime, covidInfektionsgeschehen, colour = "Infektion")) +
   geom_step(aes(dateTime, covidInfektionsgeschehen, colour = "Infektion")) +
   scale_x_date(date_breaks = "months", date_labels = "%b") +
@@ -185,7 +200,7 @@ plot2 <- alternative %>% as.data.table(alternative) %>% ggplot() +
   ggtitle(label = "CORONA-INFEKTIONSGESCHEHEN", subtitle = "Häufigkeit der Erwähnung über Zeit – Referenzgruppe: PolitikerInnen") +
   theme_bw()
 
-plot3 <- alternative %>% as.data.table(alternative) %>% ggplot() +
+plot3 <- alternativeBER %>% as.data.table(alternativeBER) %>% ggplot() +
   geom_point(aes(dateTime, covidMaßnahmen, colour = "Maßnahmen")) +
   geom_step(aes(dateTime, covidMaßnahmen, colour = "Maßnahmen")) +
   scale_x_date(date_breaks = "months", date_labels = "%b") +
@@ -196,7 +211,7 @@ plot3 <- alternative %>% as.data.table(alternative) %>% ggplot() +
   ggtitle(label = "CORONA-MAẞNAHMEN", subtitle = "Häufigkeit der Erwähnung über Zeit – Referenzgruppe: PolitikerInnen") +
   theme_bw()
 
-plot4 <- alternative %>% as.data.table(alternative) %>% ggplot() +
+plot4 <- alternativeBER %>% as.data.table(alternativeBER) %>% ggplot() +
   geom_point(aes(dateTime, covidVirus, colour = "Virus")) +
   geom_step(aes(dateTime, covidVirus, colour = "Virus")) +
   scale_x_date(date_breaks = "months", date_labels = "%b") +
@@ -210,61 +225,65 @@ plot4 <- alternative %>% as.data.table(alternative) %>% ggplot() +
 ggarrange(plot1, plot2, plot3, plot4, ncol = 2, nrow = 2, common.legend=T, legend="none")
 # ggplotly(plot1)
 
-reframingPolitiker_berlin <- politikerBerlin %>%
-  group_by(dateTime, partei) %>%
-  reframe(.by = c(dateTime, partei), mentionsCovidVirus = sum(covidVirus),
-          mentionsCovidMaßnahmen = sum(covidMaßnahmen), 
-          mentionsCovidInfektionsgeschehen = sum(covidInfektionsgeschehen),
-          mentionsCovidImpfung = sum(covidImpfung),
-          mentionsUkraineAllgemein = sum(ukraineAllgemein),
-          mentionsUkraineBewaffnung = sum(ukraineBewaffnung),
-          mentionsUkraineReaktion = sum(ukraineReaktion),
-          mentionsEnergieAllgemein = sum(energieAllgemein),
-          mentionsEnergieKrise = sum(energieKrise),
-          mentionsEnergieAtomkraftdiskurs = sum(energieAtomdiskurs),
-          mentionsEnergieNordstream = sum(energieNordstream),
-          mentionsSozialesWohnen = sum(sozialesWohnen),
-          mentionsSozialesEntlastungen = sum(sozialesEntlastungen),
-          mentionsSozialesKinder = sum(sozialesKinder),
-          mentionsSozialesAllgemein = sum(sozialesAllgemein),
-          mentionsVerteidigungspolitik = sum(verteidigungspolitik),
-          mentionsPolitikNational = sum(politikNational),
-          mentionsPolitikInternational = sum(politikInternational),
-          mentionsPolitikEuropa = sum(politikEuropa),
-          mentionsKlimaAktivismus = sum(klimaAktivismus),
-          mentionsKlimaKlimawandel = sum(klimaKlimawandel),
-          mentionsKlimaPolitisch = sum(klimaPolitisch),
-          mentionsKlimaTechnologien = sum(klimaTechnologien),
-          mentionsProtesteIran = sum(protesteIran),
-          mentionsPolizistenmordKusel = sum(polizistenmordKusel),
-          mentionsVerkehrAutomobil = sum(verkehrAutomobil),
-          mentionsVerkehrFahrrad = sum(verkehrFahrrad),
-          mentionsVerkehrPolitik = sum(verkehrPolitik),
-          mentionsVerkehrÖpnv = sum(verkehrÖpnv),
-          mentionsPluralismusMedien = sum(pluralismusMedien),
-          mentionsZukunftEntwicklung = sum(zukunftEntwicklung),
-          mentionsZukunftVersprechen = sum(zukunftVersprechen),
-          mentionsVerfassungsfeindlich = sum(verfassungsfeindlich),
-          #partei = partei,
-          user = user,
-          follower = followerAmount,
-          einzug = einzug,
-          replies = replies,
-          retweets = retweets,
-          likes = likes,
-          bundesland = bundesland)
-reframingPolitiker_berlin
+################################################################################
+
+# ref_politikerBER_datumParteiUser <- politikerBerlin %>%
+#   group_by(dateTime, partei, user) %>%
+#   reframe(.by = c(dateTime, partei, user), mentionsCovidVirus = sum(covidVirus),
+#           mentionsCovidMaßnahmen = sum(covidMaßnahmen),
+#           mentionsCovidInfektionsgeschehen = sum(covidInfektionsgeschehen),
+#           mentionsCovidImpfung = sum(covidImpfung),
+#           mentionsUkraineAllgemein = sum(ukraineAllgemein),
+#           mentionsUkraineBewaffnung = sum(ukraineBewaffnung),
+#           mentionsUkraineReaktion = sum(ukraineReaktion),
+#           mentionsEnergieAllgemein = sum(energieAllgemein),
+#           mentionsEnergieKrise = sum(energieKrise),
+#           mentionsEnergieAtomkraftdiskurs = sum(energieAtomdiskurs),
+#           mentionsEnergieNordstream = sum(energieNordstream),
+#           mentionsSozialesWohnen = sum(sozialesWohnen),
+#           mentionsSozialesEntlastungen = sum(sozialesEntlastungen),
+#           mentionsSozialesKinder = sum(sozialesKinder),
+#           mentionsSozialesAllgemein = sum(sozialesAllgemein),
+#           mentionsVerteidigungspolitik = sum(verteidigungspolitik),
+#           mentionsPolitikNational = sum(politikNational),
+#           mentionsPolitikInternational = sum(politikInternational),
+#           mentionsPolitikEuropa = sum(politikEuropa),
+#           mentionsKlimaAktivismus = sum(klimaAktivismus),
+#           mentionsKlimaKlimawandel = sum(klimaKlimawandel),
+#           mentionsKlimaPolitisch = sum(klimaPolitisch),
+#           mentionsKlimaTechnologien = sum(klimaTechnologien),
+#           mentionsProtesteIran = sum(protesteIran),
+#           mentionsPolizistenmordKusel = sum(polizistenmordKusel),
+#           mentionsVerkehrAutomobil = sum(verkehrAutomobil),
+#           mentionsVerkehrFahrrad = sum(verkehrFahrrad),
+#           mentionsVerkehrPolitik = sum(verkehrPolitik),
+#           mentionsVerkehrÖpnv = sum(verkehrÖpnv),
+#           mentionsPluralismusMedien = sum(pluralismusMedien),
+#           mentionsZukunftEntwicklung = sum(zukunftEntwicklung),
+#           mentionsZukunftVersprechen = sum(zukunftVersprechen),
+#           mentionsVerfassungsfeindlich = sum(verfassungsfeindlich),
+#           #partei = partei,
+#           #user = user,
+#           follower = followerAmount,
+#           einzug = einzug,
+#           replies = replies,
+#           retweets = retweets,
+#           likes = likes,
+#           bundesland = bundesland)
+# save(ref_politikerBER_datumParteiUser, file = "zwischenspeicherung/polBER_datumParteiUser_reframed.RData")
+# save(ref_politikerBER_datumPartei, file = "zwischenspeicherung/polBER_datumPartei_reframed.RData")
 
 politikerBerlin %>% freq(ukraineAllgemein)
 
-testing <- reframingPolitiker_berlin %>% ggplot() +
-  geom_step(aes(dateTime, mentionsUkraineAllgemein, colour = "ukraine")) +
+testing <- ref_politikerBER_datumPartei %>% ggplot() +
+  geom_line(aes(dateTime, mentionsUkraineAllgemein, colour = "ukraine")) +
   geom_point(aes(dateTime, mentionsUkraineAllgemein, colour = "ukraine")) +
-  geom_step(aes(dateTime, mentionsCovidVirus, colour = "covid")) +
-  geom_point(aes(dateTime, mentionsCovidVirus, colour = "covid")) +
+  geom_line(aes(dateTime, mentionsCovidVirus, colour = "covid"), na.rm = T) +
+  geom_point(aes(dateTime, mentionsCovidVirus, colour = "covid"), na.rm = T) +
   scale_x_date(date_breaks = "months", date_labels = "%b") +
-  facet_wrap2(~partei, scales = "fixed", axes = T) +
+  facet_wrap2(~partei, scales = "fixed", axes = T, remove_labels = F) +
   scale_colour_manual(name="Themen", values = colours) +
+  # scale_fill_manual(name="Themen", values = colours) +
   ggtitle(label = "Beobachtungen zu den allgemeinen Themen Covid und Ukraine über die Zeit",
           subtitle = "Nach Parteien gruppiert und für jeweilige Themen eingefärbt") +
   xlab("") +
@@ -273,9 +292,11 @@ testing <- reframingPolitiker_berlin %>% ggplot() +
 testing
 ggplotly(testing)
 
-reframingPolitiker_alle <- allePolitiker %>% group_by(dateTime, partei) %>%
-  reframe(.by = c(dateTime, partei), mentionsCovidVirus = sum(covidVirus),
-          mentionsCovidMaßnahmen = sum(covidMaßnahmen), 
+################################################################################
+
+ref_politikerALLE_datumParteiUserBundesland <- allePolitiker %>% group_by(dateTime, partei, user, bundesland) %>%
+  reframe(.by = c(dateTime, partei, user, bundesland), mentionsCovidVirus = sum(covidVirus),
+          mentionsCovidMaßnahmen = sum(covidMaßnahmen),
           mentionsCovidInfektionsgeschehen = sum(covidInfektionsgeschehen),
           mentionsCovidImpfung = sum(covidImpfung),
           mentionsUkraineAllgemein = sum(ukraineAllgemein),
@@ -308,15 +329,17 @@ reframingPolitiker_alle <- allePolitiker %>% group_by(dateTime, partei) %>%
           mentionsZukunftVersprechen = sum(zukunftVersprechen),
           mentionsVerfassungsfeindlich = sum(verfassungsfeindlich),
           #partei = partei,
-          user = user,
+          #user = user,
           follower = followerAmount,
           einzug = einzug,
           replies = replies,
           retweets = retweets,
           likes = likes)
+save(ref_politikerALLE_datumParteiUser, file = "zwischenspeicherung/polALLE_datumParteiUser_reframed.RData")
+save(ref_politikerALLE_datumPartei, file = "zwischenspeicherung/polALLE_datumPartei_reframed.RData")
 
-reframingPolitiker_alle %>% ggplot(aes(dateTime, mentionsCovidMaßnahmen)) +
-  geom_step() +
+ref_politikerALLE_datumPartei %>% ggplot(aes(dateTime, mentionsCovidMaßnahmen)) +
+  geom_line() +
   facet_wrap2(~partei, axes=T, scales="fixed") +
   theme_bw()
 
@@ -376,7 +399,7 @@ ggplotly(test3)
 
 ################################################################################
 
-# test4 => eine der obigen darstellungen mit allen politikern, idealerweise 
+# test4 => eine der obigen darstellungen mit allen politikern, idealerweise
 
 test4 <- reframingPolitiker_alle
 

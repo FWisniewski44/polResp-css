@@ -1,0 +1,301 @@
+---
+title: "003_auswertung_comment"
+author: "Florian Wisniewski"
+format:
+  pdf:
+    fontfamily: Fira Sans
+    fontsize: "11"
+editor: visual
+---
+
+# Auswertungsmöglichkeiten
+
+Hier werden Auswertungsmöglichkeiten geliefert und es ist eine Kommentierung möglich.
+
+```{r libraries}
+#|echo: false
+#|tidy: true
+################################################################################ libraries
+library(tidytext)
+library(readr)
+library(summarytools)
+library(rvest)
+library(expss)
+# library(hunspell)
+library(lubridate)
+# library(quanteda)
+# library(tm)
+# library(topicmodels)
+# library(stopwords)
+library(stringi)
+#library(rvisidata)
+library(qdap)
+library(mgsub)
+library(dirichletprocess)
+library(igraph)
+library(ggraph)
+library(esquisse)
+library(ggforce)
+library(ggh4x)
+library(plotly)
+library(data.table)
+library(tidytable)
+library(gridExtra)
+library(ggpubr)
+library(tidyverse)
+
+################################################################################
+
+library(knitr) 
+library(kableExtra) 
+library(DT)
+# library(tm)
+# library(topicmodels)
+# library(reshape2)
+# library(ggplot2)
+# library(wordcloud)
+# library(pals)
+# library(SnowballC)
+# library(lda)
+# library(ldatuning)
+library(flextable)
+# activate klippy for copy-to-clipboard button
+# klippy::klippy()
+
+# emoji clipping
+# library(emoji)
+# library(textclean)
+
+gc()
+
+setwd(dir = "~/Documents/uni/masterarbeit/scraping/polResp-css/auswertungRfiles/")
+```
+
+```{r datensätze}
+#|echo: false
+#|tidy: true
+
+# BATCH LOADING: POLITIKERDATEN
+filelist_pol <- list.files(path = "./politikerdaten",
+                           pattern=".csv",
+                           full.names = T)
+
+filelistNames_pol <- mgsub(filelist_pol, c("./politikerdaten/","Kategorisiert.csv"), c("",""))
+
+dat_politiker <- list()
+
+for (i in unique(filelist_pol)){
+  dat_politiker[[i]] <- readr::read_csv(i)
+}
+
+dat_politiker <- dat_politiker %>% purrr::set_names(filelistNames_pol)
+gc()
+# View(dat_politiker)
+
+########################################################################
+
+# BATCH LOADING: MEDIENDATEN
+filelist_medien <- list.files(path = "./mediendaten",
+                              pattern=".csv",
+                              full.names = T)
+
+filelistNames_medien <- mgsub(filelist_medien, c("./mediendaten/","Kategorisiert.csv"), c("",""))
+
+dat_medien <- list()
+
+for (i in unique(filelist_medien)){
+  dat_medien[[i]] <- readr::read_csv(i)
+}
+
+dat_medien <- dat_medien %>% purrr::set_names(filelistNames_medien)
+gc()
+# View(dat_medien)
+
+########################################################################
+
+# OPERATIONEN FÜR ALLE DATENSÄTZE, HIER EXEMPLARISCH
+## politiker brd; datum = tagesebene
+allePolitiker <- reduce(dat_politiker, .f = full_join)
+allePolitiker <- as_tidytable(allePolitiker)
+allePolitiker$dateTime <- date(allePolitiker$dateTime)
+
+## berliner politiker; datum = tagesebene
+politikerBerlin <- dat_politiker$BERLIN_politiker
+politikerBerlin <- as_tidytable(politikerBerlin)
+politikerBerlin$dateTime <- date(politikerBerlin$dateTime)
+
+## politiker brd; datum = tagesebene
+alleMedien <- reduce(dat_medien, .f = full_join)
+alleMedien <- as_tidytable(alleMedien)
+alleMedien$dateTime <- date(alleMedien$dateTime)
+
+########################################################################
+
+# FARBEN/DEKORATIONEN
+parteifarben <- c("#0087c1", "#19a329", "black", "grey40", "#be3075", "#ffee00", "#e40006", "darkblue")
+colourrange <- c("Impfung"="#ffb900", "Infektion"="#10add6", "Maßnahmen"="#bb0040", "Virus"="#03d802")
+colours <- c("ukraine"="blue", "covid"="red")
+
+########################################################################
+
+# DATUMSRANGE VERKLEINERN FÜR SCHNELLERE DURCHLÄUFE
+datumsrange <- seq(ymd("2022-01-01"), ymd("2022-04-01"), "1 day")
+datumsrange_alternativ <- ymd("2022-01-01") %m+% days(x = seq.int(from = 0, to = 90, by = 1))
+
+########################################################################
+
+# REFRAMING-DATENSÄTZE
+# REFRAMING POLITIKER BER UND ALLE: aggregiert auf tweets PRO THEMA PRO PARTEI
+# dabei: 1 Tag taucht öfters auf, je individuellem tweet
+# gruppiert nach datum und nach parteizugehörigkeit
+load(file = "zwischenspeicherung/polBER_datumPartei_reframed.RData")
+load(file = "zwischenspeicherung/polALLE_datumPartei_reframed.RData")
+
+# REFRAMING POLITIKER BER UND ALLE: aggregiert auf tweets PRO THEMA PRO PARTEI PRO USER
+load(file = "zwischenspeicherung/polBER_datumParteiUser_reframed.RData")
+load(file = "zwischenspeicherung/polALLE_datumParteiUser_reframed.RData")
+
+########################################################################
+
+# ALTERNATIVE AUSZÄHLUNG DER MENTIONS FÜR THEMEN: aggregierte themen ~ datum
+# dabei wichtig: 1 Tag enthält alle tweets, aufsummiert
+load(file = "zwischenspeicherung/BER_alternativeZeitreihendaten.RData")
+
+########################################################################
+
+# GRAPHISCHER ÜBERBLICK ÜBER DIE THEMENVERTEILUNG IN DEN DATEN DER POLITIKER BER
+df <- data.frame(apply(alternativeBER[,2:34], MARGIN = 2, FUN = sum))
+df <- df %>% dplyr::rename(ct = apply.alternativeBER...2.34...MARGIN...2..FUN...sum.)
+df$variable <- rownames(df)
+```
+
+# "Dominante Akteure" (hier: Parteien)
+
+```{r}
+ref_politikerALLE_datumParteiUserBundesland <- allePolitiker %>% group_by(dateTime, partei, user, bundesland) %>%
+  reframe(.by = c(dateTime, partei, user, bundesland), mentionsCovidVirus = sum(covidVirus),
+          mentionsCovidMaßnahmen = sum(covidMaßnahmen), 
+          mentionsCovidInfektionsgeschehen = sum(covidInfektionsgeschehen),
+          mentionsCovidImpfung = sum(covidImpfung),
+          mentionsUkraineAllgemein = sum(ukraineAllgemein),
+          mentionsUkraineBewaffnung = sum(ukraineBewaffnung),
+          mentionsUkraineReaktion = sum(ukraineReaktion),
+          mentionsEnergieAllgemein = sum(energieAllgemein),
+          mentionsEnergieKrise = sum(energieKrise),
+          mentionsEnergieAtomkraftdiskurs = sum(energieAtomdiskurs),
+          mentionsEnergieNordstream = sum(energieNordstream),
+          mentionsSozialesWohnen = sum(sozialesWohnen),
+          mentionsSozialesEntlastungen = sum(sozialesEntlastungen),
+          mentionsSozialesKinder = sum(sozialesKinder),
+          mentionsSozialesAllgemein = sum(sozialesAllgemein),
+          mentionsVerteidigungspolitik = sum(verteidigungspolitik),
+          mentionsPolitikNational = sum(politikNational),
+          mentionsPolitikInternational = sum(politikInternational),
+          mentionsPolitikEuropa = sum(politikEuropa),
+          mentionsKlimaAktivismus = sum(klimaAktivismus),
+          mentionsKlimaKlimawandel = sum(klimaKlimawandel),
+          mentionsKlimaPolitisch = sum(klimaPolitisch),
+          mentionsKlimaTechnologien = sum(klimaTechnologien),
+          mentionsProtesteIran = sum(protesteIran),
+          mentionsPolizistenmordKusel = sum(polizistenmordKusel),
+          mentionsVerkehrAutomobil = sum(verkehrAutomobil),
+          mentionsVerkehrFahrrad = sum(verkehrFahrrad),
+          mentionsVerkehrPolitik = sum(verkehrPolitik),
+          mentionsVerkehrÖpnv = sum(verkehrÖpnv),
+          mentionsPluralismusMedien = sum(pluralismusMedien),
+          mentionsZukunftEntwicklung = sum(zukunftEntwicklung),
+          mentionsZukunftVersprechen = sum(zukunftVersprechen),
+          mentionsVerfassungsfeindlich = sum(verfassungsfeindlich),
+          #partei = partei,
+          #user = user,
+          follower = followerAmount,
+          einzug = einzug,
+          replies = replies,
+          retweets = retweets,
+          likes = likes)
+```
+
+```{r}
+ref_politikerALLE_datumParteiUserBundesland %>% filter(partei == "AfD") %>% ggplot(aes(dateTime, mentionsCovidVirus)) +
+  geom_line(aes(colour=partei)) +
+  facet_wrap_paginate(~bundesland, page = 1, nrow = 4, ncol = 4, scales="fixed") +
+  scale_colour_discrete(type = parteifarben, name = "Parteien") +
+  ggtitle(label = "Aktivität der Landesverbände nach Bundesländern zum Thema 'covidVirus'", subtitle = "Fokus auf die AfD") +
+  theme_bw()
+```
+
+Exemplarischer Blick auf die AfD und deren Äußerungen zum Coronavirus im bundesweiten Vergleich, aufgeteilt bzw. aufgeschlüsselt nach Bundesländern. Hier zu sehen ist, dass es durchaus Unterschiede in der Aktivität gibt:
+
+(Es ist dabei aus der aktuellen Sicht vom Oktober 2023 im Kopf zu behalten, dass die AfD nach der BTW '21 "nur" 10,3% der Stimmen erhalten hatte, was umgerechnet in 83 von 736 Sitzen des BT mündete!)
+
+-   Aktivität niedrig in Saarland, Sachsen, Niedersachsen, Mecklenburg-Vorpommern und Schleswig-Holstein; *besonders für Sachsen ist das überraschend*, wenn Umfragewerte der Partei im Kopf sind
+
+-   Aktivität hoch in Thüringen, was zu erwarten war -- außerdem deutlich in Sachsen-Anhalt und Brandenburg
+
+-   Ebenso sehr hohe Aktivität der AfD zu diesem Thema in *Baden-Württemberg und Bayern*! =\> besonders interessant, da zwei westdeutsche Bundesländer UND die AfD hier nicht mit übermäßig viel besseren Wahlergebnissen
+
+    -   Für Baden-Württemberg ließe sich evtl. die hohe Zahl durch viele Tweets von Alice Weidel erklären, da "covidVirus" eines ihrer am meisten bespielten Themen ist
+
+```{r}
+nurWeidel <- ref_politikerALLE_datumParteiUserBundesland %>% filter(user == "Alice_Weidel")
+
+themenWeidel <- data.frame(apply(X = nurWeidel[,5:37], MARGIN = 2, FUN = sum))
+themenWeidel$variable <- rownames(themenWeidel)
+themenWeidel <- themenWeidel %>% rename(anzahl = apply.X...nurWeidel...5.37...MARGIN...2..FUN...sum.)
+themenWeidel
+
+# auslassen von politikNational, da komisches thema, zu viel ambiguität
+themenWeidel %>% filter(variable != "mentionsPolitikNational") %>% ggplot() +
+  geom_col(aes(x=variable, y=anzahl)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+# "Themen über die Zeit": Corona
+
+```{r}
+plot1 <- alternativeBER %>% as.data.table(alternativeBER) %>% ggplot() +
+  geom_point(aes(dateTime, covidImpfung, colour = "Impfung")) +
+  geom_step(aes(dateTime, covidImpfung, colour = "Impfung")) +
+  scale_x_date(date_breaks = "months", date_labels = "%b") +
+  scale_y_continuous(breaks = c(0, 5, 10, 15, 20, 25, 25), limits = c(0, 25)) +
+  scale_colour_manual(name = "", values = colourrange) +
+  ylab("Erwähnungen covidImpfung") +
+  xlab("") +
+  ggtitle(label = "CORONA-IMPFUNG", subtitle = "Häufigkeit der Erwähnung über Zeit – Referenzgruppe: PolitikerInnen") +
+  theme_bw()
+
+plot2 <- alternativeBER %>% as.data.table(alternativeBER) %>% ggplot() +
+  geom_point(aes(dateTime, covidInfektionsgeschehen, colour = "Infektion")) +
+  geom_step(aes(dateTime, covidInfektionsgeschehen, colour = "Infektion")) +
+  scale_x_date(date_breaks = "months", date_labels = "%b") +
+  scale_y_continuous(breaks = c(0, 5, 10, 15, 20, 25, 25), limits = c(0, 25)) +
+  scale_colour_manual(name = "", values = colourrange) +
+  ylab("Erwähnungen covidInfektionsgeschehen") +
+  xlab("") +
+  ggtitle(label = "CORONA-INFEKTIONSGESCHEHEN", subtitle = "Häufigkeit der Erwähnung über Zeit – Referenzgruppe: PolitikerInnen") +
+  theme_bw()
+
+plot3 <- alternativeBER %>% as.data.table(alternativeBER) %>% ggplot() +
+  geom_point(aes(dateTime, covidMaßnahmen, colour = "Maßnahmen")) +
+  geom_step(aes(dateTime, covidMaßnahmen, colour = "Maßnahmen")) +
+  scale_x_date(date_breaks = "months", date_labels = "%b") +
+  scale_y_continuous(breaks = c(0, 5, 10, 15, 20, 25, 25), limits = c(0, 25)) +
+  scale_colour_manual(name = "", values = colourrange) +
+  ylab("Erwähnungen covidMaßnahmen") +
+  xlab("") +
+  ggtitle(label = "CORONA-MAẞNAHMEN", subtitle = "Häufigkeit der Erwähnung über Zeit – Referenzgruppe: PolitikerInnen") +
+  theme_bw()
+
+plot4 <- alternativeBER %>% as.data.table(alternativeBER) %>% ggplot() +
+  geom_point(aes(dateTime, covidVirus, colour = "Virus")) +
+  geom_step(aes(dateTime, covidVirus, colour = "Virus")) +
+  scale_x_date(date_breaks = "months", date_labels = "%b") +
+  scale_y_continuous(breaks = c(0, 5, 10, 15, 20, 25), limits = c(0, 25)) +
+  scale_colour_manual(name = "", values = colourrange) +
+  ylab("Erwähnungen covidVirus") +
+  xlab("") +
+  ggtitle(label = "CORONAVIRUS ALLGEMEIN", subtitle = "Häufigkeit der Erwähnung über Zeit – Referenzgruppe: PolitikerInnen") +
+  theme_bw()
+
+ggarrange(plot1, plot2, plot3, plot4, ncol = 2, nrow = 2, common.legend=T, legend="none")
+```
