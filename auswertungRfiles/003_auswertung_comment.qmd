@@ -14,6 +14,7 @@ Hier werden Auswertungsmöglichkeiten geliefert und es ist eine Kommentierung m�
 
 ```{r libraries}
 #|echo: false
+#|message: false
 #|tidy: true
 ################################################################################ libraries
 library(tidytext)
@@ -67,13 +68,14 @@ library(flextable)
 # library(textclean)
 
 gc()
-
-setwd(dir = "~/Documents/uni/masterarbeit/scraping/polResp-css/auswertungRfiles/")
 ```
 
 ```{r datensätze}
 #|echo: false
+#|message: false
 #|tidy: true
+
+setwd(dir = "~/Documents/uni/masterarbeit/scraping/polResp-css/auswertungRfiles/")
 
 # BATCH LOADING: POLITIKERDATEN
 filelist_pol <- list.files(path = "./politikerdaten",
@@ -117,17 +119,31 @@ gc()
 ## politiker brd; datum = tagesebene
 allePolitiker <- reduce(dat_politiker, .f = full_join)
 allePolitiker <- as_tidytable(allePolitiker)
-allePolitiker$dateTime <- date(allePolitiker$dateTime)
+allePolitikerMonth <- allePolitiker
+allePolitikerWeeks <- allePolitiker
+allePolitikerDay <- allePolitiker
+###
+allePolitikerMonth$dateTime <- lubridate::month(allePolitiker$dateTime)
+allePolitikerWeeks$dateTime <- lubridate::week(allePolitiker$dateTime)
+allePolitikerDay$dateTime <- lubridate::date(allePolitiker$dateTime)
 
 ## berliner politiker; datum = tagesebene
 politikerBerlin <- dat_politiker$BERLIN_politiker
 politikerBerlin <- as_tidytable(politikerBerlin)
 politikerBerlin$dateTime <- date(politikerBerlin$dateTime)
 
-## politiker brd; datum = tagesebene
+## alle medien; datum = tagesebene
 alleMedien <- reduce(dat_medien, .f = full_join)
 alleMedien <- as_tidytable(alleMedien)
-alleMedien$dateTime <- date(alleMedien$dateTime)
+alleMedienMonth <- alleMedien
+alleMedienWeeks <- alleMedien
+alleMedienDay <- alleMedien
+###
+alleMedienMonth$dateTime <- lubridate::month(alleMedien$dateTime)
+alleMedienWeeks$dateTime <- lubridate::week(alleMedien$dateTime)
+alleMedienDay$dateTime <- lubridate::date(alleMedien$dateTime)
+
+## überregionale medien
 
 ########################################################################
 
@@ -299,3 +315,93 @@ plot4 <- alternativeBER %>% as.data.table(alternativeBER) %>% ggplot() +
 
 ggarrange(plot1, plot2, plot3, plot4, ncol = 2, nrow = 2, common.legend=T, legend="none")
 ```
+
+# Themenverlauf, Beispiel: alle Politiker für die Themen Covid und Ukraine
+
+```{r}
+#|echo: false
+#|message: false
+#|tidy: true
+
+politiker_alles_days <- allePolitikerDay %>%
+  reframe(.by = c(dateTime, user, partei, bundesland),
+          mentionsCovid = sum(covid), 
+          mentionsUkraine = sum(ukraine),
+          mentionsEnergie = sum(energie),
+          mentionsSoziales = sum(soziales),mentionsVerteidigungspolitik = sum(verteidigungspolitik),
+          mentionsPolitikNational = sum(politikNational),
+          mentionsPolitikInternational = sum(politikInternational),
+          mentionsPolitikEuropa = sum(politikEuropa),
+          mentionsKlima = sum(klima),mentionsProtesteIran = sum(protesteIran),
+          mentionsPolizistenmordKusel = sum(polizistenmordKusel),
+          mentionsVerkehr = sum(verkehr),mentionsPluralismusMedien = sum(pluralismusMedien),
+          mentionsZukunft = sum(zukunft),mentionsVerfassungsfeindlich = sum(verfassungsfeindlich),
+          #partei = partei,
+          #user = user,
+          follower = followerAmount,
+          einzug = einzug,
+          replies = replies,
+          retweets = retweets,
+          likes = likes)
+
+medien_alles_days <- alleMedienDay %>%
+  reframe(.by = c(dateTime, user, bundesland),
+          mentionsCovid = sum(covid), 
+          mentionsUkraine = sum(ukraine),
+          mentionsEnergie = sum(energie),
+          mentionsSoziales = sum(soziales),mentionsVerteidigungspolitik = sum(verteidigungspolitik),
+          mentionsPolitikNational = sum(politikNational),
+          mentionsPolitikInternational = sum(politikInternational),
+          mentionsPolitikEuropa = sum(politikEuropa),
+          mentionsKlima = sum(klima),mentionsProtesteIran = sum(protesteIran),
+          mentionsPolizistenmordKusel = sum(polizistenmordKusel),
+          mentionsVerkehr = sum(verkehr),mentionsPluralismusMedien = sum(pluralismusMedien),
+          mentionsZukunft = sum(zukunft),mentionsVerfassungsfeindlich = sum(verfassungsfeindlich),
+          #partei = partei,
+          #user = user,
+          follower = followerAmount,
+          #einzug = einzug,
+          replies = replies,
+          retweets = retweets,
+          likes = likes)
+```
+
+```{r}
+#|echo: false
+#|message: false
+#|tidy: true
+
+politikergraph <- politiker_alles_days %>% ggplot(aes(x=dateTime, y=mentionsCovid)) +
+  geom_point() +
+  geom_line() +
+  theme_bw() +
+  scale_y_continuous(breaks = c(0:130), limits = c(0, 130), n.breaks = 26) +
+  ggtitle(label = "Alle Politiker, wöchentlich gruppiert", subtitle = "Themen: Ukraine und Covid") +
+  scale_x_date(date_breaks = "months", date_labels = "%b")
+
+mediengraph <- medien_alles_days %>% ggplot(aes(x=dateTime, y=mentionsCovid)) +
+  geom_point() +
+  geom_line() +
+  theme_bw() +
+  scale_y_continuous(breaks = c(0:130), limits = c(0, 130), n.breaks = 26) +
+  ggtitle(label = "Alle Medien, wöchentlich gruppiert", subtitle = "Themen: Ukraine und Covid") +
+  scale_x_date(date_breaks = "months", date_labels = "%b")
+
+kombigraph <- ggarrange(politikergraph, mediengraph)
+kombigraph
+```
+
+Dabei interessant ist die unterschiedliche Zeitsortierung, d. h. monatlich, wöchentlich bzw. täglich.
+
+
+
+
+
+
+
+
+
+
+
+
+

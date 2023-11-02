@@ -281,7 +281,7 @@ testing <- ref_politikerBER_datumPartei %>% ggplot() +
   geom_line(aes(dateTime, mentionsCovidVirus, colour = "covid"), na.rm = T) +
   geom_point(aes(dateTime, mentionsCovidVirus, colour = "covid"), na.rm = T) +
   scale_x_date(date_breaks = "months", date_labels = "%b") +
-  facet_wrap2(~partei, scales = "fixed", axes = T, remove_labels = F) +
+  # facet_wrap2(~partei, scales = "fixed", axes = T, remove_labels = F) +
   scale_colour_manual(name="Themen", values = colours) +
   # scale_fill_manual(name="Themen", values = colours) +
   ggtitle(label = "Beobachtungen zu den allgemeinen Themen Covid und Ukraine über die Zeit",
@@ -399,8 +399,96 @@ ggplotly(test3)
 
 ################################################################################
 
-# test4 => eine der obigen darstellungen mit allen politikern, idealerweise
+# test4 => prüfung der mentions von politikNational in medien vs. politikerdaten
 
-test4 <- reframingPolitiker_alle
+alleMedien %>%  group_by(dateTime, partei, user, bundesland) %>%
+  reframe(.by = c(dateTime, partei, user, bundesland), mentionsCovidVirus = sum(covidVirus),
+          mentionsCovidMaßnahmen = sum(covidMaßnahmen),
+          mentionsCovidInfektionsgeschehen = sum(covidInfektionsgeschehen),
+          mentionsCovidImpfung = sum(covidImpfung),
+          mentionsUkraineAllgemein = sum(ukraineAllgemein),
+          mentionsUkraineBewaffnung = sum(ukraineBewaffnung),
+          mentionsUkraineReaktion = sum(ukraineReaktion),
+          mentionsEnergieAllgemein = sum(energieAllgemein),
+          mentionsEnergieKrise = sum(energieKrise),
+          mentionsEnergieAtomkraftdiskurs = sum(energieAtomdiskurs),
+          mentionsEnergieNordstream = sum(energieNordstream),
+          mentionsSozialesWohnen = sum(sozialesWohnen),
+          mentionsSozialesEntlastungen = sum(sozialesEntlastungen),
+          mentionsSozialesKinder = sum(sozialesKinder),
+          mentionsSozialesAllgemein = sum(sozialesAllgemein),
+          mentionsVerteidigungspolitik = sum(verteidigungspolitik),
+          mentionsPolitikNational = sum(politikNational),
+          mentionsPolitikInternational = sum(politikInternational),
+          mentionsPolitikEuropa = sum(politikEuropa),
+          mentionsKlimaAktivismus = sum(klimaAktivismus),
+          mentionsKlimaKlimawandel = sum(klimaKlimawandel),
+          mentionsKlimaPolitisch = sum(klimaPolitisch),
+          mentionsKlimaTechnologien = sum(klimaTechnologien),
+          mentionsProtesteIran = sum(protesteIran),
+          mentionsPolizistenmordKusel = sum(polizistenmordKusel),
+          mentionsVerkehrAutomobil = sum(verkehrAutomobil),
+          mentionsVerkehrFahrrad = sum(verkehrFahrrad),
+          mentionsVerkehrPolitik = sum(verkehrPolitik),
+          mentionsVerkehrÖpnv = sum(verkehrÖpnv),
+          mentionsPluralismusMedien = sum(pluralismusMedien),
+          mentionsZukunftEntwicklung = sum(zukunftEntwicklung),
+          mentionsZukunftVersprechen = sum(zukunftVersprechen),
+          mentionsVerfassungsfeindlich = sum(verfassungsfeindlich),
+          #partei = partei,
+          #user = user,
+          follower = followerAmount,
+          einzug = einzug,
+          replies = replies,
+          retweets = retweets,
+          likes = likes)
+
+allePolitiker %>% group_by(dateTime, partei, user, bundesland) %>%
+  reframe(.by = c(dateTime, partei, user, bundesland), mentionsCovidVirus = sum(covidVirus),
+          mentionsCovidMaßnahmen = sum(covidMaßnahmen),
+          mentionsCovidInfektionsgeschehen = sum(covidInfektionsgeschehen),
+          mentionsCovidImpfung = sum(covidImpfung),
+          mentionsUkraineAllgemein = sum(ukraineAllgemein),
+          mentionsUkraineBewaffnung = sum(ukraineBewaffnung),
+          mentionsUkraineReaktion = sum(ukraineReaktion),
+          mentionsEnergieAllgemein = sum(energieAllgemein),
+          mentionsEnergieKrise = sum(energieKrise),
+          mentionsEnergieAtomkraftdiskurs = sum(energieAtomdiskurs),
+          mentionsEnergieNordstream = sum(energieNordstream),
+          mentionsSozialesWohnen = sum(sozialesWohnen),
+          mentionsSozialesEntlastungen = sum(sozialesEntlastungen),
+          mentionsSozialesKinder = sum(sozialesKinder),
+          mentionsSozialesAllgemein = sum(sozialesAllgemein),
+          mentionsVerteidigungspolitik = sum(verteidigungspolitik),
+          mentionsPolitikNational = sum(politikNational),
+          mentionsPolitikInternational = sum(politikInternational),
+          mentionsPolitikEuropa = sum(politikEuropa),
+          mentionsKlimaAktivismus = sum(klimaAktivismus),
+          mentionsKlimaKlimawandel = sum(klimaKlimawandel),
+          mentionsKlimaPolitisch = sum(klimaPolitisch),
+          mentionsKlimaTechnologien = sum(klimaTechnologien),
+          mentionsProtesteIran = sum(protesteIran),
+          mentionsPolizistenmordKusel = sum(polizistenmordKusel),
+          mentionsVerkehrAutomobil = sum(verkehrAutomobil),
+          mentionsVerkehrFahrrad = sum(verkehrFahrrad),
+          mentionsVerkehrPolitik = sum(verkehrPolitik),
+          mentionsVerkehrÖpnv = sum(verkehrÖpnv),
+          mentionsPluralismusMedien = sum(pluralismusMedien),
+          mentionsZukunftEntwicklung = sum(zukunftEntwicklung),
+          mentionsZukunftVersprechen = sum(zukunftVersprechen),
+          mentionsVerfassungsfeindlich = sum(verfassungsfeindlich),
+          #partei = partei,
+          #user = user,
+          follower = followerAmount,
+          einzug = einzug,
+          replies = replies,
+          retweets = retweets,
+          likes = likes)
+
+
+
+
+
+
 
 
