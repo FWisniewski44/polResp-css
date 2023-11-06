@@ -16,6 +16,7 @@ Hier werden Auswertungsmöglichkeiten geliefert und es ist eine Kommentierung m�
 #|echo: false
 #|message: false
 #|tidy: true
+
 ################################################################################ libraries
 library(tidytext)
 library(readr)
@@ -43,6 +44,9 @@ library(data.table)
 library(tidytable)
 library(gridExtra)
 library(ggpubr)
+library(caret)
+library(scales)
+library(TSstudio)
 library(tidyverse)
 
 ################################################################################
@@ -70,7 +74,7 @@ library(flextable)
 gc()
 ```
 
-```{r datensätze}
+```{r datensätze, echo=FALSE, message=FALSE}
 #|echo: false
 #|message: false
 #|tidy: true
@@ -119,31 +123,19 @@ gc()
 ## politiker brd; datum = tagesebene
 allePolitiker <- reduce(dat_politiker, .f = full_join)
 allePolitiker <- as_tidytable(allePolitiker)
-allePolitikerMonth <- allePolitiker
-allePolitikerWeeks <- allePolitiker
 allePolitikerDay <- allePolitiker
-###
-allePolitikerMonth$dateTime <- lubridate::month(allePolitiker$dateTime)
-allePolitikerWeeks$dateTime <- lubridate::week(allePolitiker$dateTime)
 allePolitikerDay$dateTime <- lubridate::date(allePolitiker$dateTime)
 
-## berliner politiker; datum = tagesebene
-politikerBerlin <- dat_politiker$BERLIN_politiker
-politikerBerlin <- as_tidytable(politikerBerlin)
-politikerBerlin$dateTime <- date(politikerBerlin$dateTime)
+# ## berliner politiker; datum = tagesebene
+# politikerBerlin <- dat_politiker$BERLIN_politiker
+# politikerBerlin <- as_tidytable(politikerBerlin)
+# politikerBerlin$dateTime <- date(politikerBerlin$dateTime)
 
 ## alle medien; datum = tagesebene
 alleMedien <- reduce(dat_medien, .f = full_join)
 alleMedien <- as_tidytable(alleMedien)
-alleMedienMonth <- alleMedien
-alleMedienWeeks <- alleMedien
 alleMedienDay <- alleMedien
-###
-alleMedienMonth$dateTime <- lubridate::month(alleMedien$dateTime)
-alleMedienWeeks$dateTime <- lubridate::week(alleMedien$dateTime)
 alleMedienDay$dateTime <- lubridate::date(alleMedien$dateTime)
-
-## überregionale medien
 
 ########################################################################
 
@@ -160,22 +152,22 @@ datumsrange_alternativ <- ymd("2022-01-01") %m+% days(x = seq.int(from = 0, to =
 
 ########################################################################
 
-# REFRAMING-DATENSÄTZE
-# REFRAMING POLITIKER BER UND ALLE: aggregiert auf tweets PRO THEMA PRO PARTEI
-# dabei: 1 Tag taucht öfters auf, je individuellem tweet
-# gruppiert nach datum und nach parteizugehörigkeit
-load(file = "zwischenspeicherung/polBER_datumPartei_reframed.RData")
-load(file = "zwischenspeicherung/polALLE_datumPartei_reframed.RData")
-
-# REFRAMING POLITIKER BER UND ALLE: aggregiert auf tweets PRO THEMA PRO PARTEI PRO USER
-load(file = "zwischenspeicherung/polBER_datumParteiUser_reframed.RData")
-load(file = "zwischenspeicherung/polALLE_datumParteiUser_reframed.RData")
-
-########################################################################
-
-# ALTERNATIVE AUSZÄHLUNG DER MENTIONS FÜR THEMEN: aggregierte themen ~ datum
-# dabei wichtig: 1 Tag enthält alle tweets, aufsummiert
-load(file = "zwischenspeicherung/BER_alternativeZeitreihendaten.RData")
+# # REFRAMING-DATENSÄTZE
+# # REFRAMING POLITIKER BER UND ALLE: aggregiert auf tweets PRO THEMA PRO PARTEI
+# # dabei: 1 Tag taucht öfters auf, je individuellem tweet
+# # gruppiert nach datum und nach parteizugehörigkeit
+# load(file = "zwischenspeicherung/polBER_datumPartei_reframed.RData")
+# load(file = "zwischenspeicherung/polALLE_datumPartei_reframed.RData")
+# 
+# # REFRAMING POLITIKER BER UND ALLE: aggregiert auf tweets PRO THEMA PRO PARTEI PRO USER
+# load(file = "zwischenspeicherung/polBER_datumParteiUser_reframed.RData")
+# load(file = "zwischenspeicherung/polALLE_datumParteiUser_reframed.RData")
+# 
+# ########################################################################
+# 
+# # ALTERNATIVE AUSZÄHLUNG DER MENTIONS FÜR THEMEN: aggregierte themen ~ datum
+# # dabei wichtig: 1 Tag enthält alle tweets, aufsummiert
+# load(file = "zwischenspeicherung/BER_alternativeZeitreihendaten.RData")
 
 ########################################################################
 
@@ -188,42 +180,23 @@ df$variable <- rownames(df)
 # "Dominante Akteure" (hier: Parteien)
 
 ```{r}
-ref_politikerALLE_datumParteiUserBundesland <- allePolitiker %>% group_by(dateTime, partei, user, bundesland) %>%
-  reframe(.by = c(dateTime, partei, user, bundesland), mentionsCovidVirus = sum(covidVirus),
-          mentionsCovidMaßnahmen = sum(covidMaßnahmen), 
-          mentionsCovidInfektionsgeschehen = sum(covidInfektionsgeschehen),
-          mentionsCovidImpfung = sum(covidImpfung),
-          mentionsUkraineAllgemein = sum(ukraineAllgemein),
-          mentionsUkraineBewaffnung = sum(ukraineBewaffnung),
-          mentionsUkraineReaktion = sum(ukraineReaktion),
-          mentionsEnergieAllgemein = sum(energieAllgemein),
-          mentionsEnergieKrise = sum(energieKrise),
-          mentionsEnergieAtomkraftdiskurs = sum(energieAtomdiskurs),
-          mentionsEnergieNordstream = sum(energieNordstream),
-          mentionsSozialesWohnen = sum(sozialesWohnen),
-          mentionsSozialesEntlastungen = sum(sozialesEntlastungen),
-          mentionsSozialesKinder = sum(sozialesKinder),
-          mentionsSozialesAllgemein = sum(sozialesAllgemein),
+ref_politikerALLE_datumParteiUserBundesland <- allePolitiker %>% mutate(date = as_date(dateTime)) %>% 
+  reframe(.by = c(date, partei, bundesland),
+          mentionsCovid = sum(covid),
+          mentionsUkraine = sum(ukraine),
+          mentionsEnergie = sum(energie),
+          mentionsSoziales = sum(soziales),
           mentionsVerteidigungspolitik = sum(verteidigungspolitik),
           mentionsPolitikNational = sum(politikNational),
           mentionsPolitikInternational = sum(politikInternational),
           mentionsPolitikEuropa = sum(politikEuropa),
-          mentionsKlimaAktivismus = sum(klimaAktivismus),
-          mentionsKlimaKlimawandel = sum(klimaKlimawandel),
-          mentionsKlimaPolitisch = sum(klimaPolitisch),
-          mentionsKlimaTechnologien = sum(klimaTechnologien),
-          mentionsProtesteIran = sum(protesteIran),
+          mentionsKlima = sum(klima),mentionsProtesteIran = sum(protesteIran),
           mentionsPolizistenmordKusel = sum(polizistenmordKusel),
-          mentionsVerkehrAutomobil = sum(verkehrAutomobil),
-          mentionsVerkehrFahrrad = sum(verkehrFahrrad),
-          mentionsVerkehrPolitik = sum(verkehrPolitik),
-          mentionsVerkehrÖpnv = sum(verkehrÖpnv),
-          mentionsPluralismusMedien = sum(pluralismusMedien),
-          mentionsZukunftEntwicklung = sum(zukunftEntwicklung),
-          mentionsZukunftVersprechen = sum(zukunftVersprechen),
-          mentionsVerfassungsfeindlich = sum(verfassungsfeindlich),
-          #partei = partei,
-          #user = user,
+          mentionsVerkehr = sum(verkehr),mentionsPluralismusMedien = sum(pluralismusMedien),
+          mentionsZukunft = sum(zukunft),mentionsVerfassungsfeindlich = sum(verfassungsfeindlich),
+          partei = partei,
+          user = user,
+          bundesland = bundesland,
           follower = followerAmount,
           einzug = einzug,
           replies = replies,
@@ -232,11 +205,16 @@ ref_politikerALLE_datumParteiUserBundesland <- allePolitiker %>% group_by(dateTi
 ```
 
 ```{r}
-ref_politikerALLE_datumParteiUserBundesland %>% filter(partei == "AfD") %>% ggplot(aes(dateTime, mentionsCovidVirus)) +
-  geom_line(aes(colour=partei)) +
-  facet_wrap_paginate(~bundesland, page = 1, nrow = 4, ncol = 4, scales="fixed") +
+ref_politikerALLE_datumParteiUserBundesland %>%
+  filter(partei == "AfD") %>%
+  filter(bundesland == "Baden-Württemberg") %>% 
+  ggplot() +
+  stat_summary(aes(date, mentionsCovid, colour=partei), geom = "line", fun = sum) +
+  stat_summary(aes(date, mentionsCovid, colour=partei), geom = "point", fun = sum) +
+  facet_wrap2(~bundesland, nrow = 4, ncol = 4, scales="fixed") +
   scale_colour_discrete(type = parteifarben, name = "Parteien") +
-  ggtitle(label = "Aktivität der Landesverbände nach Bundesländern zum Thema 'covidVirus'", subtitle = "Fokus auf die AfD") +
+  ggtitle(label = "Aktivität der Landesverbände nach Bundesländern zum Thema 'Covid'",
+          subtitle = "Fokus auf die AfD") +
   theme_bw()
 ```
 
