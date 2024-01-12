@@ -370,16 +370,3 @@ kombigraph
 ```
 
 Dabei interessant ist die unterschiedliche Zeitsortierung, d. h. monatlich, wöchentlich bzw. täglich.
-
-
-
-
-
-
-
-
-
-
-
-
-

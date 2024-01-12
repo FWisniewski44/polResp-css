@@ -101,51 +101,52 @@ gc()
 ## politiker brd; datum = tagesebene
 allePolitiker <- reduce(dat_politiker, .f = full_join)
 allePolitiker <- as_tidytable(allePolitiker)
-allePolitikerDay <- allePolitiker
-allePolitikerDay$dateTime <- lubridate::date(allePolitiker$dateTime)
+allePolitiker$dateTime <- lubridate::date(allePolitiker$dateTime)
 
 # ## berliner politiker; datum = tagesebene
 # politikerBerlin <- dat_politiker$BERLIN_politiker
 # politikerBerlin <- as_tidytable(politikerBerlin)
 # politikerBerlin$dateTime <- date(politikerBerlin$dateTime)
 
-## alle medien; datum = tagesebene
-alleMedien <- reduce(dat_medien, .f = full_join)
-alleMedien <- as_tidytable(alleMedien)
-alleMedienDay <- alleMedien
-alleMedienDay$dateTime <- lubridate::date(alleMedien$dateTime)
+# ## alle medien; datum = tagesebene
+# alleMedien <- reduce(dat_medien, .f = full_join)
+# alleMedien <- as_tidytable(alleMedien)
+# alleMedien$dateTime <- lubridate::date(alleMedien$dateTime)
+
+# save(allePolitiker, file = "zwischenspeicherung/allePolitiker.RData")
+# save(alleMedien, file = "zwischenspeicherung/alleMedien.RData")
 
 ########################################################################
 
-# FARBEN/DEKORATIONEN
-parteifarben <- c("#0087c1", "#19a329", "black", "grey40", "#be3075", "#ffee00", "#e40006", "darkblue")
-
-colours <- c("Ukraine"="#10adf9", "Covid"="#894c0a", "Energie"="#ec843e", "Klima"="#356043",
-             "Soziales"="#bb0040", "Verkehr"="#e7c65d")
-
-# politiker_alles_days <- allePolitikerDay %>%
-#   reframe(.by = c(dateTime),
-#           mentionsCovid = sum(covid),
-#           mentionsUkraine = sum(ukraine),
-#           mentionsEnergie = sum(energie),
-#           mentionsSoziales = sum(soziales),
-#           mentionsVerteidigungspolitik = sum(verteidigungspolitik),
-#           mentionsPolitikNational = sum(politikNational),
-#           mentionsPolitikInternational = sum(politikInternational),
-#           mentionsPolitikEuropa = sum(politikEuropa),
-#           mentionsKlima = sum(klima),mentionsProtesteIran = sum(protesteIran),
-#           mentionsPolizistenmordKusel = sum(polizistenmordKusel),
-#           mentionsVerkehr = sum(verkehr),mentionsPluralismusMedien = sum(pluralismusMedien),
-#           mentionsZukunft = sum(zukunft),mentionsVerfassungsfeindlich = sum(verfassungsfeindlich),
-#           #partei = partei,
-#           #user = user,
-#           follower = followerAmount,
-#           einzug = einzug,
-#           replies = replies,
-#           retweets = retweets,
-#           likes = likes)
+# # FARBEN/DEKORATIONEN
+# parteifarben <- c("#0087c1", "#19a329", "black", "grey40", "#be3075", "#ffee00", "#e40006", "darkblue")
 #
-# medien_alles_days <- alleMedienDay %>%
+# colours <- c("Ukraine"="#10adf9", "Covid"="#894c0a", "Energie"="#ec843e", "Klima"="#356043",
+#              "Soziales"="#bb0040", "Verkehr"="#e7c65d")
+
+politiker_alles_days <- allePolitiker %>%
+  reframe(.by = c(dateTime),
+          mentionsCovid = sum(covid),
+          mentionsUkraine = sum(ukraine),
+          mentionsEnergie = sum(energie),
+          mentionsSoziales = sum(soziales),
+          mentionsVerteidigungspolitik = sum(verteidigungspolitik),
+          mentionsPolitikNational = sum(politikNational),
+          mentionsPolitikInternational = sum(politikInternational),
+          mentionsPolitikEuropa = sum(politikEuropa),
+          mentionsKlima = sum(klima),mentionsProtesteIran = sum(protesteIran),
+          mentionsPolizistenmordKusel = sum(polizistenmordKusel),
+          mentionsVerkehr = sum(verkehr),mentionsPluralismusMedien = sum(pluralismusMedien),
+          mentionsZukunft = sum(zukunft),mentionsVerfassungsfeindlich = sum(verfassungsfeindlich),
+          #partei = partei,
+          #user = user,
+          follower = followerAmount,
+          einzug = einzug,
+          replies = replies,
+          retweets = retweets,
+          likes = likes)
+#
+# medien_alles_days <- alleMedien %>%
 #   reframe(.by = c(dateTime),
 #           mentionsCovid = sum(covid),
 #           mentionsUkraine = sum(ukraine),
@@ -168,152 +169,220 @@ colours <- c("Ukraine"="#10adf9", "Covid"="#894c0a", "Energie"="#ec843e", "Klima
 #           likes = likes)
 
 
-# alternativen datensatz erstellen zur abbildung der themen im zeitverlauf
-alternativeMedien <- alleMedienDay %>% aggregate(covid ~ dateTime, sum) %>% as_tidytable(alternativeMedien)
-alternativeMedien <- full_join(x = alternativeMedien,
-                               y = (alleMedienDay %>% aggregate(ukraine ~ dateTime, sum)))
-alternativeMedien <- full_join(x = alternativeMedien,
-                               y = (alleMedienDay %>% aggregate(energie ~ dateTime, sum)))
-alternativeMedien <- full_join(x = alternativeMedien,
-                               y = (alleMedienDay %>% aggregate(soziales ~ dateTime, sum)))
-alternativeMedien <- full_join(x = alternativeMedien,
-                               y = (alleMedienDay %>% aggregate(verteidigungspolitik ~ dateTime, sum)))
-alternativeMedien <- full_join(x = alternativeMedien,
-                               y = (alleMedienDay %>% aggregate(polizistenmordKusel ~ dateTime, sum)))
-alternativeMedien <- full_join(x = alternativeMedien,
-                               y = (alleMedienDay %>% aggregate(politikEuropa ~ dateTime, sum)))
-alternativeMedien <- full_join(x = alternativeMedien,
-                               y = (alleMedienDay %>% aggregate(politikInternational ~ dateTime, sum)))
-alternativeMedien <- full_join(x = alternativeMedien,
-                               y = (alleMedienDay %>% aggregate(politikNational ~ dateTime, sum)))
-alternativeMedien <- full_join(x = alternativeMedien,
-                               y = (alleMedienDay %>% aggregate(klima ~ dateTime, sum)))
-alternativeMedien <- full_join(x = alternativeMedien,
-                               y = (alleMedienDay %>% aggregate(protesteIran ~ dateTime, sum)))
-alternativeMedien <- full_join(x = alternativeMedien,
-                               y = (alleMedienDay %>% aggregate(verkehr ~ dateTime, sum)))
-alternativeMedien <- full_join(x = alternativeMedien,
-                               y = (alleMedienDay %>% aggregate(pluralismusMedien ~ dateTime, sum)))
-alternativeMedien <- full_join(x = alternativeMedien,
-                               y = (alleMedienDay %>% aggregate(zukunft ~ dateTime, sum)))
-alternativeMedien <- full_join(x = alternativeMedien,
-                               y = (alleMedienDay %>% aggregate(verfassungsfeindlich ~ dateTime, sum)))
+# # alternativen datensatz erstellen zur abbildung der themen im zeitverlauf
+alternativeMedien <- alleMedien %>% aggregate(covid ~ dateTime, sum) %>% as_tidytable(alternativeMedien)
+alternativePolitiker <- allePolitiker %>% aggregate(covid ~ dateTime, sum) %>% as_tidytable(alternativePolitiker)
+# alternativeMedien <- full_join(x = alternativeMedien,
+#                                y = (alleMedien %>% aggregate(ukraine ~ dateTime, sum)))
+# alternativeMedien <- full_join(x = alternativeMedien,
+#                                y = (alleMedien %>% aggregate(energie ~ dateTime, sum)))
+# alternativeMedien <- full_join(x = alternativeMedien,
+#                                y = (alleMedien %>% aggregate(soziales ~ dateTime, sum)))
+# alternativeMedien <- full_join(x = alternativeMedien,
+#                                y = (alleMedien %>% aggregate(verteidigungspolitik ~ dateTime, sum)))
+# alternativeMedien <- full_join(x = alternativeMedien,
+#                                y = (alleMedien %>% aggregate(polizistenmordKusel ~ dateTime, sum)))
+# alternativeMedien <- full_join(x = alternativeMedien,
+#                                y = (alleMedien %>% aggregate(politikEuropa ~ dateTime, sum)))
+# alternativeMedien <- full_join(x = alternativeMedien,
+#                                y = (alleMedien %>% aggregate(politikInternational ~ dateTime, sum)))
+# alternativeMedien <- full_join(x = alternativeMedien,
+#                                y = (alleMedien %>% aggregate(politikNational ~ dateTime, sum)))
+# alternativeMedien <- full_join(x = alternativeMedien,
+#                                y = (alleMedien %>% aggregate(klima ~ dateTime, sum)))
+# alternativeMedien <- full_join(x = alternativeMedien,
+#                                y = (alleMedien %>% aggregate(protesteIran ~ dateTime, sum)))
+# alternativeMedien <- full_join(x = alternativeMedien,
+#                                y = (alleMedien %>% aggregate(verkehr ~ dateTime, sum)))
+# alternativeMedien <- full_join(x = alternativeMedien,
+#                                y = (alleMedien %>% aggregate(pluralismusMedien ~ dateTime, sum)))
+# alternativeMedien <- full_join(x = alternativeMedien,
+#                                y = (alleMedien %>% aggregate(zukunft ~ dateTime, sum)))
+# alternativeMedien <- full_join(x = alternativeMedien,
+#                                y = (alleMedien %>% aggregate(verfassungsfeindlich ~ dateTime, sum)))
+#
+# alternativeMedien
+#
+# # alternativen datensatz erstellen zur abbildung der themen im zeitverlauf
+# # afdPolitiker <- allePolitiker %>% filter(partei == "AfD") %>% as_tidytable(afdPolitiker)
+#
+# alternativePolitiker <- allePolitiker %>%
+#   as_tidytable(allePolitiker) %>%
+#   filter(partei == "AfD") %>%
+#   filter(bundesland == "Baden-Württemberg") %>%
+#   aggregate(covid ~ dateTime, sum)
+#
+# alternativePolitiker <- full_join(x = alternativePolitiker,
+#                                   y = (allePolitiker %>%
+#                                          filter(partei == "AfD") %>%
+#                                          filter(bundesland == "Baden-Württemberg") %>%
+#                                          aggregate(ukraine ~ dateTime, sum)))
+#
+# alternativePolitiker <- full_join(x = alternativePolitiker,
+#                                   y = (allePolitiker %>%
+#                                          filter(partei == "AfD") %>%
+#                                          filter(bundesland == "Baden-Württemberg") %>%
+#                                          aggregate(energie ~ dateTime, sum)))
+#
+# alternativePolitiker <- full_join(x = alternativePolitiker,
+#                                   y = (allePolitiker %>%
+#                                          filter(partei == "AfD") %>%
+#                                          filter(bundesland == "Baden-Württemberg") %>%
+#                                          aggregate(soziales ~ dateTime, sum)))
+#
+# alternativePolitiker <- full_join(x = alternativePolitiker,
+#                                   y = (allePolitiker %>%
+#                                          filter(partei == "AfD") %>%
+#                                          filter(bundesland == "Baden-Württemberg") %>%
+#                                          aggregate(verteidigungspolitik ~ dateTime, sum)))
+#
+# alternativePolitiker <- full_join(x = alternativePolitiker,
+#                                   y = (allePolitiker %>%
+#                                          filter(partei == "AfD") %>%
+#                                          filter(bundesland == "Baden-Württemberg") %>%
+#                                          aggregate(polizistenmordKusel ~ dateTime, sum)))
+#
+# alternativePolitiker <- full_join(x = alternativePolitiker,
+#                                   y = (allePolitiker %>%
+#                                          filter(partei == "AfD") %>%
+#                                          filter(bundesland == "Baden-Württemberg") %>%
+#                                          aggregate(flutAhrtal ~ dateTime, sum)))
+#
+# alternativePolitiker <- full_join(x = alternativePolitiker,
+#                                   y = (allePolitiker %>%
+#                                          filter(partei == "AfD") %>%
+#                                          filter(bundesland == "Baden-Württemberg") %>%
+#                                          aggregate(politikEuropa ~ dateTime, sum)))
+#
+# alternativePolitiker <- full_join(x = alternativePolitiker,
+#                                   y = (allePolitiker %>%
+#                                          filter(partei == "AfD") %>%
+#                                          filter(bundesland == "Baden-Württemberg") %>%
+#                                          aggregate(politikInternational ~ dateTime, sum)))
+#
+# alternativePolitiker <- full_join(x = alternativePolitiker,
+#                                   y = (allePolitiker %>%
+#                                          filter(partei == "AfD") %>%
+#                                          filter(bundesland == "Baden-Württemberg") %>%
+#                                          aggregate(klima ~ dateTime, sum)))
+#
+# alternativePolitiker <- full_join(x = alternativePolitiker,
+#                                   y = (allePolitiker %>%
+#                                          filter(partei == "AfD") %>%
+#                                          filter(bundesland == "Baden-Württemberg") %>%
+#                                          aggregate(protesteIran ~ dateTime, sum)))
+#
+# alternativePolitiker <- full_join(x = alternativePolitiker,
+#                                   y = (allePolitiker %>%
+#                                          filter(partei == "AfD") %>%
+#                                          filter(bundesland == "Baden-Württemberg") %>%
+#                                          aggregate(verkehr ~ dateTime, sum)))
+#
+# alternativePolitiker <- full_join(x = alternativePolitiker,
+#                                   y = (allePolitiker %>%
+#                                          filter(partei == "AfD") %>%
+#                                          filter(bundesland == "Baden-Württemberg") %>%
+#                                          aggregate(pluralismusMedien ~ dateTime, sum)))
+#
+# alternativePolitiker <- full_join(x = alternativePolitiker,
+#                                   y = (allePolitiker %>%
+#                                          filter(partei == "AfD") %>%
+#                                          filter(bundesland == "Baden-Württemberg") %>%
+#                                          aggregate(zukunft ~ dateTime, sum)))
+#
+# alternativePolitiker <- full_join(x = alternativePolitiker,
+#                                   y = (allePolitiker %>%
+#                                          filter(partei == "AfD") %>%
+#                                          filter(bundesland == "Baden-Württemberg") %>%
+#                                          aggregate(verfassungsfeindlich ~ dateTime, sum)))
+#
+# # alternativePolitiker
 
-alternativeMedien
-
-# alternativen datensatz erstellen zur abbildung der themen im zeitverlauf
-# afdPolitiker <- allePolitikerDay %>% filter(partei == "AfD") %>% as_tidytable(afdPolitiker)
-
-alternativePolitiker <- allePolitikerDay %>%
-  as_tidytable(allePolitikerDay) %>%
-  filter(partei == "AfD") %>%
-  filter(bundesland == "Baden-Württemberg") %>%
-  aggregate(covid ~ dateTime, sum)
-
-alternativePolitiker <- full_join(x = alternativePolitiker,
-                                  y = (allePolitikerDay %>%
-                                         filter(partei == "AfD") %>%
-                                         filter(bundesland == "Baden-Württemberg") %>%
-                                         aggregate(ukraine ~ dateTime, sum)))
-
-alternativePolitiker <- full_join(x = alternativePolitiker,
-                                  y = (allePolitikerDay %>%
-                                         filter(partei == "AfD") %>%
-                                         filter(bundesland == "Baden-Württemberg") %>%
-                                         aggregate(energie ~ dateTime, sum)))
-
-alternativePolitiker <- full_join(x = alternativePolitiker,
-                                  y = (allePolitikerDay %>%
-                                         filter(partei == "AfD") %>%
-                                         filter(bundesland == "Baden-Württemberg") %>%
-                                         aggregate(soziales ~ dateTime, sum)))
-
-alternativePolitiker <- full_join(x = alternativePolitiker,
-                                  y = (allePolitikerDay %>%
-                                         filter(partei == "AfD") %>%
-                                         filter(bundesland == "Baden-Württemberg") %>%
-                                         aggregate(verteidigungspolitik ~ dateTime, sum)))
-
-alternativePolitiker <- full_join(x = alternativePolitiker,
-                                  y = (allePolitikerDay %>%
-                                         filter(partei == "AfD") %>%
-                                         filter(bundesland == "Baden-Württemberg") %>%
-                                         aggregate(polizistenmordKusel ~ dateTime, sum)))
-
-alternativePolitiker <- full_join(x = alternativePolitiker,
-                                  y = (allePolitikerDay %>%
-                                         filter(partei == "AfD") %>%
-                                         filter(bundesland == "Baden-Württemberg") %>%
-                                         aggregate(flutAhrtal ~ dateTime, sum)))
-
-alternativePolitiker <- full_join(x = alternativePolitiker,
-                                  y = (allePolitikerDay %>%
-                                         filter(partei == "AfD") %>%
-                                         filter(bundesland == "Baden-Württemberg") %>%
-                                         aggregate(politikEuropa ~ dateTime, sum)))
-
-alternativePolitiker <- full_join(x = alternativePolitiker,
-                                  y = (allePolitikerDay %>%
-                                         filter(partei == "AfD") %>%
-                                         filter(bundesland == "Baden-Württemberg") %>%
-                                         aggregate(politikInternational ~ dateTime, sum)))
-
-alternativePolitiker <- full_join(x = alternativePolitiker,
-                                  y = (allePolitikerDay %>%
-                                         filter(partei == "AfD") %>%
-                                         filter(bundesland == "Baden-Württemberg") %>%
-                                         aggregate(klima ~ dateTime, sum)))
-
-alternativePolitiker <- full_join(x = alternativePolitiker,
-                                  y = (allePolitikerDay %>%
-                                         filter(partei == "AfD") %>%
-                                         filter(bundesland == "Baden-Württemberg") %>%
-                                         aggregate(protesteIran ~ dateTime, sum)))
-
-alternativePolitiker <- full_join(x = alternativePolitiker,
-                                  y = (allePolitikerDay %>%
-                                         filter(partei == "AfD") %>%
-                                         filter(bundesland == "Baden-Württemberg") %>%
-                                         aggregate(verkehr ~ dateTime, sum)))
-
-alternativePolitiker <- full_join(x = alternativePolitiker,
-                                  y = (allePolitikerDay %>%
-                                         filter(partei == "AfD") %>%
-                                         filter(bundesland == "Baden-Württemberg") %>%
-                                         aggregate(pluralismusMedien ~ dateTime, sum)))
-
-alternativePolitiker <- full_join(x = alternativePolitiker,
-                                  y = (allePolitikerDay %>%
-                                         filter(partei == "AfD") %>%
-                                         filter(bundesland == "Baden-Württemberg") %>%
-                                         aggregate(zukunft ~ dateTime, sum)))
-
-alternativePolitiker <- full_join(x = alternativePolitiker,
-                                  y = (allePolitikerDay %>%
-                                         filter(partei == "AfD") %>%
-                                         filter(bundesland == "Baden-Württemberg") %>%
-                                         aggregate(verfassungsfeindlich ~ dateTime, sum)))
-
-# alternativePolitiker
+# ===============================================================================================================================================
 
 ################################################################################
 ################################################################################
 ################################################################################
 ## POLITIKERDATEN (SUMME) BEREINIGEN
 # SO MUSS ES AUSSEHEN
-# es kann hier bereits vorgefiltert werden
+# es kann hier bereits vorgefiltert werden (vgl. partei, bundesland, user, ...)
 # es können mehrere dimensionen hinzugefügt werden (hinterer abteil aggregate, nach tilde):
 ## so z. b. möglich, nicht nur die themen über datum mit immer einem tag referenz aufzusummieren, sondern auch gleich die parteien oder auch die bundesländer mit einzubeziehen
 # UND TROTZDEM BLEIBEN DIE DIAGRAMME GLEICH; egal welche ebene man mit einbezieht
 #  es kommt dann nur auf die summierung mit an
-politikerAnalysedaten <- allePolitikerDay %>%
-  as_tidytable(allePolitikerDay) %>%
+#  wichtig: wenn nach ~ noch weitere variablen mit "+" ergänzt werden, dann wird zugleich auch über diese aggregiert
+#  hier ist vorsicht geboten weil das sonst keinen sinn macht!
+
+### für die politiker auf userebene: aggregiert die posts nach thema pro politiker, um zu schauen, wer wozu wie viel tweetet
+### wichtig: ohne zeitaspekt!
+politikerAnalysedaten_Politiker <- allePolitiker %>%
+  as_tidytable(allePolitiker) %>%
   # filter(partei == "AfD") %>%
   # filter(bundesland == "Baden-Württemberg") %>%
   # filter(user == "Alice_Weidel") %>%
-  aggregate(cbind(covid, ukraine, energie, soziales, verteidigungspolitik, polizistenmordKusel, flutAhrtal, politikEuropa, politikInternational, klima, protesteIran, verkehr, pluralismusMedien, zukunft, verfassungsfeindlich) ~ dateTime +
-              partei + user + bundesland + einzug + geschlecht + followerAmount,
-            sum, na.rm = T, na.action = NULL)
+  aggregate(cbind(covid, ukraine, energie, soziales, verteidigungspolitik, polizistenmordKusel, flutAhrtal, politikEuropa, politikInternational, klima, protesteIran, verkehr, pluralismusMedien, zukunft, verfassungsfeindlich) ~ user, sum)
+
+### auf parteienebene: aggregiert posts nach themen pro partei
+### auch hier KEIN zeitaspekt
+politikerAnalysedaten_Parteien <- allePolitiker %>%
+  as_tidytable(allePolitiker) %>%
+  # filter(partei == "AfD") %>%
+  # filter(bundesland == "Baden-Württemberg") %>%
+  # filter(user == "Alice_Weidel") %>%
+  aggregate(cbind(covid, ukraine, energie, soziales, verteidigungspolitik, polizistenmordKusel, flutAhrtal, politikEuropa, politikInternational, klima, protesteIran, verkehr, pluralismusMedien, zukunft, verfassungsfeindlich) ~ partei, sum)
+
+### nach datum: aggregiert die posts pro thema pro tag
+politikerAnalysedatenThemen <- allePolitiker %>%
+  as_tidytable(allePolitiker) %>%
+  # filter(partei == "AfD") %>%
+  # filter(bundesland == "Baden-Württemberg") %>%
+  # filter(user == "Alice_Weidel") %>%
+  aggregate(cbind(covid, ukraine, energie, soziales, verteidigungspolitik, polizistenmordKusel, flutAhrtal, politikEuropa, politikInternational, klima, protesteIran, verkehr, pluralismusMedien, zukunft, verfassungsfeindlich) ~ dateTime, sum)
+
+### versuch des aggregierens pro user pro tag
+### GEGLÜCKT: macht sinn, möglichkeit der analyse von daten pro tag pro politiker
+politikerAnalysedaten_TopicsUndUser <- allePolitiker %>%
+  as_tidytable(allePolitiker) %>%
+  # filter(partei == "AfD") %>%
+  # filter(bundesland == "Baden-Württemberg") %>%
+  # filter(user == "Alice_Weidel") %>%
+  aggregate(cbind(covid, ukraine, energie, soziales, verteidigungspolitik, polizistenmordKusel, flutAhrtal, politikEuropa, politikInternational, klima, protesteIran, verkehr, pluralismusMedien, zukunft, verfassungsfeindlich) ~ user + dateTime, sum)
+
+### kombination aus user und parteien
+### politi
+politikerAnalysedaten_userParteien <- allePolitiker %>%
+  as_tidytable(allePolitiker) %>%
+  # filter(partei == "AfD") %>%
+  # filter(bundesland == "Baden-Württemberg") %>%
+  # filter(user == "Alice_Weidel") %>%
+  aggregate(cbind(covid, ukraine, energie, soziales, verteidigungspolitik, polizistenmordKusel, flutAhrtal, politikEuropa, politikInternational, klima, protesteIran, verkehr, pluralismusMedien, zukunft, verfassungsfeindlich) ~ user + partei, sum)
+
+### versuch des aggregierens pro partei und pro user am tag
+### SINN: somit werden neben den user-tweets pro tag auch deren parteien mit erfasst
+politikerAnalysedaten_TopicsUndParteien <- allePolitiker %>%
+  as_tidytable(allePolitiker) %>%
+  # filter(partei == "AfD") %>%
+  # filter(bundesland == "Baden-Württemberg") %>%
+  # filter(user == "Alice_Weidel") %>%
+  aggregate(cbind(covid, ukraine, energie, soziales, verteidigungspolitik, polizistenmordKusel, flutAhrtal, politikEuropa, politikInternational, klima, protesteIran, verkehr, pluralismusMedien, zukunft, verfassungsfeindlich) ~ partei + dateTime, sum)
+
+### versuch aggregation mit maximalem sinnvollen ausmaß:
+### aggregation von posts pro tag (dateTime) pro user (user) aus jeweiliger partei (partei), gegliedert außerdem nach herkunft (bundesland)
+politikerAnalysedaten_maximus <- allePolitiker %>%
+  as_tidytable(allePolitiker) %>%
+  # filter(partei == "AfD") %>%
+  # filter(bundesland == "Baden-Württemberg") %>%
+  # filter(user == "Alice_Weidel") %>%
+  aggregate(cbind(covid, ukraine, energie, soziales, verteidigungspolitik, polizistenmordKusel, flutAhrtal, politikEuropa, politikInternational, klima, protesteIran, verkehr, pluralismusMedien, zukunft, verfassungsfeindlich) ~ partei + user + bundesland + dateTime, sum)
+
+# ===============================================================================================================================================
+####
+
+# politikerAnalysedaten
+# politikerAnalysedatenThemen
+
+#### ANFÜGEN VON WOCHENNUMMERN UND MONATSSORTIERUNG
+#### ERMÖGLICHUNG: SPÄTERE ANALYSEN AUF ANDERER ZEITEBENE
 
 politikerAnalysedaten$weeks <- as.Date(cut(politikerAnalysedaten$dateTime,
                               breaks = "week"))
@@ -322,16 +391,35 @@ politikerAnalysedaten$months <- as.Date(cut(politikerAnalysedaten$dateTime,
 politikerAnalysedaten$weeksLubridate <- lubridate::week(politikerAnalysedaten$dateTime)
 politikerAnalysedaten$monthsLubridate <- lubridate::month(politikerAnalysedaten$dateTime)
 
-save(politikerAnalysedaten, file = "zwischenspeicherung/politikerAnalysedaten.RData")
-write_csv(politikerAnalysedaten, file = "zwischenspeicherung/politikerAnalysedaten.csv")
+####
 
-################################################################################
-## MEDIENDATEN (SUMME) BEREINIGEN
-##NACHBEARBEITUNGEN
-arte <- alleMedienDay %>% filter(user == "ARTEde")
+politikerAnalysedatenThemen$weeks <- as.Date(cut(politikerAnalysedatenThemen$dateTime,
+                                           breaks = "week"))
+politikerAnalysedatenThemen$months <- as.Date(cut(politikerAnalysedatenThemen$dateTime,
+                                            breaks = "month"))
+politikerAnalysedatenThemen$weeksLubridate <- lubridate::week(politikerAnalysedatenThemen$dateTime)
+politikerAnalysedatenThemen$monthsLubridate <- lubridate::month(politikerAnalysedatenThemen$dateTime)
+
+#### OPTIONALE SPEICHERUNG ALS R OBJEKTE UND CSV DATEIEN
+
+# save(politikerAnalysedaten, file = "zwischenspeicherung/politikerAnalysedaten.RData")
+# write_csv(politikerAnalysedaten, file = "zwischenspeicherung/politikerAnalysedaten.csv")
+# save(politikerAnalysedatenThemen, file = "zwischenspeicherung/politikerAnalysedatenThemen.RData")
+# write_csv(politikerAnalysedatenThemen, file = "zwischenspeicherung/politikerAnalysedatenThemen.csv")
+
+# ===============================================================================================================================================
+################################################# MEDIENDATEN (SUMME) BEREINIGEN
+
+# ===================================================
+# datumseinstellung
+alleMedien$dateTime <- as.Date(alleMedien$dateTime)
+# ===================================================
+
+#
+arte <- alleMedien %>% filter(user == "ARTEde")
 dat_medien$ÜBERREGIONALE_medien$bundesland <- "Überregional"
 fre(dat_medien$ÜBERREGIONALE_medien$bundesland)
-dat_medien$DIGITALE_medien$bundesland <- "überregional"
+dat_medien$DIGITALE_medien$bundesland <- "Überregional"
 fre(dat_medien$DIGITALE_medien$bundesland)
 dat_medien$ÖRR_medien$bundesland <- ""
 dat_medien$ÖRR_medien <- dat_medien$ÖRR_medien %>% mutate(bundesland = case_when(user == "ARTEde" ~ "Überregional",
@@ -366,17 +454,22 @@ dat_medien$ÖRR_medien <- dat_medien$ÖRR_medien %>% mutate(bundesland = case_wh
                                                                                  user == "WDRaktuell" ~ "Nordrhein-Westfalen"))
 fre(dat_medien$DIGITALE_medien$bundesland)
 
-freq(alleMedienDay$bundesland)
+freq(alleMedien$bundesland)
 
 ## alle medien; datum = tagesebene
 alleMedien <- reduce(dat_medien, .f = full_join)
 alleMedien <- as_tidytable(alleMedien)
+freq(alleMedien$bundesland)
 
-alleMedienDay <- alleMedien
-alleMedienDay$dateTime <- lubridate::date(alleMedien$dateTime)
 
-medienAnalysedaten <- alleMedienDay %>%
-  as_tidytable(alleMedienDay) %>%
+alleMedien$dateTime <- as.Date(alleMedien$dateTime)
+
+# ===================================================
+# herstellen der analysedaten für die medien nach vorbild dessen, was für politiker schon gemacht wurde
+
+## fall 1: aggregation per user, ohne einbezug des datums
+medienAnalysedaten_userAggregiert <- alleMedien %>%
+  as_tidytable(alleMedien) %>%
   # filter(geschäftsmodell == 1) %>%
   # filter(normenWerte == 1) %>%
   # filter(erreichbarkeit == 1) %>%
@@ -384,11 +477,91 @@ medienAnalysedaten <- alleMedienDay %>%
   # filter(RVerkauf > 100000) %>%
   # filter(bundesland == "Baden-Württemberg") %>%
   # filter(user == "ARTEde") %>%
-  aggregate(cbind(covid, ukraine, energie, soziales, verteidigungspolitik, polizistenmordKusel, flutAhrtal, politikEuropa, politikInternational, klima, protesteIran, verkehr, pluralismusMedien, zukunft, verfassungsfeindlich) ~ dateTime +
-              user + bundesland + erreichbarkeit + normenWerte + geschäftsmodell + followerAmount,
-            sum)
+  aggregate(cbind(covid, ukraine, energie, soziales, verteidigungspolitik, polizistenmordKusel, flutAhrtal, politikEuropa, politikInternational, klima, protesteIran, verkehr, pluralismusMedien, zukunft, verfassungsfeindlich) ~ user, sum)
+
+## fall 2: aggregation mit konzentration auf die themen, auf tagesbasis
+medienAnalysedaten_tagesbasis <- alleMedien %>%
+  as_tidytable(alleMedien) %>%
+  # filter(geschäftsmodell == 1) %>%
+  # filter(normenWerte == 1) %>%
+  # filter(erreichbarkeit == 1) %>%
+  # filter(RVisits > 25000) %>%
+  # filter(RVerkauf > 100000) %>%
+  # filter(bundesland == "Baden-Württemberg") %>%
+  # filter(user == "ARTEde") %>%
+  aggregate(cbind(covid, ukraine, energie, soziales, verteidigungspolitik, polizistenmordKusel, flutAhrtal, politikEuropa, politikInternational, klima, protesteIran, verkehr, pluralismusMedien, zukunft, verfassungsfeindlich) ~ dateTime, sum)
+
+## fall 3: aggregation user auf tagesbasis (user + dateTime)
+medienAnalysedaten_userTagesbasis <- alleMedien %>%
+  as_tidytable(alleMedien) %>%
+  # filter(geschäftsmodell == 1) %>%
+  # filter(normenWerte == 1) %>%
+  # filter(erreichbarkeit == 1) %>%
+  # filter(RVisits > 25000) %>%
+  # filter(RVerkauf > 100000) %>%
+  # filter(bundesland == "Baden-Württemberg") %>%
+  # filter(user == "ARTEde") %>%
+  aggregate(cbind(covid, ukraine, energie, soziales, verteidigungspolitik, polizistenmordKusel, flutAhrtal, politikEuropa, politikInternational, klima, protesteIran, verkehr, pluralismusMedien, zukunft, verfassungsfeindlich) ~ user + dateTime, sum)
+
+## fall 4: aggregation user und herkunft
+medienAnalysedaten_userBundesland <- alleMedien %>%
+  as_tidytable(alleMedien) %>%
+  # filter(geschäftsmodell == 1) %>%
+  # filter(normenWerte == 1) %>%
+  # filter(erreichbarkeit == 1) %>%
+  # filter(RVisits > 25000) %>%
+  # filter(RVerkauf > 100000) %>%
+  # filter(bundesland == "Baden-Württemberg") %>%
+  # filter(user == "ARTEde") %>%
+  aggregate(cbind(covid, ukraine, energie, soziales, verteidigungspolitik, polizistenmordKusel, flutAhrtal, politikEuropa, politikInternational, klima, protesteIran, verkehr, pluralismusMedien, zukunft, verfassungsfeindlich) ~ user + bundesland, sum)
+
+## fall 5: aggregation user, herkunft und dateTime
+medienAnalysedaten_maximus <- alleMedien %>%
+  as_tidytable(alleMedien) %>%
+  # filter(geschäftsmodell == 1) %>%
+  # filter(normenWerte == 1) %>%
+  # filter(erreichbarkeit == 1) %>%
+  # filter(RVisits > 25000) %>%
+  # filter(RVerkauf > 100000) %>%
+  # filter(bundesland == "Baden-Württemberg") %>%
+  # filter(user == "ARTEde") %>%
+  aggregate(cbind(covid, ukraine, energie, soziales, verteidigungspolitik, polizistenmordKusel, flutAhrtal, politikEuropa, politikInternational, klima, protesteIran, verkehr, pluralismusMedien, zukunft, verfassungsfeindlich) ~ user + dateTime + bundesland, sum)
+
+## fall 6: rücksicht auf variablen discursive power
+## ACHTUNG: es fehlen ca. 3000 tweets in dieser aggregation; discursive power variablen nehmen diese raus, grund unbekannt
+medienAnalysedaten_discursivePower <- alleMedien %>%
+  as_tidytable(alleMedien) %>%
+  # filter(geschäftsmodell == 1) %>%
+  # filter(normenWerte == 1) %>%
+  # filter(erreichbarkeit == 1) %>%
+  # filter(RVisits > 25000) %>%
+  # filter(RVerkauf > 100000) %>%
+  # filter(bundesland == "Baden-Württemberg") %>%
+  # filter(user == "ARTEde") %>%
+  aggregate(cbind(covid, ukraine, energie, soziales, verteidigungspolitik, polizistenmordKusel, flutAhrtal, politikEuropa, politikInternational, klima, protesteIran, verkehr, pluralismusMedien, zukunft, verfassungsfeindlich) ~ user + dateTime +
+              geschäftsmodell + normenWerte + erreichbarkeit, sum)
+
+sum(medienAnalysedaten_tagesbasis$covid)
+sum(medienAnalysedaten_userAggregiert$covid)
+sum(medienAnalysedaten_maximus$covid)
+sum(medienAnalysedaten_discursivePower$covid)
+
+# ALT!!! NUR HIER ALS REFERENZ, EIGENTLICH UNNÜTZ
+# medienAnalysedatenThemen <- alleMedien %>%
+#   as_tidytable(alleMedien) %>%
+#   # filter(geschäftsmodell == 1) %>%
+#   # filter(normenWerte == 1) %>%
+#   # filter(erreichbarkeit == 1) %>%
+#   # filter(RVisits > 25000) %>%
+#   # filter(RVerkauf > 100000) %>%
+#   # filter(bundesland == "Baden-Württemberg") %>%
+#   # filter(user == "ARTEde") %>%
+#   aggregate(cbind(covid, ukraine, energie, soziales, verteidigungspolitik, polizistenmordKusel, flutAhrtal, politikEuropa, politikInternational, klima, protesteIran, verkehr, pluralismusMedien, zukunft, verfassungsfeindlich) ~ dateTime, sum)
 
 medienAnalysedaten
+medienAnalysedatenThemen
+
+####
 
 medienAnalysedaten$weeks <- as.Date(cut(medienAnalysedaten$dateTime,
                                            breaks = "week"))
@@ -397,8 +570,21 @@ medienAnalysedaten$months <- as.Date(cut(medienAnalysedaten$dateTime,
 medienAnalysedaten$weeksLubridate <- lubridate::week(medienAnalysedaten$dateTime)
 medienAnalysedaten$monthsLubridate <- lubridate::month(medienAnalysedaten$dateTime)
 
+####
+
+medienAnalysedatenThemen$weeks <- as.Date(cut(medienAnalysedatenThemen$dateTime,
+                                              breaks = "week"))
+medienAnalysedatenThemen$months <- as.Date(cut(medienAnalysedatenThemen$dateTime,
+                                         breaks = "month"))
+medienAnalysedatenThemen$weeksLubridate <- lubridate::week(medienAnalysedatenThemen$dateTime)
+medienAnalysedatenThemen$monthsLubridate <- lubridate::month(medienAnalysedatenThemen$dateTime)
+
+####
+
 save(medienAnalysedaten, file = "zwischenspeicherung/medienAnalysedaten.RData")
 write_csv(medienAnalysedaten, file = "zwischenspeicherung/medienAnalysedaten.csv")
+save(medienAnalysedatenThemen, file = "zwischenspeicherung/medienAnalysedatenThemen.RData")
+write_csv(medienAnalysedatenThemen, file = "zwischenspeicherung/medienAnalysedatenThemen.csv")
 
 ################################################################################
 ################################################################################
@@ -503,7 +689,7 @@ politikergraph <- politiker_alles_days %>% ggplot() +
   geom_point(aes(x=dateTime, y=mentionsUkraine, colour="Ukraine")) +
   geom_line(aes(x=dateTime, y=mentionsUkraine, colour="Ukraine")) +
   theme_bw() +
-  scale_y_continuous(limits = c(0, 800), breaks = seq(0, 800, 50)) +
+  #scale_y_continuous(limits = c(0, 800), breaks = seq(0, 800, 50)) +
   ggtitle(label = "Alle Politiker, täglich gruppiert", subtitle = "Themen: Ukraine und Covid") +
   scale_x_date(date_breaks = "months", date_labels = "%b") +
   scale_colour_manual(name = "", values = colours)
@@ -514,7 +700,7 @@ mediengraph <- medien_alles_days %>% ggplot() +
   geom_point(aes(x=dateTime, y=mentionsUkraine, colour="Ukraine")) +
   geom_line(aes(x=dateTime, y=mentionsUkraine, colour="Ukraine")) +
   theme_bw() +
-  scale_y_continuous(limits = c(0, 3000), breaks = seq(0, 3000, 200)) +
+  #scale_y_continuous(limits = c(0, 3000), breaks = seq(0, 3000, 200)) +
   ggtitle(label = "Alle Medien, täglich gruppiert", subtitle = "Themen: Ukraine und Covid") +
   scale_x_date(date_breaks = "months", date_labels = "%b") +
   scale_colour_manual(values = colours)
@@ -526,25 +712,30 @@ kombigraph
 
 # überblicksgraphik mit allen themen in beiden sphären
 
-themenüberblickPolitiker <- data.frame(apply(X = alternativePolitiker[,c(-1, -10)], MARGIN = 2, FUN = sum))
+# BILDUNG SUMME TWEETS PRO THEMA
+themenüberblickPolitiker <- data.frame(apply(X = politikerAnalysedaten[,c(8:22)], MARGIN = 2, FUN = sum))
 themenüberblickPolitiker$variable <- rownames(themenüberblickPolitiker)
-themenüberblickPolitiker <- themenüberblickPolitiker %>% rename(anzahl = apply.X...alternativePolitiker...c..1...10....MARGIN...2..FUN...sum.)
+themenüberblickPolitiker <- themenüberblickPolitiker %>% rename(anzahl = apply.X...politikerAnalysedaten...c.8.22....MARGIN...2..FUN...sum.)
 
-themenüberblickMedien <- data.frame(apply(X = alternativeMedien[,c(-1, -10)], MARGIN = 2, FUN = sum))
+themenüberblickMedien <- data.frame(apply(X = medienAnalysedaten[,c(8:22)], MARGIN = 2, FUN = sum))
 themenüberblickMedien$variable <- rownames(themenüberblickMedien)
-themenüberblickMedien <- themenüberblickMedien %>% rename(anzahl = apply.X...alternativeMedien...c..1...10....MARGIN...2..FUN...sum.)
+themenüberblickMedien <- themenüberblickMedien %>% rename(anzahl = apply.X...medienAnalysedaten...c.8.22....MARGIN...2..FUN...sum.)
 
 sum(themenüberblickPolitiker$anzahl)
+sum(themenüberblickMedien$anzahl)
 
+# STANDARDISIERUNG MIN-MAX
 processPol <- preProcess(as_tidytable(themenüberblickPolitiker), method = "range")
 themenüberblickPolitiker <- predict(processPol, as_tidytable(themenüberblickPolitiker))
 
 processMedien <- preProcess(as_tidytable(themenüberblickMedien), method = "range")
 themenüberblickMedien <- predict(processMedien, as_tidytable(themenüberblickMedien))
 
+## dabei ersichtlich: grösstes thema politiker ist ukraine, grösstes thema medien ist covid
 
+# GRAPHISCH
 überblPol <- ggplot(mapping = aes(variable, anzahl)) +
-  stat_summary(data = themenüberblickPolitiker, geom = "bar", fun = sum, position = "fill") +
+  stat_summary(data = themenüberblickPolitiker, geom = "bar", fun = sum, fill = "#b04044") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 überblPol
 
@@ -557,16 +748,16 @@ ggplot(data= themenüberblickPolitiker) +
 
 ggarrange(überblMedia, überblPol, common.legend = F)
 
-
+# ERSTELLEN EINES GEMEINSAMEN DATENSATZES DES THEMENÜBERBLICKS MIT BEZEICHNUNGEN VON WELCHER GRUNDLAGE ETWAS STAMMT
 gemeinsam <- themenüberblickPolitiker %>% mutate(kennzeichnung = "Politiker") %>%
   bind_rows(themenüberblickMedien) %>%
   mutate(kennzeichnung = replace_na(kennzeichnung, "Medien"))
 
-processGemeinsam
-
+## farbschemata: schwierigkeit der abbildung von 14 themen
 theHeat <- heat.colors(14)
 rainCol <- rainbow(14)
 
+# GEGENÜBERSTELLUNG
 ggplot(gemeinsam, aes(kennzeichnung, anzahl, fill = variable)) +
   stat_summary(geom="bar", fun=sum, position = "fill") +
   scale_fill_discrete(type = rainCol) +
