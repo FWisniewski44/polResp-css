@@ -33,6 +33,10 @@ library(tidyverse)
 library(pals)
 library(Polychrome)
 library(hrbrthemes)
+library(ggpmisc)
+library(ggfortify)
+library(changepoint)
+library(strucchange)
 
 ################################################################################
 
@@ -56,9 +60,7 @@ library(flextable)
 # library(emoji)
 # library(textclean)
 
-################################################################################
-################################################################################
-################################################################################
+# ==============================================================================================================================================# ==============================================================================================================================================# ==============================================================================================================================================
 
 setwd(dir = "~/Documents/uni/masterarbeit/scraping/polResp-css/auswertungRfiles/")
 
@@ -67,6 +69,8 @@ setwd(dir = "~/Documents/uni/masterarbeit/scraping/polResp-css/auswertungRfiles/
 load("zwischenspeicherung/environment2_komplett.RData")
 
 # colours
+medienPolitikerFarben <- c("Medien"="#008080", "PolitikerInnen"="#fb4d46")
+
 parteifarben <- c("AfD"="#0087c1", "B90/Die Grünen"="#19a329",
                   "CDU"="black", "CSU"="skyblue", "Die Linke"="#be3075",
                   "FDP"="#ffee00", "SPD"="#e40006", "SSW"="darkblue")
@@ -114,6 +118,7 @@ timeMedia <- medienAnalysedaten_userAggregiert
 timeMedia_topics <- medienAnalysedaten_tagesbasis
 timeMedia_topicsUser <- medienAnalysedaten_userTagesbasis
 timeMedia_userBundesland <- medienAnalysedaten_userBundesland
+timeMedia_maximus <- medienAnalysedaten_maximus
 # timeMedia_discursivePower <- medienAnalysedaten_discursivePower ## vorsicht, unterschiedliche anzahlen, lieber nicht benutzen
 
 # ===============================================================================================================================================
@@ -209,29 +214,34 @@ minmaxMedia <- predict(processMedien, as_tidytable(themenüberblickMedien))
 # => SPEICHERUNG, DA HILFREICH FÜR THEMENFRAGE 1 ZUM EINSTIEG IN AUSWERTUNGSKAPITEL
 
 # GRAPHISCH
-überblPol <- ggplot(data = proportionalPolitiker, mapping = aes(y=names, x=anzahl)) +
-  stat_summary(geom = "bar", fun = sum, fill = "#b40040") +
-  theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11) +
+überblPol <- ggplot(data = proportionalPolitiker, mapping = aes(y=names, x=anzahl, fill=names)) +
+  stat_summary(geom = "bar", fun = sum) +
+  theme_ipsum(base_family = "TeX Gyre Heros", base_size = 11) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1, size = 10, face = "bold")) +
-  scale_x_percent() +
+  scale_x_percent(limits = c(0,0.25), breaks = seq(0, 0.25, 0.05)) +
+  scale_fill_manual(name="", values = topicFarben) +
   xlab("Anteil %") +
   ylab ("") +
-  ggtitle("POLITIKER: Themenaufmerksamkeit", subtitle = "Darstellung des prozentualen Anteils der Themen am Gesamtkorpus")
+  ggtitle("PolitikerInnen: Themenaufmerksamkeit", subtitle = "Prozentualer Anteil am Gesamtkorpus")
 
 # ggplot(data= themenüberblickPolitiker) +
 #    geom_bar(aes(y=anzahl, fill=names), position = "fill")
 
-überblMedia <- ggplot(data = proportionalMedia, mapping = aes(y=names, x=anzahl)) +
-  stat_summary(geom = "bar", fun = sum, fill = "blue4") +
-  theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11) +
+überblMedia <- ggplot(data = proportionalMedia, mapping = aes(y=names, x=anzahl, fill=names)) +
+  stat_summary(geom = "bar", fun = sum) +
+  theme_ipsum(base_family = "TeX Gyre Heros", base_size = 11) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1, size = 10, face = "bold")) +
-  scale_x_percent() +
+  scale_x_percent(limits = c(0,0.25), breaks = seq(0, 0.25, 0.05)) +
+  scale_fill_manual(name="", values = topicFarben) +
   xlab("Anteil %") +
   ylab ("") +
-  ggtitle("MEDIEN: Themenaufmerksamkeit", subtitle = "Darstellung des prozentualen Anteils der Themen am Gesamtkorpus")
+  ggtitle("Medien: Themenaufmerksamkeit", subtitle = "Prozentualer Anteil am Gesamtkorpus")
 
-themen_gegenüber_basic <- ggarrange(überblPol, überblMedia, common.legend = F)
+themen_gegenüber_basic <- ggarrange(überblPol, überblMedia, legend = "none")
 themen_gegenüber_basic
+
+## es gibt hier die möglichkeit, die themen in der gleichen farbe zu halten (topicFarben nutzen)
+## oder alternativ die graphik nach den jeweiligen gruppen zu färben (rot politiker, blau medien z. B.)
 
 # ggsave(themen_gegenüber_basic, filename = "themen_gegenüber_basic",
 #        plot = themen_gegenüber_basic, units = "px",
@@ -568,17 +578,22 @@ ggplot(data = medienAggregiert, aes(x=Zuweisung, y=prozent, fill=names)) +
 
 # datensätze
 # gesamte daten
-timeseriesPolitikerWest <- politikerAnalysedaten %>% filter(bundesland %in% westdeutschland)
-timeseriesPolitikerOst <- politikerAnalysedaten %>% filter(bundesland %in% ostdeutschlandListe)
+timeseriesPolitikerWest <- timePol_maximus %>% filter(bundesland %in% westdeutschland)
+timeseriesPolitikerOst <- timePol_maximus %>% filter(bundesland %in% ostdeutschlandListe)
 
 # afd west und ost
-TS_westAfd <- politikerAnalysedaten %>%
+TS_westAfd <- timePol_maximus %>%
   filter(bundesland %in% westdeutschland) %>%
   filter(partei == "AfD")
 
-TS_ostAfd <- politikerAnalysedaten %>%
+TS_ostAfd <- timePol_maximus %>%
   filter(bundesland %in% ostdeutschlandListe) %>%
   filter(partei == "AfD")
+
+timePol_maximus_afd <- timePol_maximus %>% filter(partei == "AfD")
+timePol_maximus_spd <- timePol_maximus %>% filter(partei == "SPD")
+timePol_maximus_fdp <- timePol_maximus %>% filter(partei == "FDP")
+unique(timePol_maximus_afd$user)
 
 dim(TS_ostAfd)
 dim(TS_westAfd)
@@ -612,6 +627,68 @@ ukraine_TS_Afd <- ggplot() +
 ggarrange(ukraine_TS_allg, ukraine_TS_Afd,
           common.legend = T, legend = "top",
           ncol = 1, nrow = 2)
+
+# ===============================================================================================================================================
+
+# aktivste user zum thema covid in den parteien vergleichen
+# erstellen einer informativen, dashboard-artigen visualisierung
+
+# timePol_maximus_afd <- timePol_maximus %>% filter(partei == "AfD")
+# timePol_maximus_spd <- timePol_maximus %>% filter(partei == "SPD")
+# timePol_maximus_fdp <- timePol_maximus %>% filter(partei == "FDP")
+# unique(timePol_maximus_afd$user)
+
+activeCovidUsers <- timePol_maximus %>% group_by(user) %>% filter(sum(covid) >= 100)
+activeCovidUsers_afd <- timePol_maximus_afd %>% group_by(user) %>% filter(sum(covid) >= 100)
+activeCovidUsers_spd <- timePol_maximus_spd %>% group_by(user) %>% filter(sum(covid) >= 100)
+activeCovidUsers_fdp <- timePol_maximus_fdp %>% group_by(user) %>% filter(sum(covid) >= 100)
+
+unique(activeCovidUsers$user)
+unique(activeCovidUsers_afd$user)
+unique(activeCovidUsers_spd$user)
+
+a <- ggplot() +
+  stat_summary(data = activeCovidUsers, aes(dateTime, covid, fill=partei), color="grey25", position = "fill", geom = "area", fun = sum, na.rm = T) +
+  scale_x_date(breaks = "1 month", labels = date_format(format = "%b", locale = "de")) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
+  theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
+  ggtitle(label = "Das Thema COVID-19", subtitle = "Behandlung des Themas in Abhängigkeit von der Partei") +
+  scale_fill_manual(name="Parteien", values = parteifarben) +
+  xlab("") +
+  ylab("Erwähnungen (absolut)")
+
+b <- ggplot() +
+  stat_summary(data = activeCovidUsers_afd, aes(dateTime, covid), color="#0087c1", geom = "line", fun = sum) +
+  stat_summary(data = activeCovidUsers_spd, aes(dateTime, covid), color="#e40006", geom = "line", fun = sum) + #effektiv karl lauterbach alleine
+  stat_summary(data = activeCovidUsers_fdp, aes(dateTime, covid), color="#ffee00", geom = "line", fun = sum) +
+  scale_x_date(breaks = "1 month", labels = date_format(format = "%b", locale = "de")) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
+  theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
+  ggtitle(label = "Behandlung des Themas COVID", subtitle = "Zeitverlauf für PolitikerInnen der AfD und der SPD im Vergleich") +
+  scale_fill_manual(name="PolitikerInnen", values = sechzehnFarben) +
+  xlab("") +
+  ylab("Erwähnungen (absolut)")
+
+
+# graphik für politiker mit mind. 80 tweets zum thema COVID über untersuchungszeitraum
+c <- timePol_userParty %>%
+  filter(covid >= 100) %>%
+  mutate(user = fct_reorder(user, desc(-covid))) %>%
+  ggplot(aes(y=user, x=covid, fill=partei)) +
+  geom_bar(position="dodge", stat="identity") +
+  scale_fill_manual(name="Parteizugehörigkeit", values = parteifarben) +
+  theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5)) +
+  xlab("Posts zum Thema 'covid'") +
+  ylab("Usernamen") +
+  ggtitle(label = "POLITIKERINNEN zum Thema COVID", subtitle = "Graphik für jene mit mind. 100 Tweets/Thema")
+
+arrangement_politiker_covid <- ggarrange(a, ggarrange(b, c, ncol = 2), nrow = 2)
+annotate_figure(arrangement_politiker_covid,
+                bottom=text_grob("Hinweis: Gezählte Beiträge der SPD in diesen Graphiken stammen allein von Gesundheitsminister K. Lauterbach.",
+                                 face = "italic",
+                                 size = 8,
+                                 color = "black"))
 
 # ==============================================================================
 # gruppe der politiker + wichtigste themen in einer graphik
@@ -661,7 +738,9 @@ timePol_userParty %>%
   ylab("Usernamen") +
   ggtitle(label = "POLITIKERINNEN zum Thema UKRAINE", subtitle = "Graphik für jene mit mind. 100 Tweets/Thema")
 
-# ==============================================================================
+# ===============================================================================================================================================
+
+# vorarbeiten für die graphik zum vergleich medien vs. politik und wer welche themen zuerst anspricht
 
 # gleiches für medien mit dem thema COVID
 medienCovid1200 <- timeMedia_userBundesland %>%
@@ -703,28 +782,47 @@ objMed <- lapply(timeMedia_topics[,-1], FUN = minMaxNorm)
 objMed <- as_tidytable(objMed)
 objMed$dateTime <- timeMedia_topics$dateTime
 
-# time series ukraine, covid politik
+# ==============================================================================================================================================
+
+# wichtige graphik zum vergleich: wer bespricht ein thema zuerst
+
 TSukrainePolitiker <- ggplot() +
   stat_summary(data = obj, aes(dateTime, ukraine, colour = "ukraine"), geom = "line", fun = sum) +
-  scale_x_date(breaks = "1 month", labels = date_format(format = "%b", locale = "de")) +
+  scale_x_date(breaks = "1 month", labels = date_format(format = "%b", locale = "de"), date_breaks = "2 weeks") +
   theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
   scale_colour_manual(name="", values = topicFarben) +
   scale_y_percent() +
-  ggtitle(label = "POLITIKERINNEN: Themenbehandlung Ukrainekrieg") +
+  ggtitle(label = "PolitikerInnen: Themenbehandlung Ukraine") +
   xlab("") +
-  ylab("Erwähnungen (absolut)")
+  ylab("Erwähnungen (normalisiert)")
 
 TSenergiePolitiker <- ggplot() +
   stat_summary(data = obj, aes(dateTime, energie, colour = "energie"), geom = "line", fun = sum) +
-  scale_x_date(breaks = "1 month", labels = date_format(format = "%b", locale = "de")) +
+  scale_x_date(breaks = "1 month", labels = date_format(format = "%b", locale = "de"), date_breaks = "2 weeks") +
   theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
   scale_colour_manual(name="", values = topicFarben) +
   scale_y_percent() +
-  ggtitle(label = "POLITIKERINNEN: Themenbehandlung Energie") +
+  ggtitle(label = "PolitikerInnen: Themenbehandlung Energie") +
+  xlab("") +
+  ylab("Erwähnungen (normalisiert)")
+
+ts_energieCovidPol_überschneidend <- ggplot() +
+  stat_summary(data = obj, aes(dateTime, ukraine, colour = "ukraine"), geom = "line", fun = sum) +
+  stat_summary(data = obj, aes(dateTime, energie, colour = "energie"), geom = "line", fun = sum) +
+  stat_smooth(data = obj, aes(dateTime, ukraine), colour="blue3") +
+  stat_smooth(data = obj, aes(dateTime, energie), colour="yellow3") +
+  scale_x_date(breaks = "1 month", labels = date_format(format = "%b", locale = "de"), date_breaks = "2 weeks") +
+  theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  scale_colour_manual(name="", values = topicFarben) +
+  scale_y_percent() +
+  ggtitle(label = "PolitikerInnen: Vergleichsgraphik Ukraine und Energie", subtitle = "Vergleich des zeitlichen Verlaufs der Themen über den Beobachtungszeitraum inkl. geglätteter Trendlinie") +
   xlab("") +
   ylab("Erwähnungen (absolut)")
+
+# ==============================================================================================================================================
 
 TSsozialesPolitiker <- ggplot() +
   stat_summary(data = obj, aes(dateTime, soziales, colour = "soziales"), geom = "line", fun = sum) +
@@ -733,9 +831,46 @@ TSsozialesPolitiker <- ggplot() +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
   scale_colour_manual(name="", values = topicFarben) +
   scale_y_percent() +
-  ggtitle(label = "POLITIKERINNEN: Themenbehandlung Soziales") +
+  ggtitle(label = "PolitikerInnen: Themenbehandlung Soziales") +
   xlab("") +
   ylab("Erwähnungen (absolut)")
+
+TScovidPolitiker <- ggplot() +
+  stat_summary(data = obj, aes(dateTime, covid, colour = "covid"), geom = "line", fun = sum) +
+  scale_x_date(breaks = "1 month", labels = date_format(format = "%b", locale = "de")) +
+  theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  scale_colour_manual(name="", values = topicFarben) +
+  scale_y_percent() +
+  ggtitle(label = "PolitikerInnen: Themenbehandlung Covid") +
+  xlab("") +
+  ylab("Erwähnungen (absolut)")
+
+# ==============================================================================================================================================
+
+TSklimaPolitiker <- ggplot() +
+  stat_summary(data = obj, aes(dateTime, klima, colour = "klima"), geom = "line", fun = sum) +
+  scale_x_date(breaks = "1 month", labels = date_format(format = "%b", locale = "de")) +
+  theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  scale_colour_manual(name="", values = topicFarben) +
+  scale_y_percent() +
+  ggtitle(label = "PolitikerInnen: Themenbehandlung Klima") +
+  xlab("") +
+  ylab("Erwähnungen (absolut)")
+
+TSverkehrPolitiker <- ggplot() +
+  stat_summary(data = obj, aes(dateTime, verkehr, colour = "verkehr"), geom = "line", fun = sum) +
+  scale_x_date(breaks = "1 month", labels = date_format(format = "%b", locale = "de")) +
+  theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  scale_colour_manual(name="", values = topicFarben) +
+  scale_y_percent() +
+  ggtitle(label = "PolitikerInnen: Themenbehandlung Verkehr") +
+  xlab("") +
+  ylab("Erwähnungen (absolut)")
+
+# ==============================================================================================================================================
 
 TSzukunftPolitiker <- ggplot() +
   stat_summary(data = obj, aes(dateTime, zukunft, colour = "zukunft"), geom = "line", fun = sum) +
@@ -748,16 +883,7 @@ TSzukunftPolitiker <- ggplot() +
   xlab("") +
   ylab("Erwähnungen (absolut)")
 
-TScovidPolitiker <- ggplot() +
-  stat_summary(data = obj, aes(dateTime, covid, colour = "covid"), geom = "line", fun = sum) +
-  scale_x_date(breaks = "1 month", labels = date_format(format = "%b", locale = "de")) +
-  theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
-  scale_colour_manual(name="", values = topicFarben) +
-  scale_y_percent() +
-  ggtitle(label = "POLITIKERINNEN: Themenbehandlung COVID-19") +
-  xlab("") +
-  ylab("Erwähnungen (absolut)")
+# ==============================================================================================================================================# ==============================================================================================================================================# ==============================================================================================================================================
 
 # time series ukraine, energie, soziales, zukunft, covid medien
 TSukraineMedien <- ggplot() +
@@ -767,9 +893,9 @@ TSukraineMedien <- ggplot() +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
   scale_colour_manual(name="", values = topicFarben) +
   scale_y_percent() +
-  ggtitle(label = "MEDIEN: Themenbehandlung Ukrainekrieg") +
+  ggtitle(label = "Medien: Themenbehandlung Ukraine") +
   xlab("") +
-  ylab("Erwähnungen (absolut)")
+  ylab("Erwähnungen (normalisiert)")
 
 TSenergieMedien <- ggplot() +
   stat_summary(data = objMed, aes(dateTime, energie, colour = "energie"), geom = "line", fun = sum) +
@@ -778,9 +904,25 @@ TSenergieMedien <- ggplot() +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
   scale_colour_manual(name="", values = topicFarben) +
   scale_y_percent() +
-  ggtitle(label = "MEDIEN: Themenbehandlung Energie") +
+  ggtitle(label = "Medien: Themenbehandlung Energie") +
+  xlab("") +
+  ylab("Erwähnungen (normalisiert")
+
+ggplot() +
+  stat_summary(data = objMed, aes(dateTime, ukraine, colour = "ukraine"), geom = "line", fun = sum) +
+  stat_summary(data = objMed, aes(dateTime, energie, colour = "energie"), geom = "line", fun = sum) +
+  stat_smooth(data = objMed, aes(dateTime, ukraine), colour = "blue") +
+  stat_smooth(data = objMed, aes(dateTime, energie), colour = "yellow") +
+  scale_x_date(breaks = "1 month", labels = date_format(format = "%b", locale = "de")) +
+  theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  scale_colour_manual(name="", values = topicFarben) +
+  scale_y_percent() +
+  ggtitle(label = "Medien: Themenbehandlung Ukraine und Energie im Vergleich", subtitle = "Inklusive integrierter geglättetem Gesamttrend") +
   xlab("") +
   ylab("Erwähnungen (absolut)")
+
+# ==============================================================================================================================================
 
 TSsozialesMedien <- ggplot() +
   stat_summary(data = objMed, aes(dateTime, soziales, colour = "soziales"), geom = "line", fun = sum) +
@@ -789,9 +931,46 @@ TSsozialesMedien <- ggplot() +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
   scale_colour_manual(name="", values = topicFarben) +
   scale_y_percent() +
-  ggtitle(label = "MEDIEN: Themenbehandlung Soziales") +
+  ggtitle(label = "Medien: Themenbehandlung Soziales") +
   xlab("") +
   ylab("Erwähnungen (absolut)")
+
+TScovidMedien <- ggplot() +
+  stat_summary(data = objMed, aes(dateTime, covid, colour = "covid"), geom = "line", fun = sum) +
+  scale_x_date(breaks = "1 month", labels = date_format(format = "%b", locale = "de")) +
+  theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  scale_colour_manual(name="", values = topicFarben) +
+  scale_y_percent() +
+  ggtitle(label = "Medien: Themenbehandlung Covid") +
+  xlab("") +
+  ylab("Erwähnungen (absolut)")
+
+# ==============================================================================================================================================
+
+TSklimaMedien <- ggplot() +
+  stat_summary(data = objMed, aes(dateTime, klima, colour = "klima"), geom = "line", fun = sum) +
+  scale_x_date(breaks = "1 month", labels = date_format(format = "%b", locale = "de")) +
+  theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  scale_colour_manual(name="", values = topicFarben) +
+  scale_y_percent() +
+  ggtitle(label = "Medien: Themenbehandlung Klima") +
+  xlab("") +
+  ylab("Erwähnungen (absolut)")
+
+TSverkehrMedien <- ggplot() +
+  stat_summary(data = objMed, aes(dateTime, verkehr, colour = "verkehr"), geom = "line", fun = sum) +
+  scale_x_date(breaks = "1 month", labels = date_format(format = "%b", locale = "de")) +
+  theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  scale_colour_manual(name="", values = topicFarben) +
+  scale_y_percent() +
+  ggtitle(label = "Medien: Themenbehandlung Verkehr") +
+  xlab("") +
+  ylab("Erwähnungen (absolut)")
+
+# ==============================================================================================================================================
 
 TSzukunftMedien <- ggplot() +
   stat_summary(data = objMed, aes(dateTime, zukunft, colour = "zukunft"), geom = "line", fun = sum) +
@@ -804,21 +983,208 @@ TSzukunftMedien <- ggplot() +
   xlab("") +
   ylab("Erwähnungen (absolut)")
 
-TScovidMedien <- ggplot() +
-  stat_summary(data = objMed, aes(dateTime, covid, colour = "covid"), geom = "line", fun = sum) +
+# DIE GRAPHIK UNBEDINGT AUSARBEITEN UND AUFNEHMEN!!!!!
+ggarrange(nrow=2, ncol=2,
+          TSukraineMedien, TSukrainePolitiker,
+          TSenergieMedien, TSenergiePolitiker,
+          # TSsozialesMedien, TSsozialesPolitiker,
+          # TSzukunftMedien, TSzukunftPolitiker,
+          # TScovidMedien, TScovidPolitiker,
+          # TSklimaMedien, TSklimaPolitiker,
+          legend="none")
+
+ggarrange(nrow=2, ncol=2,
+          # TSukraineMedien, TSukrainePolitiker,
+          # TSenergieMedien, TSenergiePolitiker,
+          TScovidMedien, TScovidPolitiker,
+          TSsozialesMedien, TSsozialesPolitiker,
+          # TSklimaMedien, TSklimaPolitiker,
+          # TSverkehrMedien, TSverkehrPolitiker,
+          legend="none")
+
+ggarrange(nrow=2, ncol=2,
+          # TSukraineMedien, TSukrainePolitiker,
+          # TSenergieMedien, TSenergiePolitiker,
+          # TScovidMedien, TScovidPolitiker,
+          # TSsozialesMedien, TSsozialesPolitiker,
+          TSklimaMedien, TSklimaPolitiker,
+          TSverkehrMedien, TSverkehrPolitiker,
+          legend="none")
+
+
+ggplotly(TSukrainePolitiker)
+ggplotly(TSenergiePolitiker)
+
+ggplotly(TScovidPolitiker)
+ggplotly(TSsozialesPolitiker)
+
+ggplotly(TSklimaPolitiker)
+ggplotly(TSverkehrPolitiker)
+
+
+# ==============================================================================================================================================
+# ==============================================================================================================================================# ==============================================================================================================================================
+
+# medien betrachten:
+# ähnlich der graphik zu aktivsten politikerinnen zu covid
+# versuch des kopierens für den fall der medien
+
+arrange(timeMedia_userBundesland, desc(covid))
+
+activeCovidUsers_medien <- timeMedia_maximus %>% group_by(user) %>% filter(sum(covid) >= 2000)
+activeUkraineUsers_medien <- timeMedia_maximus %>% group_by(user) %>% filter(sum(ukraine) >= 2000)
+
+timeMedia_maximus %>% filter(user=="badischezeitung") %>% summarise()
+
+covid_area_medien <- ggplot() +
+  stat_summary(data = activeCovidUsers_medien, aes(dateTime, covid, fill=user), color="grey25", position = "fill", geom = "area", fun = sum) +
   scale_x_date(breaks = "1 month", labels = date_format(format = "%b", locale = "de")) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
+  theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
+  scale_fill_manual(name = "Medien per Usernamen", values = sechzehnFarben) +
+  ggtitle(label = "Das Thema COVID-19 in den Medien", subtitle = "Behandlung des Themas über Zeitraum für Akteure mit mehr als 2000 Tweets zum Thema") +
+  xlab("") +
+  ylab("Erwähnungen (absolut)")
+
+covid_linechart_medien <- ggplot() +
+  stat_summary(data = activeCovidUsers_medien, aes(dateTime, covid, color=user), geom = "line", fun = sum) +
+  scale_x_date(breaks = "1 month", labels = date_format(format = "%b", locale = "de")) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
+  theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
+  ggtitle(label = "Zeitverlauf zum Thema COVID-19\nin der medialen Berichterstattung", subtitle = "Verlauf auf Tagesebene für Akteure mit 2000 oder mehr Tweets zum Thema") +
+  scale_fill_manual(name="Medien per Usernamen", values = sechzehnFarben) +
+  xlab("") +
+  ylab("Erwähnungen (absolut)")
+
+# graphik für politiker mit mind. 80 tweets zum thema COVID über untersuchungszeitraum
+# geht nicht, liegt an länge und sortierung
+covid_akteure_medien <- timeMedia_maximus %>%
+  group_by(user) %>%
+  filter(sum(covid) <= 3500) %>%
+  ungroup() %>%
+  mutate(user = fct_reorder(user, desc(-sum(covid)))) %>%
+  ggplot(aes(y=user, x=covid, fill=bundesland)) +
+  geom_bar(position="dodge", stat="identity") +
+  scale_fill_manual(name="Bundesland", values = bundesländer) +
+  theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5)) +
+  xlab("Posts zum Thema 'covid'") +
+  ylab("Usernamen") +
+  ggtitle(label = "MEDIALE AKTEURE, Thema COVID-19", subtitle = "Direkter Vergleich für Akteure mit 2000 oder mehr Tweets zum Thema")
+
+ggarrange(covid_area_medien,
+          ggarrange(covid_linechart_medien, covid_akteure_medien, ncol=2),
+          nrow=2)
+
+# ==============================================================================================================================================
+
+# graphen medien politiker in einem zum direkten kurvenvergleich der themen
+
+ts_ukraine <- ggplot() +
+  stat_summary(data = obj, aes(dateTime, ukraine, colour="PolitikerInnen"), geom = "line", fun = sum) +
+  stat_summary(data = objMed, aes(dateTime, ukraine, colour="Medien"), geom = "line", fun = sum) +
+  scale_x_date(breaks = "1 month", labels = date_format(format = "%b", locale = "de")) +
+  theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  scale_colour_manual(name="Gruppenzugehörigkeit", values = medienPolitikerFarben) +
+  scale_y_percent() +
+  ggtitle(label = "Thema Ukraine: Gegenüberstellung der Akteursgruppen") +
+  xlab("") +
+  ylab("Erwähnungen (absolut)")
+ts_ukraine
+
+ts_covid <- ggplot() +
+  stat_summary(data = obj, aes(dateTime, covid, colour="PolitikerInnen"), geom = "line", fun = sum) +
+  stat_summary(data = objMed, aes(dateTime, covid, colour="Medien"), geom = "line", fun = sum) +
+  scale_x_date(breaks = "1 month", labels = date_format(format = "%b", locale = "de")) +
+  theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  scale_colour_manual(name="Gruppenzugehörigkeit", values = medienPolitikerFarben) +
+  scale_y_percent() +
+  ggtitle(label = "Thema Covid: Gegenüberstellung der Akteursgruppen") +
+  xlab("") +
+  ylab("Erwähnungen (absolut)")
+ts_covid
+
+ts_energie <- ggplot() +
+  stat_summary(data = obj, aes(dateTime, energie, colour="PolitikerInnen"), geom = "line", fun = sum) +
+  stat_summary(data = objMed, aes(dateTime, energie, colour="Medien"), geom = "line", fun = sum) +
+  scale_x_date(breaks = "1 month", labels = date_format(format = "%b", locale = "de")) +
+  theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  scale_colour_manual(name="Gruppenzugehörigkeit", values = medienPolitikerFarben) +
+  scale_y_percent() +
+  ggtitle(label = "Thema Energie: Gegenüberstellung der Akteursgruppen") +
+  xlab("") +
+  ylab("Erwähnungen (absolut)")
+ts_energie
+
+ts_soziales <- ggplot() +
+  stat_summary(data = obj, aes(dateTime, soziales, colour="PolitikerInnen"), geom = "line", fun = sum) +
+  stat_summary(data = objMed, aes(dateTime, soziales, colour="Medien"), geom = "line", fun = sum) +
+  scale_x_date(breaks = "1 month", labels = date_format(format = "%b", locale = "de")) +
+  theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  scale_colour_manual(name="Gruppenzugehörigkeit", values = medienPolitikerFarben) +
+  scale_y_percent() +
+  ggtitle(label = "Thema Soziales: Gegenüberstellung der Akteursgruppen") +
+  xlab("") +
+  ylab("Erwähnungen (absolut)")
+ts_soziales
+
+ggplot() +
+  stat_summary(data = obj, aes(dateTime, covid, colour="PolitikerInnen"), geom = "line", fun = sum) +
+  stat_summary(data = objMed, aes(dateTime, covid, colour="Medien"), geom = "line", fun = sum) +
+  stat_smooth(data = obj, aes(dateTime, covid), colour="#fb4d46", method = "loess") +
+  stat_smooth(data = objMed, aes(dateTime, covid), colour="#008080", method = "loess") +
+  scale_x_date(breaks = "1 month", labels = date_format(format = "%b", locale = "de"), date_breaks = "2 weeks") +
+  theme_ipsum(base_family = "TeX Gyre Heros", base_size = 11.5) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  scale_colour_manual(name="Gruppenzugehörigkeit", values = medienPolitikerFarben) +
+  scale_y_percent() +
+  ggtitle(label = "Thema Covid: Gegenüberstellung der Akteursgruppen") +
+  xlab("") +
+  ylab("Erwähnungen (absolut)")
+
+ggplot() +
+  stat_summary(data = obj, aes(dateTime, ukraine, colour="PolitikerInnen"), geom = "line", fun = sum) +
+  stat_summary(data = objMed, aes(dateTime, ukraine, colour="Medien"), geom = "line", fun = sum) +
+  stat_smooth(data = obj, aes(dateTime, ukraine), colour="#fb4d46", method = "loess") +
+  stat_smooth(data = objMed, aes(dateTime, ukraine), colour="#008080", method = "loess") +
+  scale_x_date(breaks = "1 month", labels = date_format(format = "%b", locale = "de"), date_breaks = "2 weeks") +
+  theme_ipsum(base_family = "TeX Gyre Heros", base_size = 11.5) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  scale_colour_manual(name="Gruppenzugehörigkeit", values = medienPolitikerFarben) +
+  scale_y_percent() +
+  ggtitle(label = "Thema Ukraine: Gegenüberstellung der Akteursgruppen") +
+  xlab("") +
+  ylab("Erwähnungen (absolut)")
+
+# zeitlich zugeschnittene analysen möglich
+objMed %>%
+  filter(dateTime >= "2022-01-01") %>%
+  filter(dateTime <= "2022-03-31") %>%
+  ggplot() +
+  stat_summary(aes(dateTime, ukraine, colour = "ukraine"), geom = "line", fun = sum) +
+  stat_summary(aes(dateTime, covid, colour = "covid"), geom = "line", fun = sum) +
+  scale_x_date(breaks = "1 month", labels = date_format(format = "%b", locale = "de"), date_breaks = "1 week") +
   theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
   scale_colour_manual(name="", values = topicFarben) +
   scale_y_percent() +
-  ggtitle(label = "MEDIEN: Themenbehandlung COVID-19") +
+  ggtitle(label = "Medien: Themenbehandlung Ukraine") +
   xlab("") +
-  ylab("Erwähnungen (absolut)")
+  ylab("Erwähnungen (normalisiert)")
 
-# DIE GRAPHIK UNBEDINGT AUSARBEITEN UND AUFNEHMEN!!!!!
-ggarrange(nrow=4, ncol=2,
-          TSukraineMedien, TSukrainePolitiker,
-          TSenergieMedien, TSenergiePolitiker,
-          TSsozialesMedien, TSsozialesPolitiker,
-          TScovidMedien, TScovidPolitiker,
-          legend="none")
+
+
+
+
+
+
+
+
+
+
+
+

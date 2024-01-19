@@ -76,6 +76,15 @@ dat_politiker <- dat_politiker %>% purrr::set_names(filelistNames_pol)
 gc()
 # View(dat_politiker)
 
+# ## politiker brd; datum = tagesebene
+allePolitiker <- reduce(dat_politiker, .f = full_join)
+allePolitiker <- as_tidytable(allePolitiker)
+allePolitiker$dateTime <- lubridate::date(allePolitiker$dateTime)
+dim(allePolitiker)
+
+# nochmal durchführen, da immer noch ~200 tweets aus dem nichts
+allePolitiker <- allePolitiker %>% distinct(text, .keep_all = T)
+
 ########################################################################
 
 # BATCH LOADING: MEDIENDATEN
@@ -95,14 +104,15 @@ dat_medien <- dat_medien %>% purrr::set_names(filelistNames_medien)
 gc()
 # View(dat_medien)
 
+alleMedien <- reduce(dat_medien, .f = full_join)
+alleMedien <- as_tidytable(alleMedien)
+alleMedien$dateTime <- lubridate::date(alleMedien$dateTime)
+dim(alleMedien)
+dim(distinct(alleMedien, text, .keep_all = T))
+
 ########################################################################
 
 # OPERATIONEN FÜR ALLE DATENSÄTZE, HIER EXEMPLARISCH
-## politiker brd; datum = tagesebene
-allePolitiker <- reduce(dat_politiker, .f = full_join)
-allePolitiker <- as_tidytable(allePolitiker)
-allePolitiker$dateTime <- lubridate::date(allePolitiker$dateTime)
-
 # ## berliner politiker; datum = tagesebene
 # politikerBerlin <- dat_politiker$BERLIN_politiker
 # politikerBerlin <- as_tidytable(politikerBerlin)
@@ -124,27 +134,27 @@ allePolitiker$dateTime <- lubridate::date(allePolitiker$dateTime)
 # colours <- c("Ukraine"="#10adf9", "Covid"="#894c0a", "Energie"="#ec843e", "Klima"="#356043",
 #              "Soziales"="#bb0040", "Verkehr"="#e7c65d")
 
-politiker_alles_days <- allePolitiker %>%
-  reframe(.by = c(dateTime),
-          mentionsCovid = sum(covid),
-          mentionsUkraine = sum(ukraine),
-          mentionsEnergie = sum(energie),
-          mentionsSoziales = sum(soziales),
-          mentionsVerteidigungspolitik = sum(verteidigungspolitik),
-          mentionsPolitikNational = sum(politikNational),
-          mentionsPolitikInternational = sum(politikInternational),
-          mentionsPolitikEuropa = sum(politikEuropa),
-          mentionsKlima = sum(klima),mentionsProtesteIran = sum(protesteIran),
-          mentionsPolizistenmordKusel = sum(polizistenmordKusel),
-          mentionsVerkehr = sum(verkehr),mentionsPluralismusMedien = sum(pluralismusMedien),
-          mentionsZukunft = sum(zukunft),mentionsVerfassungsfeindlich = sum(verfassungsfeindlich),
-          #partei = partei,
-          #user = user,
-          follower = followerAmount,
-          einzug = einzug,
-          replies = replies,
-          retweets = retweets,
-          likes = likes)
+# politiker_alles_days <- allePolitiker %>%
+#   reframe(.by = c(dateTime),
+#           mentionsCovid = sum(covid),
+#           mentionsUkraine = sum(ukraine),
+#           mentionsEnergie = sum(energie),
+#           mentionsSoziales = sum(soziales),
+#           mentionsVerteidigungspolitik = sum(verteidigungspolitik),
+#           mentionsPolitikNational = sum(politikNational),
+#           mentionsPolitikInternational = sum(politikInternational),
+#           mentionsPolitikEuropa = sum(politikEuropa),
+#           mentionsKlima = sum(klima),mentionsProtesteIran = sum(protesteIran),
+#           mentionsPolizistenmordKusel = sum(polizistenmordKusel),
+#           mentionsVerkehr = sum(verkehr),mentionsPluralismusMedien = sum(pluralismusMedien),
+#           mentionsZukunft = sum(zukunft),mentionsVerfassungsfeindlich = sum(verfassungsfeindlich),
+#           #partei = partei,
+#           #user = user,
+#           follower = followerAmount,
+#           einzug = einzug,
+#           replies = replies,
+#           retweets = retweets,
+#           likes = likes)
 #
 # medien_alles_days <- alleMedien %>%
 #   reframe(.by = c(dateTime),
@@ -170,8 +180,8 @@ politiker_alles_days <- allePolitiker %>%
 
 
 # # alternativen datensatz erstellen zur abbildung der themen im zeitverlauf
-alternativeMedien <- alleMedien %>% aggregate(covid ~ dateTime, sum) %>% as_tidytable(alternativeMedien)
-alternativePolitiker <- allePolitiker %>% aggregate(covid ~ dateTime, sum) %>% as_tidytable(alternativePolitiker)
+# alternativeMedien <- alleMedien %>% aggregate(covid ~ dateTime, sum) %>% as_tidytable(alternativeMedien)
+# alternativePolitiker <- allePolitiker %>% aggregate(covid ~ dateTime, sum) %>% as_tidytable(alternativePolitiker)
 # alternativeMedien <- full_join(x = alternativeMedien,
 #                                y = (alleMedien %>% aggregate(ukraine ~ dateTime, sum)))
 # alternativeMedien <- full_join(x = alternativeMedien,
@@ -366,6 +376,13 @@ politikerAnalysedaten_TopicsUndParteien <- allePolitiker %>%
   # filter(user == "Alice_Weidel") %>%
   aggregate(cbind(covid, ukraine, energie, soziales, verteidigungspolitik, polizistenmordKusel, flutAhrtal, politikEuropa, politikInternational, klima, protesteIran, verkehr, pluralismusMedien, zukunft, verfassungsfeindlich) ~ partei + dateTime, sum)
 
+politikerAnalysedaten_TopicsBundesland <- allePolitiker %>%
+  as_tidytable(allePolitiker) %>%
+  # filter(partei == "AfD") %>%
+  # filter(bundesland == "Baden-Württemberg") %>%
+  # filter(user == "Alice_Weidel") %>%
+  aggregate(cbind(covid, ukraine, energie, soziales, verteidigungspolitik, polizistenmordKusel, flutAhrtal, politikEuropa, politikInternational, klima, protesteIran, verkehr, pluralismusMedien, zukunft, verfassungsfeindlich) ~ dateTime + bundesland, sum)
+
 ### versuch aggregation mit maximalem sinnvollen ausmaß:
 ### aggregation von posts pro tag (dateTime) pro user (user) aus jeweiliger partei (partei), gegliedert außerdem nach herkunft (bundesland)
 politikerAnalysedaten_maximus <- allePolitiker %>%
@@ -376,29 +393,29 @@ politikerAnalysedaten_maximus <- allePolitiker %>%
   aggregate(cbind(covid, ukraine, energie, soziales, verteidigungspolitik, polizistenmordKusel, flutAhrtal, politikEuropa, politikInternational, klima, protesteIran, verkehr, pluralismusMedien, zukunft, verfassungsfeindlich) ~ partei + user + bundesland + dateTime, sum)
 
 # ===============================================================================================================================================
-####
-
-# politikerAnalysedaten
-# politikerAnalysedatenThemen
+# ===============================================================================================================================================
+# ===============================================================================================================================================
 
 #### ANFÜGEN VON WOCHENNUMMERN UND MONATSSORTIERUNG
 #### ERMÖGLICHUNG: SPÄTERE ANALYSEN AUF ANDERER ZEITEBENE
 
-politikerAnalysedaten$weeks <- as.Date(cut(politikerAnalysedaten$dateTime,
-                              breaks = "week"))
-politikerAnalysedaten$months <- as.Date(cut(politikerAnalysedaten$dateTime,
-                               breaks = "month"))
-politikerAnalysedaten$weeksLubridate <- lubridate::week(politikerAnalysedaten$dateTime)
-politikerAnalysedaten$monthsLubridate <- lubridate::month(politikerAnalysedaten$dateTime)
-
-####
-
-politikerAnalysedatenThemen$weeks <- as.Date(cut(politikerAnalysedatenThemen$dateTime,
-                                           breaks = "week"))
-politikerAnalysedatenThemen$months <- as.Date(cut(politikerAnalysedatenThemen$dateTime,
-                                            breaks = "month"))
-politikerAnalysedatenThemen$weeksLubridate <- lubridate::week(politikerAnalysedatenThemen$dateTime)
-politikerAnalysedatenThemen$monthsLubridate <- lubridate::month(politikerAnalysedatenThemen$dateTime)
+## geht momentan noch nicht, weil die datensatz-namen noch alt sind;
+## könnte aber angepasst werden!
+# politikerAnalysedaten$weeks <- as.Date(cut(politikerAnalysedaten$dateTime,
+#                               breaks = "week"))
+# politikerAnalysedaten$months <- as.Date(cut(politikerAnalysedaten$dateTime,
+#                                breaks = "month"))
+# politikerAnalysedaten$weeksLubridate <- lubridate::week(politikerAnalysedaten$dateTime)
+# politikerAnalysedaten$monthsLubridate <- lubridate::month(politikerAnalysedaten$dateTime)
+#
+# ####
+#
+# politikerAnalysedatenThemen$weeks <- as.Date(cut(politikerAnalysedatenThemen$dateTime,
+#                                            breaks = "week"))
+# politikerAnalysedatenThemen$months <- as.Date(cut(politikerAnalysedatenThemen$dateTime,
+#                                             breaks = "month"))
+# politikerAnalysedatenThemen$weeksLubridate <- lubridate::week(politikerAnalysedatenThemen$dateTime)
+# politikerAnalysedatenThemen$monthsLubridate <- lubridate::month(politikerAnalysedatenThemen$dateTime)
 
 #### OPTIONALE SPEICHERUNG ALS R OBJEKTE UND CSV DATEIEN
 
@@ -412,57 +429,57 @@ politikerAnalysedatenThemen$monthsLubridate <- lubridate::month(politikerAnalyse
 
 # ===================================================
 # datumseinstellung
-alleMedien$dateTime <- as.Date(alleMedien$dateTime)
+# alleMedien$dateTime <- as.Date(alleMedien$dateTime)
 # ===================================================
 
-#
-arte <- alleMedien %>% filter(user == "ARTEde")
+# arte <- alleMedien %>% filter(user == "ARTEde")
 dat_medien$ÜBERREGIONALE_medien$bundesland <- "Überregional"
-fre(dat_medien$ÜBERREGIONALE_medien$bundesland)
+freq(dat_medien$ÜBERREGIONALE_medien$bundesland)
 dat_medien$DIGITALE_medien$bundesland <- "Überregional"
-fre(dat_medien$DIGITALE_medien$bundesland)
+freq(dat_medien$DIGITALE_medien$bundesland)
 dat_medien$ÖRR_medien$bundesland <- ""
-dat_medien$ÖRR_medien <- dat_medien$ÖRR_medien %>% mutate(bundesland = case_when(user == "ARTEde" ~ "Überregional",
-                                                                                 user == "BR_Presse" ~ "Bayern",
-                                                                                 user == "BR24" ~ "Bayern",
-                                                                                 user == "DeutscheWelle" ~ "Überregional",
-                                                                                 user == "DLF" ~ "Überregional",
-                                                                                 user == "dlfnova" ~ "Überregional",
-                                                                                 user == "dlfkultur" ~ "Überregional",
-                                                                                 user == "hessenschau" ~ "Hessen",
-                                                                                 user == "hrPresse" ~ "Hessen",
-                                                                                 user == "mdrde" ~ "Überregional",
-                                                                                 user == "MDRAktuell" ~ "Überregional",
-                                                                                 user == "MDRpresse" ~ "Überregional",
-                                                                                 user == "MDR_SN" ~ "Sachsen",
-                                                                                 user == "MDR_SAN" ~ "Sachsen-Anhalt",
-                                                                                 user == "mdr_th" ~ "Thüringen",
-                                                                                 user == "NDRinfo" ~ "Überregional",
-                                                                                 user == "NDRnds" ~ "Niedersachsen",
-                                                                                 user == "NDRsh" ~ "Schleswig-Holstein",
-                                                                                 user == "ndr" ~ "Überregional",
-                                                                                 user == "butenunbinnen" ~ "Bremen",
-                                                                                 user == "rbbabendschau" ~ "Überregional",
-                                                                                 user == "rbb24" ~ "Überregional",
-                                                                                 user == "rbb24Inforadio" ~ "Überregional",
-                                                                                 user == "SRKommunikation" ~ "Saarland",
-                                                                                 user == "SRaktuell" ~ "Saarland",
-                                                                                 user == "SWRAktuellBW" ~ "Baden-Württemberg",
-                                                                                 user == "SWRpresse" ~ "Überregional",
-                                                                                 user == "SWRAktuellRP" ~ "Rheinland-Pfalz",
-                                                                                 user == "WDR" ~ "Nordrhein-Westfalen",
-                                                                                 user == "WDRaktuell" ~ "Nordrhein-Westfalen"))
-fre(dat_medien$DIGITALE_medien$bundesland)
+dat_medien$ÖRR_medien <- dat_medien$ÖRR_medien %>%
+  mutate(bundesland = case_when(user == "ARTEde" ~ "Überregional",
+                                user == "BR_Presse" ~ "Bayern",
+                                user == "BR24" ~ "Bayern",
+                                user == "DeutscheWelle" ~ "Überregional",
+                                user == "DLF" ~ "Überregional",
+                                user == "dlfnova" ~ "Überregional",
+                                user == "dlfkultur" ~ "Überregional",
+                                user == "hessenschau" ~ "Hessen",
+                                user == "hrPresse" ~ "Hessen",
+                                user == "mdrde" ~ "Überregional",
+                                user == "MDRAktuell" ~ "Überregional",
+                                user == "MDRpresse" ~ "Überregional",
+                                user == "MDR_SN" ~ "Sachsen",
+                                user == "MDR_SAN" ~ "Sachsen-Anhalt",
+                                user == "mdr_th" ~ "Thüringen",
+                                user == "NDRinfo" ~ "Überregional",
+                                user == "NDRnds" ~ "Niedersachsen",
+                                user == "NDRsh" ~ "Schleswig-Holstein",
+                                user == "ndr" ~ "Überregional",
+                                user == "butenunbinnen" ~ "Bremen",
+                                user == "rbbabendschau" ~ "Überregional",
+                                user == "rbb24" ~ "Überregional",
+                                user == "rbb24Inforadio" ~ "Überregional",
+                                user == "SRKommunikation" ~ "Saarland",
+                                user == "SRaktuell" ~ "Saarland",
+                                user == "SWRAktuellBW" ~ "Baden-Württemberg",
+                                user == "SWRpresse" ~ "Überregional",
+                                user == "SWRAktuellRP" ~ "Rheinland-Pfalz",
+                                user == "WDR" ~ "Nordrhein-Westfalen",
+                                user == "WDRaktuell" ~ "Nordrhein-Westfalen"))
+fre(dat_medien$ÖRR_medien$bundesland)
 
+# hier momentan dann noch alle auf NA, die nicht bei den regionalen medien dabei waren
 freq(alleMedien$bundesland)
 
-## alle medien; datum = tagesebene
+## alle medien: neues reduce + tidytable, damit die bundesländer im gesamten df drin sind
 alleMedien <- reduce(dat_medien, .f = full_join)
 alleMedien <- as_tidytable(alleMedien)
-freq(alleMedien$bundesland)
-
-
 alleMedien$dateTime <- as.Date(alleMedien$dateTime)
+freq(alleMedien$bundesland)
+alleMedien
 
 # ===================================================
 # herstellen der analysedaten für die medien nach vorbild dessen, was für politiker schon gemacht wurde
@@ -558,33 +575,35 @@ sum(medienAnalysedaten_discursivePower$covid)
 #   # filter(user == "ARTEde") %>%
 #   aggregate(cbind(covid, ukraine, energie, soziales, verteidigungspolitik, polizistenmordKusel, flutAhrtal, politikEuropa, politikInternational, klima, protesteIran, verkehr, pluralismusMedien, zukunft, verfassungsfeindlich) ~ dateTime, sum)
 
-medienAnalysedaten
-medienAnalysedatenThemen
+# medienAnalysedaten
+# medienAnalysedatenThemen
 
 ####
 
-medienAnalysedaten$weeks <- as.Date(cut(medienAnalysedaten$dateTime,
-                                           breaks = "week"))
-medienAnalysedaten$months <- as.Date(cut(medienAnalysedaten$dateTime,
-                                            breaks = "month"))
-medienAnalysedaten$weeksLubridate <- lubridate::week(medienAnalysedaten$dateTime)
-medienAnalysedaten$monthsLubridate <- lubridate::month(medienAnalysedaten$dateTime)
+#gleiches spiel wie bei den politikerdaten;
+#kann ebenfalls reaktiviert werden!
+# medienAnalysedaten$weeks <- as.Date(cut(medienAnalysedaten$dateTime,
+#                                            breaks = "week"))
+# medienAnalysedaten$months <- as.Date(cut(medienAnalysedaten$dateTime,
+#                                             breaks = "month"))
+# medienAnalysedaten$weeksLubridate <- lubridate::week(medienAnalysedaten$dateTime)
+# medienAnalysedaten$monthsLubridate <- lubridate::month(medienAnalysedaten$dateTime)
+#
+# ####
+#
+# medienAnalysedatenThemen$weeks <- as.Date(cut(medienAnalysedatenThemen$dateTime,
+#                                               breaks = "week"))
+# medienAnalysedatenThemen$months <- as.Date(cut(medienAnalysedatenThemen$dateTime,
+#                                          breaks = "month"))
+# medienAnalysedatenThemen$weeksLubridate <- lubridate::week(medienAnalysedatenThemen$dateTime)
+# medienAnalysedatenThemen$monthsLubridate <- lubridate::month(medienAnalysedatenThemen$dateTime)
 
 ####
 
-medienAnalysedatenThemen$weeks <- as.Date(cut(medienAnalysedatenThemen$dateTime,
-                                              breaks = "week"))
-medienAnalysedatenThemen$months <- as.Date(cut(medienAnalysedatenThemen$dateTime,
-                                         breaks = "month"))
-medienAnalysedatenThemen$weeksLubridate <- lubridate::week(medienAnalysedatenThemen$dateTime)
-medienAnalysedatenThemen$monthsLubridate <- lubridate::month(medienAnalysedatenThemen$dateTime)
-
-####
-
-save(medienAnalysedaten, file = "zwischenspeicherung/medienAnalysedaten.RData")
-write_csv(medienAnalysedaten, file = "zwischenspeicherung/medienAnalysedaten.csv")
-save(medienAnalysedatenThemen, file = "zwischenspeicherung/medienAnalysedatenThemen.RData")
-write_csv(medienAnalysedatenThemen, file = "zwischenspeicherung/medienAnalysedatenThemen.csv")
+# save(medienAnalysedaten, file = "zwischenspeicherung/medienAnalysedaten.RData")
+# write_csv(medienAnalysedaten, file = "zwischenspeicherung/medienAnalysedaten.csv")
+# save(medienAnalysedatenThemen, file = "zwischenspeicherung/medienAnalysedatenThemen.RData")
+# write_csv(medienAnalysedatenThemen, file = "zwischenspeicherung/medienAnalysedatenThemen.csv")
 
 ################################################################################
 ################################################################################
