@@ -1,127 +1,128 @@
-################################################################################ libraries
-library(tidytext)
-library(readr)
-library(summarytools)
-library(rvest)
-library(expss)
-# library(hunspell)
-library(lubridate)
-# library(quanteda)
-# library(tm)
-# library(topicmodels)
-# library(stopwords)
-library(stringi)
-#library(rvisidata)
-library(qdap)
-library(mgsub)
-library(dirichletprocess)
-library(igraph)
-library(ggraph)
-library(esquisse)
-library(ggforce)
-library(ggh4x)
-library(plotly)
-library(data.table)
-library(tidytable)
-library(gridExtra)
-library(ggpubr)
-library(scales)
-library(TSstudio)
-library(caret)
-library(ggsci)
-library(tidyverse)
-library(pals)
-library(Polychrome)
-library(hrbrthemes)
-library(ggpmisc)
-library(ggfortify)
-library(changepoint)
-library(strucchange)
-
-################################################################################
-
-library(knitr)
-library(kableExtra)
-library(DT)
-# library(tm)
-# library(topicmodels)
-# library(reshape2)
-# library(ggplot2)
-# library(wordcloud)
+# ################################################################################ libraries
+# library(tidytext)
+# library(readr)
+# library(summarytools)
+# library(rvest)
+# library(expss)
+# # library(hunspell)
+# library(lubridate)
+# # library(quanteda)
+# # library(tm)
+# # library(topicmodels)
+# # library(stopwords)
+# library(stringi)
+# #library(rvisidata)
+# library(qdap)
+# library(mgsub)
+# library(dirichletprocess)
+# library(igraph)
+# library(ggraph)
+# library(esquisse)
+# library(ggforce)
+# library(ggh4x)
+# library(plotly)
+# library(data.table)
+# library(tidytable)
+# library(gridExtra)
+# library(ggpubr)
+# library(scales)
+# library(TSstudio)
+# library(caret)
+# library(ggsci)
+# library(tidyverse)
 # library(pals)
-# library(SnowballC)
-# library(lda)
-# library(ldatuning)
-library(flextable)
-# activate klippy for copy-to-clipboard button
-# klippy::klippy()
-
-# emoji clipping
-# library(emoji)
-# library(textclean)
+# library(Polychrome)
+# library(hrbrthemes)
+# library(ggpmisc)
+# library(ggfortify)
+# library(changepoint)
+# library(strucchange)
+# library(rsthemes)
+#
+# ################################################################################
+#
+# library(knitr)
+# library(kableExtra)
+# library(DT)
+# # library(tm)
+# # library(topicmodels)
+# # library(reshape2)
+# # library(ggplot2)
+# # library(wordcloud)
+# # library(pals)
+# # library(SnowballC)
+# # library(lda)
+# # library(ldatuning)
+# library(flextable)
+# # activate klippy for copy-to-clipboard button
+# # klippy::klippy()
+#
+# # emoji clipping
+# # library(emoji)
+# # library(textclean)
 
 # ==============================================================================================================================================# ==============================================================================================================================================# ==============================================================================================================================================
 
-setwd(dir = "~/Documents/uni/masterarbeit/scraping/polResp-css/auswertungRfiles/")
+# setwd(dir = "~/Documents/uni/masterarbeit/scraping/polResp-css/auswertungRfiles/")
+#
+# # load für relevante datensets
+#
+# load("zwischenspeicherung/environment3_komplett.RData")
 
-# load für relevante datensets
-
-load("zwischenspeicherung/environment2_komplett.RData")
-
-# colours
-medienPolitikerFarben <- c("Medien"="#008080", "PolitikerInnen"="#fb4d46")
-
-parteifarben <- c("AfD"="#0087c1", "B90/Die Grünen"="#19a329",
-                  "CDU"="black", "CSU"="skyblue", "Die Linke"="#be3075",
-                  "FDP"="#ffee00", "SPD"="#e40006", "SSW"="darkblue")
-
-bundesländer <- c("Baden-Württemberg"="black", "Bayern"="skyblue", "Berlin"="#eb4c42",
-                  "Brandenburg"="#69472D", "Bremen"="darkseagreen",
-                  "Hamburg"="#246bce", "Hessen"="#873260", "Mecklenburg-Vorpommern"="#f5c942",
-                  "Niedersachsen"="#cae00d", "Nordrhein-Westfalen"="#38761D",
-                  "Rheinland-Pfalz"="#800020", "Saarland"="blue", "Sachsen"="#4a5d23",
-                  "Sachsen-Anhalt"="#954535", "Schleswig-Holstein"="blue4",
-                  "Thüringen"="#cdba96", "Überregional"="#a2add0")
-
-sechzehnFarben <- c("black", "skyblue","#eb4c42", "#69472D", "darkseagreen", "#246bce",
-                    "#873260", "#f5c942", "#cae00d", "#38761D", "#800020", "blue",
-                    "#4a5d23", "#954535", "blue4", "#a1a3fd", "#b2beb5")
-
-topicFarben <- c("ukraine"="#005bbb", "energie"="#ceff00", "soziales"="#e40006", "zukunft"="#cc397b",
-                 "covid"="#b5a642", "klima"="#03c03c", "politikEuropa"="blue4", "politikInternational"="#8a496b",
-                 "verkehr"="#4166f5", "verteidigungspolitik"="#4B5320",
-                 "pluralismusMedien"="#00cdcd", "verfassungsfeindlich"="#654321", "protesteIran"="#229f40",
-                 "flutAhrtal"="#873260", "polizistenmordKusel"="orange")
-
-theHeat <- heat.colors(14)
-rainCol <- rainbow(14)
-palettePolychrome1 <- Polychrome::createPalette(N = 15, seedcolors = c("#bb0040", "#10adf0", "#ec843e", "#356043"))
-geographie <- c("Westen"="#10adf0", "Osten"="#b40040")
-paletteCategorical2 <- c("Politiker"="#bb0040", "Medien"="#10adf0")
-paletteCategorical3 <- c("Politiker Ost"="#bb0040", "Politiker Gesamt"="orange", "Politiker West" = "#10adf0",
-                         "Medien Ost"="#bb0000", "Medien Gesamt"="orange", "Medien West"="#10adc0")
-
-# ===============================================================================================================================================
-######################################## FUNKTIONALE NEUBENENNUNGEN AUS DATEI 04
-
-# POLITIKER
-timePol <- politikerAnalysedaten
-timePol_topics <- politikerAnalysedatenThemen
-timePol_party <- politikerAnalysedaten_Parteien
-timePol_userParty <- politikerAnalysedaten_userParteien
-timePol_topicsParty <- politikerAnalysedaten_TopicsUndParteien
-timePol_topicsUser <- politikerAnalysedaten_TopicsUndUser
-timePol_maximus <- politikerAnalysedaten_maximus
-
-# MEDIEN
-timeMedia <- medienAnalysedaten_userAggregiert
-timeMedia_topics <- medienAnalysedaten_tagesbasis
-timeMedia_topicsUser <- medienAnalysedaten_userTagesbasis
-timeMedia_userBundesland <- medienAnalysedaten_userBundesland
-timeMedia_maximus <- medienAnalysedaten_maximus
-# timeMedia_discursivePower <- medienAnalysedaten_discursivePower ## vorsicht, unterschiedliche anzahlen, lieber nicht benutzen
+# # colours
+# medienPolitikerFarben <- c("Medien"="#008080", "PolitikerInnen"="#fb4d46")
+#
+# parteifarben <- c("AfD"="#0087c1", "B90/Die Grünen"="#19a329",
+#                   "CDU"="black", "CSU"="skyblue", "Die Linke"="#be3075",
+#                   "FDP"="#ffee00", "SPD"="#e40006", "Südschleswigscher Wählerverband"="darkblue")
+#
+# bundesländer <- c("Baden-Württemberg"="black", "Bayern"="skyblue", "Berlin"="#eb4c42",
+#                   "Brandenburg"="#69472D", "Bremen"="darkseagreen",
+#                   "Hamburg"="#246bce", "Hessen"="#873260", "Mecklenburg-Vorpommern"="#f5c942",
+#                   "Niedersachsen"="#cae00d", "Nordrhein-Westfalen"="#38761D",
+#                   "Rheinland-Pfalz"="#800020", "Saarland"="blue", "Sachsen"="#4a5d23",
+#                   "Sachsen-Anhalt"="#954535", "Schleswig-Holstein"="blue4",
+#                   "Thüringen"="#cdba96", "Überregional"="#a2add0")
+#
+# sechzehnFarben <- c("black", "skyblue","#eb4c42", "#69472D", "darkseagreen", "#246bce",
+#                     "#873260", "#f5c942", "#cae00d", "#38761D", "#800020", "blue",
+#                     "#4a5d23", "#954535", "blue4", "#a1a3fd", "#b2beb5")
+#
+# topicFarben <- c("ukraine"="#005bbb", "energie"="#ceff00", "soziales"="#e40006", "zukunft"="#cc397b",
+#                  "covid"="#b5a642", "klima"="#03c03c", "politikEuropa"="blue4", "politikInternational"="#8a496b",
+#                  "verkehr"="#4166f5", "verteidigungspolitik"="#4B5320",
+#                  "pluralismusMedien"="#00cdcd", "verfassungsfeindlich"="#654321", "protesteIran"="#229f40",
+#                  "flutAhrtal"="#873260", "polizistenmordKusel"="orange")
+#
+# theHeat <- heat.colors(14)
+# rainCol <- rainbow(14)
+# palettePolychrome1 <- Polychrome::createPalette(N = 15, seedcolors = c("#bb0040", "#10adf0", "#ec843e", "#356043"))
+# geographie <- c("Westen"="#10adf0", "Osten"="#b40040")
+# paletteCategorical2 <- c("Politiker"="#bb0040", "Medien"="#10adf0")
+# paletteCategorical3 <- c("Politiker Ost"="#bb0040", "Politiker Gesamt"="orange", "Politiker West" = "#10adf0",
+#                          "Medien Ost"="#bb0000", "Medien Gesamt"="orange", "Medien West"="#10adc0")
 
 # ===============================================================================================================================================
+# ######################################## FUNKTIONALE NEUBENENNUNGEN AUS DATEI 04
+#
+# # POLITIKER
+# # timePol <- politikerAnalysedaten
+# timePol_topics <- politikerAnalysedatenThemen
+# timePol_party <- politikerAnalysedaten_Parteien
+# timePol_userParty <- politikerAnalysedaten_userParteien
+# timePol_topicsParty <- politikerAnalysedaten_TopicsUndParteien
+# timePol_topicsUser <- politikerAnalysedaten_TopicsUndUser
+# timePol_maximus <- politikerAnalysedaten_maximus
+#
+# # MEDIEN
+# timeMedia <- medienAnalysedaten_userAggregiert
+# timeMedia_topics <- medienAnalysedaten_tagesbasis
+# timeMedia_topicsUser <- medienAnalysedaten_userTagesbasis
+# timeMedia_userBundesland <- medienAnalysedaten_userBundesland
+# timeMedia_maximus <- medienAnalysedaten_maximus
+# # timeMedia_discursivePower <- medienAnalysedaten_discursivePower ## vorsicht, unterschiedliche anzahlen, lieber nicht benutzen
+
+# ==============================================================================================================================================
 
 # ÜBERBLICKSGRAPHIK: BEIDE SPHÄREN UND DIE JEWEILIGE THEMENBESPIELUNG IM DIREKTEN VERGLEICH
 # dabei keine einschränkungen nach akteuren, sondern einfach alle genommen
@@ -177,12 +178,12 @@ minMaxNorm <- function(x) {
 
 newNormalPol <- function(x) {
   # summe <- sum(df_col)
-  x / 98803
+  x / 83658 # vorher: 98803
 }
 
 newNormalMed <- function(x) {
   # summe <- sum(df_col)
-  x / 611506
+  x / 607871 # vorher: 611506
 }
 
 ## PROZENTUALE THEMENANTEILE PRO FOKUSGRUPPE
@@ -210,8 +211,12 @@ minmaxPolitiker <- predict(processPol, as_tidytable(themenüberblickPolitiker))
 processMedien <- preProcess(as_tidytable(themenüberblickMedien), method = "range")
 minmaxMedia <- predict(processMedien, as_tidytable(themenüberblickMedien))
 
-# ===============================================================================================================================================
+# ==============================================================================================================================================
 # => SPEICHERUNG, DA HILFREICH FÜR THEMENFRAGE 1 ZUM EINSTIEG IN AUSWERTUNGSKAPITEL
+
+# gruppe hinzufügen zu proportionalen datensätzen
+proportionalPolitiker$GRUPPE <- "Politiker"
+proportionalMedia$GRUPPE <- "Medien"
 
 # GRAPHISCH
 überblPol <- ggplot(data = proportionalPolitiker, mapping = aes(y=names, x=anzahl, fill=names)) +
@@ -219,7 +224,7 @@ minmaxMedia <- predict(processMedien, as_tidytable(themenüberblickMedien))
   theme_ipsum(base_family = "TeX Gyre Heros", base_size = 11) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1, size = 10, face = "bold")) +
   scale_x_percent(limits = c(0,0.25), breaks = seq(0, 0.25, 0.05)) +
-  scale_fill_manual(name="", values = topicFarben) +
+  scale_fill_manual(name="", values = topicsDistinctColours) +
   xlab("Anteil %") +
   ylab ("") +
   ggtitle("PolitikerInnen: Themenaufmerksamkeit", subtitle = "Prozentualer Anteil am Gesamtkorpus")
@@ -232,13 +237,12 @@ minmaxMedia <- predict(processMedien, as_tidytable(themenüberblickMedien))
   theme_ipsum(base_family = "TeX Gyre Heros", base_size = 11) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1, size = 10, face = "bold")) +
   scale_x_percent(limits = c(0,0.25), breaks = seq(0, 0.25, 0.05)) +
-  scale_fill_manual(name="", values = topicFarben) +
+  scale_fill_manual(name="", values = topicsDistinctColours) +
   xlab("Anteil %") +
   ylab ("") +
   ggtitle("Medien: Themenaufmerksamkeit", subtitle = "Prozentualer Anteil am Gesamtkorpus")
 
-themen_gegenüber_basic <- ggarrange(überblPol, überblMedia, legend = "none")
-themen_gegenüber_basic
+(themen_gegenüber_basic <- ggarrange(überblPol, überblMedia, legend = "none", labels = c("1)", "2)")))
 
 ## es gibt hier die möglichkeit, die themen in der gleichen farbe zu halten (topicFarben nutzen)
 ## oder alternativ die graphik nach den jeweiligen gruppen zu färben (rot politiker, blau medien z. B.)
@@ -454,6 +458,7 @@ proportionalOst_ganz$names <- gemeinsamOst$names
 #                                      anzahlMedienNorm = tail(gemeinsamNorm$anzahl, 15))
 
 # norm ost vs. norm west: alle vier gruppen mit 2x pol und 2x medien sind jeweils in sich selbst genormt
+# ANGLEICHUNG AN NEUE NAMENSGEBUNG NOTWENDIG
 gnormt <- data.frame(names = themenüberblickPolitikerNorm$names,
                      politikerOst = proportionalOst_politiker$anzahl,
                      politikerWest = proportionalWest_politiker$anzahl,
@@ -502,7 +507,7 @@ medien_ostwest <- ggplot(data = SORT_gnormt_alleGleich) +
   theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1, size = 10, face = "bold")) +
   scale_y_percent() +
-  scale_colour_manual(name="Gruppe", values = paletteCategorical3) +
+  sc <- le_colour_m <- nual(name="Gruppe", values = paletteCategorical3) +
   coord_flip() +
   ggtitle(label = "Themen der MEDIEN im Vergleich", subtitle = "Vergleich von Ost- und Westdeutschland") +
   xlab("Themen") +
@@ -549,7 +554,7 @@ politikerAggregiert
 ggplot(data = politikerAggregiert, aes(x=Zuweisung, y=prozent, fill=names)) +
   geom_bar(stat="identity", position = "dodge", width = 1.1) +
   geom_label(aes(label = anzahlAbs), vjust=-0.2, position = position_dodge(1.1)) +
-    theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
+  theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
   theme(axis.text.x = element_text(angle = 35, vjust = 1, hjust = 1, size = 9)) +
   scale_fill_manual(name="Themen", values = topicFarben) +
   ylab("Anteil Posts %") +
@@ -570,7 +575,9 @@ ggplot(data = medienAggregiert, aes(x=Zuweisung, y=prozent, fill=names)) +
 
 # ggplotly(stackedbar_medien)
 
-
+# ==============================================================================================================================================
+# ==============================================================================================================================================
+# ==============================================================================================================================================
 
 ########################################
 # Zeitreihendaten zur Analyse ##########
@@ -710,7 +717,7 @@ testgraphik <- ggplot(data = timePol_topics) +
 testgraphik
 ggplotly(testgraphik)
 
-themenüberblickPolitiker %>% mutate(names = fct_reorder(names, desc(anzahl)))
+# themenüberblickPolitiker %>% mutate(names = fct_reorder(names, desc(anzahl)))
 
 # graphik für politiker mit mind. 80 tweets zum thema COVID über untersuchungszeitraum
 timePol_userParty %>%
@@ -738,7 +745,7 @@ timePol_userParty %>%
   ylab("Usernamen") +
   ggtitle(label = "POLITIKERINNEN zum Thema UKRAINE", subtitle = "Graphik für jene mit mind. 100 Tweets/Thema")
 
-# ===============================================================================================================================================
+# ==============================================================================================================================================
 
 # vorarbeiten für die graphik zum vergleich medien vs. politik und wer welche themen zuerst anspricht
 
@@ -883,6 +890,17 @@ TSzukunftPolitiker <- ggplot() +
   xlab("") +
   ylab("Erwähnungen (absolut)")
 
+TSverteidigungPolitiker <- ggplot() +
+  stat_summary(data = obj, aes(dateTime, verteidigungspolitik, colour = "verteidigungspolitik"), geom = "line", fun = sum) +
+  scale_x_date(breaks = "1 month", labels = date_format(format = "%b", locale = "de")) +
+  theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  scale_colour_manual(name="", values = topicFarben) +
+  scale_y_percent() +
+  ggtitle(label = "POLITIKERINNEN: Themenbehandlung Verteidigungspolitik") +
+  xlab("") +
+  ylab("Erwähnungen (absolut)")
+
 # ==============================================================================================================================================# ==============================================================================================================================================# ==============================================================================================================================================
 
 # time series ukraine, energie, soziales, zukunft, covid medien
@@ -983,6 +1001,17 @@ TSzukunftMedien <- ggplot() +
   xlab("") +
   ylab("Erwähnungen (absolut)")
 
+TSverteidigungMedien <- ggplot() +
+  stat_summary(data = objMed, aes(dateTime, verteidigungspolitik, colour = "verteidigungspolitik"), geom = "line", fun = sum) +
+  scale_x_date(breaks = "1 month", labels = date_format(format = "%b", locale = "de")) +
+  theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+  scale_colour_manual(name="", values = topicFarben) +
+  scale_y_percent() +
+  ggtitle(label = "POLITIKERINNEN: Themenbehandlung Verteidigungspolitik") +
+  xlab("") +
+  ylab("Erwähnungen (absolut)")
+
 # DIE GRAPHIK UNBEDINGT AUSARBEITEN UND AUFNEHMEN!!!!!
 ggarrange(nrow=2, ncol=2,
           TSukraineMedien, TSukrainePolitiker,
@@ -1018,8 +1047,15 @@ ggplotly(TSenergiePolitiker)
 ggplotly(TScovidPolitiker)
 ggplotly(TSsozialesPolitiker)
 
-ggplotly(TSklimaPolitiker)
-ggplotly(TSverkehrPolitiker)
+ggplotly(TSklimaPolitiker +
+           geom_hline(yintercept = 0.50, colour="red") +
+           geom_hline(yintercept = 0.65, colour="yellow"))
+ggplotly(TSverkehrPolitiker +
+           geom_hline(yintercept = 0.40, colour="red") +
+           geom_hline(yintercept = 0.55, colour="yellow"))
+
+ggplotly(TSverteidigungPolitiker +
+           geom_hline(yintercept = 0.25, colour="red"))
 
 
 # ==============================================================================================================================================
@@ -1074,7 +1110,7 @@ covid_akteure_medien <- timeMedia_maximus %>%
 
 ggarrange(covid_area_medien,
           ggarrange(covid_linechart_medien, covid_akteure_medien, ncol=2),
-          nrow=2)
+          nrow=2, labels = "AUTO")
 
 # ==============================================================================================================================================
 
@@ -1175,16 +1211,4 @@ objMed %>%
   ggtitle(label = "Medien: Themenbehandlung Ukraine") +
   xlab("") +
   ylab("Erwähnungen (normalisiert)")
-
-
-
-
-
-
-
-
-
-
-
-
 

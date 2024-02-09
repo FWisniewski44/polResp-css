@@ -37,6 +37,14 @@ library(TSstudio)
 library(caret)
 library(ggsci)
 library(tidyverse)
+library(pals)
+library(Polychrome)
+library(hrbrthemes)
+library(ggpmisc)
+library(ggfortify)
+library(changepoint)
+library(strucchange)
+
 
 ################################################################################
 
@@ -92,6 +100,15 @@ dim(allePolitiker)
 # nochmal durchführen, da immer noch ~200 tweets aus dem nichts
 allePolitiker <- allePolitiker %>% distinct(text, .keep_all = T)
 
+# umwandlung von "südschleswigscher wählerverband" ins kürzel
+allePolitiker$partei[allePolitiker$partei == "Südschleswigscher Wählerverband"] <- "SSW"
+
+# check?
+freq(allePolitiker$partei)
+
+# passen dimensionen?
+dim(allePolitiker)
+
 ########################################################################
 
 # BATCH LOADING: MEDIENDATEN
@@ -99,23 +116,60 @@ filelist_medien <- list.files(path = "./mediendaten",
                               pattern=".csv",
                               full.names = T)
 
+# filelist_medien_regionale <- list.files(path = "./mediendaten_reg",
+#                                            pattern = ".csv",
+#                                            full.names = T)
+
 filelistNames_medien <- mgsub(filelist_medien, c("./mediendaten/","Kategorisiert.csv"), c("",""))
 
+# filelistNames_medien_regionale <- mgsub(filelist_medien, c("./mediendaten/","Kategorisiert.csv"), c("",""))
+
 dat_medien <- list()
+
+# dat_medien_regionale <- list()
 
 for (i in unique(filelist_medien)){
   dat_medien[[i]] <- readr::read_csv(i)
 }
 
+# for (i in unique(filelist_medien_regionale)){
+#   dat_medien_regionale[[i]] <- readr::read_csv(i)
+# }
+
 dat_medien <- dat_medien %>% purrr::set_names(filelistNames_medien)
+# dat_medien_regionale <- dat_medien_regionale %>% purrr::set_names(filelistNames_medien_regionale)
 gc()
 # View(dat_medien)
+
+# nurRegionaleMedien <- reduce(dat_medien_regionale, .f = full_join)
+# nurRegionaleMedien <- as_tidytable(nurRegionaleMedien)
+# nurRegionaleMedien$dateTime <- lubridate::date(nurRegionaleMedien$dateTime)
+# dim(nurRegionaleMedien)
+# dim(distinct(nurRegionaleMedien, text, .keep_all = T))
+
+# überregionale <- lubridate::date(überregionale$dateTime)
+# join1 <- full_join(nurRegionaleMedien, überregionale)
+# join1$dateTime <- lubridate::date(join1$dateTime)
+# ÖRR$dateTime <- lubridate::date(ÖRR$dateTime)
+# digitale$dateTime <- lubridate::date(digitale$dateTime)
+#
+# überJoin1 <- full_join(überregionale, ÖRR)
+# überJoin2 <- full_join(überJoin1, digitale)
+#
+# join2 <- full_join(join1, digitale)
+# join3 <- full_join(join2, ÖRR)
+#
+# # zeigt sich, dass nach bereinigung + datumsebene "tag" immer 1.372.113 tweets vorliegen
+# join3 <- join3 %>% distinct(text, .keep_all = T)
 
 alleMedien <- reduce(dat_medien, .f = full_join)
 alleMedien <- as_tidytable(alleMedien)
 alleMedien$dateTime <- lubridate::date(alleMedien$dateTime)
 dim(alleMedien)
 dim(distinct(alleMedien, text, .keep_all = T))
+
+# letzte bereinigung mediendaten (wahrscheinlich in überregionalen noch was drin)
+alleMedien <- alleMedien %>% distinct(text, .keep_all = T)
 
 # ===============================================================================================================================================
 # ===============================================================================================================================================
@@ -265,7 +319,10 @@ alleMedien$dateTime <- as.Date(alleMedien$dateTime)
 freq(alleMedien$bundesland)
 alleMedien
 dim(alleMedien)
+dim(distinct(alleMedien, text, .keep_all = T))
 
+alleMedien <- alleMedien %>% distinct(text, .keep_all = T)
+dim(alleMedien)
 
 # ===============================================================================================================================================
 # HERSTELLEN DER ANALYSEDATEN FÜR ALLE MEDIEN
@@ -338,8 +395,8 @@ medienAnalysedaten_maximus <- alleMedien %>%
   aggregate(cbind(covid, ukraine, energie, soziales, verteidigungspolitik, polizistenmordKusel, flutAhrtal, politikEuropa, politikInternational, klima, protesteIran, verkehr, pluralismusMedien, zukunft, verfassungsfeindlich) ~ user + dateTime + bundesland, sum)
 
 ## fall 6: rücksicht auf variablen discursive power
-## ACHTUNG: es fehlen ca. 3000 tweets in dieser aggregation; discursive power variablen nehmen diese raus, grund unbekannt
-medienAnalysedaten_discursivePower <- alleMedien %>%
+## ACHTUNG: es fehlen ca. 3000 tweets in dieser aggregation; discursive power variablen nehmen diese raus, grund wahrscheinlich anteil von NAs
+(medienAnalysedaten_discursivePower <- alleMedien %>%
   as_tidytable(alleMedien) %>%
   # filter(geschäftsmodell == 1) %>%
   # filter(normenWerte == 1) %>%
@@ -348,8 +405,20 @@ medienAnalysedaten_discursivePower <- alleMedien %>%
   # filter(RVerkauf > 100000) %>%
   # filter(bundesland == "Baden-Württemberg") %>%
   # filter(user == "ARTEde") %>%
-  aggregate(cbind(covid, ukraine, energie, soziales, verteidigungspolitik, polizistenmordKusel, flutAhrtal, politikEuropa, politikInternational, klima, protesteIran, verkehr, pluralismusMedien, zukunft, verfassungsfeindlich) ~ user + dateTime +
-              geschäftsmodell + normenWerte + erreichbarkeit, sum)
+  aggregate(cbind(covid, ukraine, energie, soziales, verteidigungspolitik, polizistenmordKusel, flutAhrtal, politikEuropa, politikInternational, klima, protesteIran, verkehr, pluralismusMedien, zukunft, verfassungsfeindlich) ~ user + bundesland + geschäftsmodell + normenWerte + erreichbarkeit, sum))
+
+## fall 6: rücksicht auf variablen discursive power
+## ACHTUNG: es fehlen ca. 3000 tweets in dieser aggregation; discursive power variablen nehmen diese raus, grund wahrscheinlich anteil von NAs
+(medienAnalysedaten_discursivePower_days <- alleMedien %>%
+    as_tidytable(alleMedien) %>%
+    # filter(geschäftsmodell == 1) %>%
+    # filter(normenWerte == 1) %>%
+    # filter(erreichbarkeit == 1) %>%
+    # filter(RVisits > 25000) %>%
+    # filter(RVerkauf > 100000) %>%
+    # filter(bundesland == "Baden-Württemberg") %>%
+    # filter(user == "ARTEde") %>%
+    aggregate(cbind(covid, ukraine, energie, soziales, verteidigungspolitik, polizistenmordKusel, flutAhrtal, politikEuropa, politikInternational, klima, protesteIran, verkehr, pluralismusMedien, zukunft, verfassungsfeindlich) ~ dateTime + user + bundesland + geschäftsmodell + normenWerte + erreichbarkeit, sum))
 
 sum(medienAnalysedaten_tagesbasis$covid)
 sum(medienAnalysedaten_userAggregiert$covid)
@@ -379,6 +448,94 @@ sum(medienAnalysedaten_discursivePower$covid)
 ## vgl. 005 -> umbenennung in datensätze, die mit "ts" für timeseries arbeiten
 ## kürzer, daher leichter verwendbar in der analyse
 
+# POLITIKER
+# timePol <- politikerAnalysedaten
+timePol_topics <- politikerAnalysedatenThemen
+timePol_party <- politikerAnalysedaten_Parteien
+timePol_userParty <- politikerAnalysedaten_userParteien
+timePol_topicsParty <- politikerAnalysedaten_TopicsUndParteien
+timePol_topicsUser <- politikerAnalysedaten_TopicsUndUser
+timePol_maximus <- politikerAnalysedaten_maximus
 
+# MEDIEN
+timeMedia <- medienAnalysedaten_userAggregiert
+timeMedia_topics <- medienAnalysedaten_tagesbasis
+timeMedia_topicsUser <- medienAnalysedaten_userTagesbasis
+timeMedia_userBundesland <- medienAnalysedaten_userBundesland
+timeMedia_maximus <- medienAnalysedaten_maximus
+timeMedia_discursivePower <- medienAnalysedaten_discursivePower ## vorsicht, unterschiedliche werte aufgrund einiger NAs bei discursive power!
 
+# ===============================================================================================================================================
+# ===============================================================================================================================================
+# ===============================================================================================================================================
 
+# Farben
+medienPolitikerFarben <- c("Medien"="#008080", "PolitikerInnen"="#fb4d46")
+
+parteifarben <- c("AfD"="#0087c1", "B90/Die Grünen"="#19a329",
+                  "CDU"="black", "CSU"="skyblue", "Die Linke"="#be3075",
+                  "FDP"="#ffee00", "SPD"="#e40006", "SSW"="darkblue")
+
+bundesländer <- c("Baden-Württemberg"="black", "Bayern"="skyblue", "Berlin"="#eb4c42",
+                  "Brandenburg"="#69472D", "Bremen"="darkseagreen",
+                  "Hamburg"="#246bce", "Hessen"="#873260", "Mecklenburg-Vorpommern"="#f5c942",
+                  "Niedersachsen"="#cae00d", "Nordrhein-Westfalen"="#38761D",
+                  "Rheinland-Pfalz"="#800020", "Saarland"="blue", "Sachsen"="#4a5d23",
+                  "Sachsen-Anhalt"="#954535", "Schleswig-Holstein"="blue4",
+                  "Thüringen"="#cdba96", "Überregional"="#a2add0")
+
+sechzehnFarben <- c("black", "skyblue","#eb4c42", "#69472D", "darkseagreen", "#246bce",
+                    "#873260", "#f5c942", "#cae00d", "#38761D", "#800020", "blue",
+                    "#4a5d23", "#954535", "blue4", "#a1a3fd", "#b2beb5")
+
+topicFarben <- c("ukraine"="#005bbb", "energie"="#ceff00", "soziales"="#e40006", "zukunft"="#cc397b",
+                 "covid"="#b5a642", "klima"="#03c03c", "politikEuropa"="blue4", "politikInternational"="#8a496b",
+                 "verkehr"="#4166f5", "verteidigungspolitik"="#4B5320",
+                 "pluralismusMedien"="#00cdcd", "verfassungsfeindlich"="#654321", "protesteIran"="#229f40",
+                 "flutAhrtal"="#873260", "polizistenmordKusel"="orange")
+
+topicsDistinctColours <- c("ukraine"="#0000cd", "energie"="#00ff00", "soziales"="#ff0000", "zukunft"="#2f4f4f",
+                          "covid"="#6b8e23", "klima"="#7f0000", "politikEuropa"="#191970", "politikInternational"="#48d1cc",
+                          "verkehr"="#ffff00", "verteidigungspolitik"="#c71585",
+                          "pluralismusMedien"="#00fa9a", "verfassungsfeindlich"="#f4a460", "protesteIran"="#ff00ff",
+                          "flutAhrtal"="#d8bfd8", "polizistenmordKusel"="#1e90ff")
+
+theHeat <- heat.colors(14)
+rainCol <- rainbow(14)
+palettePolychrome1 <- Polychrome::createPalette(N = 15, seedcolors = c("#bb0040", "#10adf0", "#ec843e", "#356043"))
+geographie <- c("Westen"="#10adf0", "Osten"="#b40040")
+politikerMedienFarben <- c("Politiker"="#bb0040", "Medien"="#10adf0")
+paletteCategorical3 <- c("Politiker Ost"="#bb0040", "Politiker Gesamt"="orange", "Politiker West" = "#10adf0",
+                         "Medien Ost"="#bb0000", "Medien Gesamt"="orange", "Medien West"="#10adc0")
+
+optimum <- c("Baden-Württemberg"="black", "Bayern"="#1e90ff", "Berlin"="red", "Brandenburg"="blue",
+             "Bremen"="green", "Hamburg"="#814a19", "Hessen"="purple", "Mecklenburg-Vorpommern"="lightgrey",
+             "Niedersachsen"="lightgreen", "Nordrhein-Westfalen"="lightblue", "Rheinland-Pfalz"="cyan", Saarland="orange",
+             "Sachsen"="yellow", "Sachsen-Anhalt"="tan", "Schleswig-Holstein"="pink", "Thüringen"="#008080",
+             "Überregional"="darkgrey")
+
+# ===============================================================================================================================================
+# ===============================================================================================================================================
+# ===============================================================================================================================================
+
+## FORMELN
+
+# NORMALISIERUNG MIN-MAX
+minMaxNorm <- function(x) {
+  (x - min(x)) / (max(x) - min(x))
+}
+
+newNormalPol <- function(x) {
+  # summe <- sum(df_col)
+  x / 83658
+}
+
+newNormalMed <- function(x) {
+  # summe <- sum(df_col)
+  x / 607370
+}
+
+## PROZENTUALE THEMENANTEILE PRO FOKUSGRUPPE
+formel_prozentualisierung <- function(obj) {
+  obj / sum(obj)
+}
