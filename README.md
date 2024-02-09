@@ -9,7 +9,8 @@ Dabei wird die Datengrundlage durch ein breit angelegtes Webscraping der identif
 Ebenso vorteilhaft ist der Stellenwert der Plattform selbst: bei X/Twitter handelt es sich heutzutage um eine wichtige Säule der digitalen Erweiterung von Öffentlichkeit bzw. des öffentlichen Raumes; in diesem Raum ist es Menschen möglich, sich auszutauschen und über ein breites Themenspektrum zu kommunizieren --- daraus resultiert, dass diese Plattform und ihre Infrastruktur prädestiniert für die sozial- und politikwissenschaftliche Forschung erscheinen.
 
 ## Zu adressierende Fragen
-Fragen, die von vorliegender Arbeit adressiert werden, sind unter anderem die folgenden:
+Die vorliegende Arbeit hat das generelle, übergeordnete Ziel, den Bereich "Twitter-Deutschlands" auch deskriptiv zu erfassen und abzubilden, zumindest für den gewählten Untersuchungszeitraum. Daher ist dieses "Mapping" des Raumes ein erstes Ziel.
+Fragen, die abgesehen davon in vorliegender Arbeit adressiert werden, sind dann des Weiteren folgende:
 
 1. Welche Themen lassen sich in der medialen und politischen Landschaft auf Twitter in Deutschland über die Grenzen der jeweiligen Akteurssphären hinweg und über den beobachteten Zeitraum hinweg identifizieren?
 2. Welche Muster lassen sich in der medialen Berichterstattung bzw. in der politischen Kommunikation zu diesen identifizierten Themen entdecken?
