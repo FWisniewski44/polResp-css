@@ -2,6 +2,7 @@
 mergerDaten/
 csvs/*
 .~lock*
+auswertungRfiles/graphiken/
 auswertungRfiles/politikerdaten/
 auswertungRfiles/mediendaten/
 auswertungRfiles/.RData

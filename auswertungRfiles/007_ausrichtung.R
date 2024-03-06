@@ -44,7 +44,7 @@ library(ggpmisc)
 library(ggfortify)
 library(changepoint)
 library(strucchange)
-
+library(patchwork)
 
 ################################################################################
 
@@ -321,6 +321,71 @@ alleMedien
 dim(alleMedien)
 dim(distinct(alleMedien, text, .keep_all = T))
 
+# ersetzen: normen auf marktgetrieben statt 4/NA bei mucbook
+alleMedien$normenWerte[alleMedien$user == "mucbook"] <- 3
+# View(alleMedien %>% filter(user == "mucbook"))
+
+# ersetzen: normen abendblatt auf objektiv statt parteiisch
+alleMedien$normenWerte[alleMedien$user == "abendblatt"] <- 1
+# View(alleMedien %>% filter(user == "abendblatt"))
+
+# ersetzen: alle drei für stuttgarter zeitung
+alleMedien$normenWerte[alleMedien$user == "StZ_NEWS"] <- 1
+alleMedien$geschäftsmodell[alleMedien$user == "StZ_NEWS"] <- 2
+alleMedien$erreichbarkeit[alleMedien$user == "StZ_NEWS"] <- 2
+# View(alleMedien %>% filter(user == "StZ_NEWS"))
+
+# ersetzen: alle drei für nowy casnik
+alleMedien$normenWerte[alleMedien$user == "NCasnik"] <- 1
+alleMedien$geschäftsmodell[alleMedien$user == "NCasnik"] <- 2
+alleMedien$erreichbarkeit[alleMedien$user == "NCasnik"] <- 3
+# View(alleMedien %>% filter(user == "NCasnik"))
+
+# ersetzen: alle drei für compact magazin
+alleMedien$normenWerte[alleMedien$user == "COMPACTMagazin"] <- 2
+alleMedien$geschäftsmodell[alleMedien$user == "COMPACTMagazin"] <- 2
+alleMedien$erreichbarkeit[alleMedien$user == "COMPACTMagazin"] <- 3
+# View(alleMedien %>% filter(user == "COMPACTMagazin"))
+
+# ersetzen: alle drei für rbb24
+alleMedien$normenWerte[alleMedien$user == "rbb24"] <- 1
+alleMedien$geschäftsmodell[alleMedien$user == "rbb24"] <- 1
+alleMedien$erreichbarkeit[alleMedien$user == "rbb24"] <- 2
+# View(alleMedien %>% filter(user == "rbb24"))
+
+# ersetzen: alle drei für rbb24 inforadio
+alleMedien$normenWerte[alleMedien$user == "rbb24Inforadio"] <- 1
+alleMedien$geschäftsmodell[alleMedien$user == "rbb24Inforadio"] <- 1
+alleMedien$erreichbarkeit[alleMedien$user == "rbb24Inforadio"] <- 2
+# View(alleMedien %>% filter(user == "rbb24Inforadio"))
+
+# ersetzen: alle drei für spiegel top news
+alleMedien$normenWerte[alleMedien$user == "SPIEGEL_Top"] <- 1
+alleMedien$geschäftsmodell[alleMedien$user == "SPIEGEL_Top"] <- 2
+alleMedien$erreichbarkeit[alleMedien$user == "SPIEGEL_Top"] <- 1
+# View(alleMedien %>% filter(user == "SPIEGEL_Top"))
+
+# ersetzen: geschäftsmodell für jreichelt
+alleMedien$geschäftsmodell[alleMedien$user == "jreichelt"] <- 3
+# View(alleMedien %>% filter(user == "jreichelt"))
+
+# ersetzen: geschäftsmodell für pressenza
+alleMedien$geschäftsmodell[alleMedien$user == "pressenza_ger"] <- 3
+# View(alleMedien %>% filter(user == "pressenza_ger"))
+
+# ersetzen: erreichbarkeit für pressenza
+alleMedien$erreichbarkeit[alleMedien$user == "boersenzeitung"] <- 1
+# View(alleMedien %>% filter(user == "boersenzeitung"))
+
+#### unten: das nicht machen, zerschießt alles!
+# alleMedien <- alleMedien %>% mutate(normenWerte = case_when(user == "SPIEGEL_Top" ~ 1, .default = normenWerte))
+# alleMedien <- alleMedien %>% mutate(erreichbarkeit = case_when(user == "SPIEGEL_Top" ~ 1, .default = normenWerte))
+# alleMedien <- alleMedien %>% mutate(geschäftsmodell = case_when(user == "SPIEGEL_Top" ~ 2, .default = normenWerte))
+
+# check
+nonassigned <- (alleMedien[is.na(alleMedien$erreichbarkeit),]) # alle rows mit NA
+freq(nonassigned$user)
+
 alleMedien <- alleMedien %>% distinct(text, .keep_all = T)
 dim(alleMedien)
 
@@ -395,7 +460,6 @@ medienAnalysedaten_maximus <- alleMedien %>%
   aggregate(cbind(covid, ukraine, energie, soziales, verteidigungspolitik, polizistenmordKusel, flutAhrtal, politikEuropa, politikInternational, klima, protesteIran, verkehr, pluralismusMedien, zukunft, verfassungsfeindlich) ~ user + dateTime + bundesland, sum)
 
 ## fall 6: rücksicht auf variablen discursive power
-## ACHTUNG: es fehlen ca. 3000 tweets in dieser aggregation; discursive power variablen nehmen diese raus, grund wahrscheinlich anteil von NAs
 (medienAnalysedaten_discursivePower <- alleMedien %>%
   as_tidytable(alleMedien) %>%
   # filter(geschäftsmodell == 1) %>%
@@ -408,7 +472,6 @@ medienAnalysedaten_maximus <- alleMedien %>%
   aggregate(cbind(covid, ukraine, energie, soziales, verteidigungspolitik, polizistenmordKusel, flutAhrtal, politikEuropa, politikInternational, klima, protesteIran, verkehr, pluralismusMedien, zukunft, verfassungsfeindlich) ~ user + bundesland + geschäftsmodell + normenWerte + erreichbarkeit, sum))
 
 ## fall 6: rücksicht auf variablen discursive power
-## ACHTUNG: es fehlen ca. 3000 tweets in dieser aggregation; discursive power variablen nehmen diese raus, grund wahrscheinlich anteil von NAs
 (medienAnalysedaten_discursivePower_days <- alleMedien %>%
     as_tidytable(alleMedien) %>%
     # filter(geschäftsmodell == 1) %>%
@@ -463,7 +526,201 @@ timeMedia_topics <- medienAnalysedaten_tagesbasis
 timeMedia_topicsUser <- medienAnalysedaten_userTagesbasis
 timeMedia_userBundesland <- medienAnalysedaten_userBundesland
 timeMedia_maximus <- medienAnalysedaten_maximus
-timeMedia_discursivePower <- medienAnalysedaten_discursivePower ## vorsicht, unterschiedliche werte aufgrund einiger NAs bei discursive power!
+timeMedia_discursivePower <- medienAnalysedaten_discursivePower
+timeMedia_discPow_days <- medienAnalysedaten_discursivePower_days
+
+# ===============================================================================================================================================
+# ===============================================================================================================================================
+# ===============================================================================================================================================
+
+# ========================================================================================================================================================
+# ANALYSEN ZUR REGIONALITÄT
+# ========================================================================================================================================================
+
+# richtiger datensatz mit ost und west teilung erstellen
+# in diesem fall muss überlegt werden, was mit denen passiert, die überregional sind
+# am schlauesten ist wahrscheinlich wegzulassen
+# überregional sagt ja auch aus: das ist nicht gebunden
+ostdeutschlandListe <- c("Thüringen", "Sachsen", "Sachsen-Anhalt", "Brandenburg", "Mecklenburg-Vorpommern")
+westdeutschland <- c("Baden-Württemberg", "Bayern", "Hessen", "Rheinland-Pfalz", "Nordrhein-Westfalen",
+                     "Niedersachsen", "Schleswig-Holstein", "Saarland", "Bremen", "Hamburg", "Berlin")
+
+# politiker und mediendaten je nach zuordnung zu ost und west
+politikOst <- timePol_maximus %>% filter(bundesland %in% ostdeutschlandListe)
+medienOst <- timeMedia_discursivePower %>% filter(bundesland %in% ostdeutschlandListe)
+#
+politikWest <- timePol_maximus %>% filter(bundesland %in% westdeutschland)
+medienWest <- timeMedia_discursivePower %>% filter(bundesland %in% westdeutschland)
+
+# =========================================================================================================================================================
+# themenüberblickPolitiker <- data.frame(apply(X = timePol_maximus[,c(5:19)], MARGIN = 2, FUN = sum)) # gleiches ergebnis, mehr text
+
+# themenüberblick mittels apply und summierung tweets pro thema
+themenüberblickPolitiker <- as_tidytable(apply(X = timePol_topics[,-c(1, 17:20)], MARGIN = 2, FUN = sum), .keep_rownames = T)
+themenüberblickPolitiker <- themenüberblickPolitiker %>% rename(names = rn, anzahl = x)
+
+# ansicht
+themenüberblickPolitiker
+
+# tweets politiker insgesamt
+sum(themenüberblickPolitiker$anzahl)
+
+# alternativ auch das möglich
+# themenüberblickPolitiker <- data.frame(apply(X = politikerAnalysedatenThemen[,-1], MARGIN = 2, FUN = sum))
+
+# =========================================================================================================================================================
+
+# BILDUNG SUMME TWEETS PRO THEMA: mediendaten
+# unterschiedliche zahlen bei discpow datensatz vs. tagesbasis; hier nutzung der tagessummierung
+# themenüberblickMedien <- data.frame(apply(X = medienAnalysedaten_discursivePower[,c(6:20)], MARGIN = 2, FUN = sum)) ## NICHT NUTZEN
+
+themenüberblickMedien <- as_tidytable(apply(X = medienAnalysedaten_tagesbasis[,-1], MARGIN = 2, FUN = sum), .keep_rownames = T)
+themenüberblickMedien <- themenüberblickMedien %>% rename(names = rn, anzahl = x)
+
+# tidytable + ansicht
+themenüberblickMedien
+
+# tweets medien insgesamt
+sum(themenüberblickMedien$anzahl)
+
+# =========================================================================================================================================================
+
+# variablennamen anpassen
+themenüberblickMedien$names2 <- c("Covid", "Ukraine", "Energie", "Soziales", "Verteidigungspolitik", "PolizistenmordKusel", "FlutAhrtal",
+                                  "PolitikEuropa", "PolitikInternational", "Klima", "ProtesteIran", "Verkehr",
+                                  "PluralismusMedien", "Zukunft", "Verfassungsfeindlich")
+themenüberblickPolitiker$names2 <- c("Covid", "Ukraine", "Energie", "Soziales", "Verteidigungspolitik", "PolizistenmordKusel", "FlutAhrtal",
+                                     "PolitikEuropa", "PolitikInternational", "Klima", "ProtesteIran", "Verkehr",
+                                     "PluralismusMedien", "Zukunft", "Verfassungsfeindlich")
+
+# factor reorder absteigend
+themenüberblickMedien <- themenüberblickMedien %>% mutate(names2 = fct_reorder(names2, desc(-anzahl)))
+# factor reorder absteigend
+themenüberblickPolitiker <- themenüberblickPolitiker %>% mutate(names2 = fct_reorder(names2, desc(-anzahl)))
+
+# =========================================================================================================================================================
+
+überblickPolOst <- as_tidytable(apply(X=politikOst[,c(5:19)], MARGIN = 2, FUN = sum), .keep_rownames = T)
+überblickPolOst <- überblickPolOst %>% rename(names = rn, anzahl = x)
+
+überblickMedienOst <- as_tidytable(apply(X = medienOst[,c(6:20)], MARGIN = 2, FUN = sum), .keep_rownames = T)
+überblickMedienOst <- überblickMedienOst %>% rename(names = rn, anzahl = x)
+
+überblickPolWest <- as_tidytable(apply(X = politikWest[,c(5:19)], MARGIN = 2, FUN = sum), .keep_rownames = T)
+überblickPolWest <- überblickPolWest %>% rename(names = rn, anzahl = x)
+
+überblickMedienWest <- as_tidytable(apply(X = medienWest[,c(6:20)], MARGIN = 2, FUN = sum), .keep_rownames = T)
+überblickMedienWest <- überblickMedienWest %>% rename(names = rn, anzahl = x)
+
+###
+
+sum(überblickMedienOst$anzahl)
+sum(überblickPolOst$anzahl)
+sum(überblickMedienWest$anzahl)
+sum(überblickPolWest$anzahl)
+
+#===============================================================================
+
+# normalisierung auf anteilig 100%
+proportionalOst_politiker <- as_tidytable(apply(überblickPolOst[,2], MARGIN = 2, FUN = formel_prozentualisierung))
+proportionalOst_politiker$names <- überblickPolOst$names
+
+proportionalWest_politiker <- as_tidytable(apply(überblickPolWest[,2], MARGIN = 2, FUN = formel_prozentualisierung))
+proportionalWest_politiker$names <- überblickPolWest$names
+
+proportionalOst_medien <- as_tidytable(apply(überblickMedienOst[,2], MARGIN = 2, FUN = formel_prozentualisierung))
+proportionalOst_medien$names <- überblickMedienOst$names
+
+proportionalWest_medien <- as_tidytable(apply(überblickMedienWest[,2], MARGIN = 2, FUN = formel_prozentualisierung))
+proportionalWest_medien$names <- überblickMedienWest$names
+
+#===============================================================================
+
+# min max normalisierung
+processPolOst <- preProcess(as_tidytable(überblickPolOst), method = "range")
+überblickPolOst_minmax <- predict(processPolOst, as_tidytable(überblickPolOst))
+
+processPolWest <- preProcess(as_tidytable(überblickPolWest), method = "range")
+überblickPolWest_minmax <- predict(processPolWest, as_tidytable(überblickPolWest))
+
+processMedienOst <- preProcess(as_tidytable(überblickMedienOst), method = "range")
+überblickMedienOst_minmax <- predict(processMedienOst, as_tidytable(überblickMedienOst))
+
+processMedienWest <- preProcess(as_tidytable(überblickMedienWest), method = "range")
+überblickMedienWest_minmax <- predict(processMedienWest, as_tidytable(überblickMedienWest))
+
+#===============================================================================
+
+# datensätze für osten und westen, jeweils medien UND politiker
+gemeinsamOst_absolut <- überblickPolOst %>% mutate(kennzeichnung = "Politiker Ost") %>%
+  bind_rows(überblickMedienOst) %>%
+  mutate(kennzeichnung = replace_na(kennzeichnung, "Medien Ost"))
+
+gemeinsamOst_proportional <- proportionalOst_politiker %>% mutate(kennzeichnung = "Politiker Ost") %>%
+  bind_rows(proportionalOst_medien) %>%
+  mutate(kennzeichnung = replace_na(kennzeichnung, "Medien Ost"))
+
+gemeinsamOst_minmax <- überblickPolOst_minmax %>% mutate(kennzeichnung = "Politiker Ost") %>%
+  bind_rows(überblickMedienOst_minmax) %>%
+  mutate(kennzeichnung = replace_na(kennzeichnung, "Medien Ost"))
+
+ganzOsten <- as_tidytable(data.frame("names" = gemeinsamOst_absolut$names,
+                                     "anzahlAbs" = gemeinsamOst_absolut$anzahl,
+                                     "anzahlProporz" = gemeinsamOst_proportional$anzahl,
+                                     "anzahlMinMax" = gemeinsamOst_minmax$anzahl,
+                                     "kennzeichnung" = gemeinsamOst_absolut$kennzeichnung))
+
+gemeinsamWest_absolut <- überblickPolWest %>% mutate(kennzeichnung = "Politiker West") %>%
+  bind_rows(überblickMedienWest) %>%
+  mutate(kennzeichnung = replace_na(kennzeichnung, "Medien West"))
+
+gemeinsamWest_proportional <- proportionalWest_politiker %>% mutate(kennzeichnung = "Politiker West") %>%
+  bind_rows(proportionalWest_medien) %>%
+  mutate(kennzeichnung = replace_na(kennzeichnung, "Medien West"))
+
+gemeinsamWest_minmax <- überblickPolWest_minmax %>% mutate(kennzeichnung = "Politiker West") %>%
+  bind_rows(überblickMedienWest_minmax) %>%
+  mutate(kennzeichnung = replace_na(kennzeichnung, "Medien West"))
+
+ganzWesten <- as_tidytable(data.frame("names" = gemeinsamWest_absolut$names,
+                                      "anzahlAbs" = gemeinsamWest_absolut$anzahl,
+                                      "anzahlProporz" = gemeinsamWest_proportional$anzahl,
+                                      "anzahlMinMax" = gemeinsamWest_minmax$anzahl,
+                                      "kennzeichnung" = gemeinsamWest_absolut$kennzeichnung))
+
+kompletto <- as_tidytable(data.frame("names" = ganzWesten$names,
+                                     "absolutWesten" = ganzWesten$anzahlAbs,
+                                     "proporzWesten" = ganzWesten$anzahlProporz,
+                                     "minmaxWesten" = ganzWesten$anzahlMinMax,
+                                     "absolutOsten" = ganzOsten$anzahlAbs,
+                                     "proporzOsten" = ganzOsten$anzahlProporz,
+                                     "minmaxOsten" = ganzOsten$anzahlMinMax,
+                                     "kennung" = ganzWesten$kennzeichnung))
+
+kompletto$kennzeichnung[kompletto$kennung == "Politiker West"] <- "Politiker"
+kompletto$kennzeichnung[kompletto$kennung == "Medien West"] <- "Medien"
+
+kompletto$names <- c("Covid", "Ukraine", "Energie", "Soziales", "Verteidigungspolitik", "PolizistenmordKusel", "FlutAhrtal", "PolitikEuropa", "PolitikInternational", "Klima", "ProtesteIran", "Verkehr", "PluralismusMedien", "Zukunft", "Verfassungsfeindlich", "Covid", "Ukraine", "Energie", "Soziales", "Verteidigungspolitik", "PolizistenmordKusel", "FlutAhrtal", "PolitikEuropa", "PolitikInternational", "Klima", "ProtesteIran", "Verkehr", "PluralismusMedien", "Zukunft", "Verfassungsfeindlich")
+
+ganzOsten <- ganzOsten %>% mutate(names = fct_reorder(names, desc(-anzahlAbs)))
+ganzWesten <- ganzWesten %>% mutate(names = fct_reorder(names, desc(-anzahlAbs)))
+kompletto <- kompletto %>% mutate(names = fct_reorder(names, desc(absolutWesten)))
+
+komplettoPolitiker <- kompletto %>% filter(kennzeichnung == "Politiker")
+komplettoMedien <- kompletto %>% filter(kennzeichnung == "Medien")
+
+komplettoOsten <- as_tidytable(data.frame("names"=komplettoPolitiker$names,
+                                          "absolutPolitiker"=komplettoPolitiker$absolutOsten,
+                                          "proporzPolitiker"=komplettoPolitiker$proporzOsten,
+                                          "absolutMedien" = komplettoMedien$absolutOsten,
+                                          "proporzMedien" = komplettoMedien$proporzOsten,
+                                          "herkunft"="Ostdeutschland"))
+komplettoWesten <- as_tidytable(data.frame("names"=komplettoPolitiker$names,
+                                           "absolutPolitiker"=komplettoPolitiker$absolutWesten,
+                                           "proporzPolitiker"=komplettoPolitiker$proporzWesten,
+                                           "absolutMedien" = komplettoMedien$absolutWesten,
+                                           "proporzMedien" = komplettoMedien$proporzWesten,
+                                           "herkunft"="Westdeutschland"))
 
 # ===============================================================================================================================================
 # ===============================================================================================================================================
@@ -494,11 +751,11 @@ topicFarben <- c("ukraine"="#005bbb", "energie"="#ceff00", "soziales"="#e40006",
                  "pluralismusMedien"="#00cdcd", "verfassungsfeindlich"="#654321", "protesteIran"="#229f40",
                  "flutAhrtal"="#873260", "polizistenmordKusel"="orange")
 
-topicsDistinctColours <- c("ukraine"="#0000cd", "energie"="#00ff00", "soziales"="#ff0000", "zukunft"="#2f4f4f",
-                          "covid"="#6b8e23", "klima"="#7f0000", "politikEuropa"="#191970", "politikInternational"="#48d1cc",
-                          "verkehr"="#ffff00", "verteidigungspolitik"="#c71585",
-                          "pluralismusMedien"="#00fa9a", "verfassungsfeindlich"="#f4a460", "protesteIran"="#ff00ff",
-                          "flutAhrtal"="#d8bfd8", "polizistenmordKusel"="#1e90ff")
+topicsDistinctColours <- c("Ukraine"="#0000cd", "Energie"="#00ff00", "Soziales"="#ff0000", "Zukunft"="#2f4f4f",
+                          "Covid"="#6b8e23", "Klima"="#7f0000", "PolitikEuropa"="#191970", "PolitikInternational"="#48d1cc",
+                          "Verkehr"="#ffff00", "Verteidigungspolitik"="#c71585",
+                          "PluralismusMedien"="#00fa9a", "Verfassungsfeindlich"="#f4a460", "ProtesteIran"="#ff00ff",
+                          "FlutAhrtal"="#d8bfd8", "PolizistenmordKusel"="#1e90ff")
 
 theHeat <- heat.colors(14)
 rainCol <- rainbow(14)
@@ -513,6 +770,13 @@ optimum <- c("Baden-Württemberg"="black", "Bayern"="#1e90ff", "Berlin"="red", "
              "Niedersachsen"="lightgreen", "Nordrhein-Westfalen"="lightblue", "Rheinland-Pfalz"="cyan", Saarland="orange",
              "Sachsen"="yellow", "Sachsen-Anhalt"="tan", "Schleswig-Holstein"="pink", "Thüringen"="#008080",
              "Überregional"="darkgrey")
+
+coloursGeschäftsmodell <- c("Öffentlich"="#1e90ff", "Kommerziell"="limegreen", "Spenden"="red3")
+coloursNormenwerte <- c("Objektiv-ausbalanciert"="darkgreen", "Parteiisch"="gold", "Marktgetrieben"="deeppink", "NA"="grey45")
+coloursErreichbarkeit <- c("Etabliert (überregional)"="#6495ed", "Etabliert (regional)"="goldenrod", "Alternativ"="#bc8f8f", "Individuell"="turquoise3")
+
+farbenPolitikerMedien <- c("PolitikerInnen"="#0000cd", "Medien"="#ffc125")
+
 
 # ===============================================================================================================================================
 # ===============================================================================================================================================
@@ -539,3 +803,8 @@ newNormalMed <- function(x) {
 formel_prozentualisierung <- function(obj) {
   obj / sum(obj)
 }
+
+# negation von %in%
+"%ni%" <- Negate("%in%")
+
+gc()

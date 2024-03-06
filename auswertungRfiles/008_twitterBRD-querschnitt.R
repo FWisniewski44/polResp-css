@@ -321,36 +321,39 @@ medienAnalysedaten_discursivePower$SUMME <- 0
 (medienAnalysedaten_discursivePower$SUMME <- rowSums(medienAnalysedaten_discursivePower[,-c(1:5)]))
 
 medienAnalysedaten_discursivePower$PROZENTUAL <- 0
-(medienAnalysedaten_discursivePower$PROZENTUAL <- formel_prozentualisierung(medienAnalysedaten_discursivePower$SUMME) %>% round(5))
+(medienAnalysedaten_discursivePower$PROZENTUAL <- formel_prozentualisierung(medienAnalysedaten_discursivePower$SUMME) %>% round(4))
 sum(medienAnalysedaten_discursivePower$PROZENTUAL)
 
 medienAnalysedaten_discursivePower <- medienAnalysedaten_discursivePower %>% arrange(desc(SUMME))
 
+# appendix 4
 (öffentlichFinanzierte <- medienAnalysedaten_discursivePower %>%
   filter(geschäftsmodell == 1) %>%
   mutate(user = fct_reorder(user, desc(-SUMME))) %>%
   head(15) %>% #geht nur, wenn arrange vorher gemacht wurde, sonst x-beliebige beobachtungen!!!
   ggplot() +
-  geom_bar(aes(y=user, x = PROZENTUAL, fill = bundesland), color = "black", stat = "identity") +
-  scale_fill_manual(name="Bundesland", values = optimum) +
-  scale_x_percent(limits = c(0, .025), breaks = seq(0, .025, .01)) +
+  geom_bar(aes(y=user, x = SUMME, fill = bundesland), color = "black", stat = "identity") +
+  scale_fill_manual(name="Herkunft", values = bundesländer) +
+  scale_x_continuous(limits = c(0,15000), breaks = seq(0,15000, 5000), labels = scales::label_number(big.mark = ".")) +
   theme_ipsum(base_family = "TeX Gyre Heros", base_size = 11.5) +
   xlab("") +
   ylab("") +
-  ggtitle("Top 15 öffentlich finanzierte Nachrichtenmedien"))
+  ggtitle("Top 15 öffentlich finanzierte Nachrichtenmedien") +
+  theme(legend.title = element_text(face = "bold"), legend.position = "bottom", legend.text = element_text(face = "italic")))
 
 (kommerziellFinanzierte <- medienAnalysedaten_discursivePower %>%
   filter(geschäftsmodell == 2) %>%
   mutate(user = fct_reorder(user, desc(-SUMME))) %>%
   head(15) %>%
   ggplot() +
-  geom_bar(aes(y=user, x = PROZENTUAL, fill = bundesland), color = "black", stat = "identity") +
-  scale_fill_manual(name="", values = optimum) +
-  scale_x_percent(limits = c(0, .04), breaks = seq(0, .04, .01)) +
+  geom_bar(aes(y=user, x = SUMME, fill = bundesland), color = "black", stat = "identity") +
+  scale_fill_manual(name="Herkunft", values = bundesländer) +
+  scale_x_continuous(limits = c(0,25000), breaks = seq(0,25000, 5000), labels = scales::label_number(big.mark = ".")) +
   theme_ipsum(base_family = "TeX Gyre Heros", base_size = 11.5) +
   xlab("") +
   ylab("") +
-  ggtitle("Top 15 kommerziell finanzierte Nachrichtenmedien"))
+  ggtitle("Top 15 kommerziell finanzierte Nachrichtenmedien") +
+  theme(legend.title = element_text(face = "bold"), legend.position = "bottom", legend.text = element_text(face = "italic")))
 
 (spendenFinanzierte <- medienAnalysedaten_discursivePower %>%
   filter(geschäftsmodell == 3) %>%
@@ -358,14 +361,15 @@ medienAnalysedaten_discursivePower <- medienAnalysedaten_discursivePower %>% arr
   head(15) %>%
   ggplot() +
   geom_bar(aes(y=user, x = PROZENTUAL, fill = bundesland), color = "black", stat = "identity") +
-  scale_fill_manual(name="", values = optimum) +
+  scale_fill_manual(name="Herkunft", values = bundesländer) +
   scale_x_percent(limits = c(0, .02), breaks = seq(0, .02, .01)) +
   theme_ipsum(base_family = "TeX Gyre Heros", base_size = 11.5) +
   xlab("") +
   ylab("") +
-  ggtitle("Top 15 der über Spenden/Geldgeber finanzierten Nachrichtenmedien"))
+  ggtitle("Top 15 der über Spenden/Geldgeber finanzierten Nachrichtenmedien") +
+  theme(legend.title = element_text(face = "bold"), legend.position = "bottom", legend.text = element_text(face = "italic")))
 
-ggarrange(legend = "right", common.legend = F, nrow = 3,
+ggarrange(legend = "right", ncol = 3, nrow = 1,
           öffentlichFinanzierte,
           kommerziellFinanzierte,
           spendenFinanzierte, labels = c("1", "2", "3"))
@@ -397,25 +401,55 @@ view(as_tidytable(data.frame("user"=head(medienAnalysedaten_userBundesland$user,
 # facets für geschäftsmodell
 # scales free und independent TRUE sind wichtig!
 medienAnalysedaten_discursivePower %>%
-  mutate(user = fct_reorder(user, desc(-PROZENTUAL))) %>%
+  mutate(user = fct_reorder(user, desc(-SUMME))) %>%
   head(15) %>%
   ggplot() +
-  geom_bar(aes(y=user, x = PROZENTUAL, fill = bundesland, colour=geschäftsmodell), size = 1, stat = "identity") +
+  geom_bar(aes(y=user, x = SUMME, fill = bundesland), size = 1, stat = "identity") +
   #facet_wrap2(.~geschäftsmodell, scales = "free_y", nrow = 3) +
   scale_fill_manual(name="Bundesland", values = optimum) +
-  scale_colour_manual(name="Geschäftsmodell", values = coloursGeschäftsmodell) +
-  scale_x_percent(limits = c(0, .04)) +
+  #scale_colour_manual(name="Geschäftsmodell", values = coloursGeschäftsmodell) +
   theme_ipsum(base_family = "TeX Gyre Heros", base_size = 11.5) +
   xlab(" ") +
   ylab(" ") +
   ggtitle("Twitter-Deutschland: 15 aktivste Konten medialer Akteure",
           subtitle = "Inklusive Zuordnung zu jeweiligem Geschäftsmodell sowie Herkunft")
 
-coloursGeschäftsmodell <- c("öffentlich"="orange", "kommerziell"="lightgreen", "Spenden"="orange")
+data.frame("user"=medienTweetsVoll$user,
+           "bundesland"=medienTweetsVoll$bundesland,
+           "anzTweets"=medienTweetsVoll$n,
+           "prozTweets"=medienTweetsVoll$n/1372113)
 
-medienAnalysedaten_discursivePower$geschäftsmodell <- factor(medienAnalysedaten_discursivePower$geschäftsmodell,
-                                                             labels = c("öffentlich", "kommerziell", "Spenden"))
-freq(medienAnalysedaten_discursivePower$geschäftsmodell)
+(abb11_mostactive <- medienTweetsVoll %>%
+  # arrange(desc(n)) %>%
+  # head(20) %>%
+  ggplot() +
+  geom_bar(aes(y=reorder(user, n), x = n, fill = bundesland), linewidth = 1, stat = "identity") +
+  geom_text(aes(y=reorder(user, n), x = n, label=geschäftsmodell), hjust = 0, nudge_x = 100) +
+  scale_fill_manual(name="Herkunft", values = bundesländer) +
+  #scale_colour_manual(name="Geschäftsmodell", values = coloursGeschäftsmodellAlternativ) +
+  theme_ipsum(base_family = "TeX Gyre Heros", base_size = 11.5) +
+  theme(axis.text.x = element_text(size = 9.5), legend.position = "right", legend.text = element_text(size = 9, face = "italic"),
+        legend.box.spacing = unit(0.2, "cm"), legend.title = element_text(face = "bold"), axis.text.y = element_text(size = 9.5), title = element_text(size = 14)) +
+  scale_x_continuous(limits = c(0,60000), breaks = seq(0,60000, 5000), labels = scales::label_number(big.mark = ".")) +
+  xlab(" ") +
+  ylab(" ") +
+  ggtitle("Twitter-Deutschland: 15 aktivste Konten medialer Akteure"))
+
+coloursGeschäftsmodellAlternativ <- c("Öffentlich"="orangered3", "Kommerziell"="steelblue", "Spenden"="green")
+#
+# medienAnalysedaten_discursivePower$geschäftsmodell <- factor(medienAnalysedaten_discursivePower$geschäftsmodell,
+#                                                              labels = c("öffentlich", "kommerziell", "Spenden"))
+# freq(medienAnalysedaten_discursivePower$geschäftsmodell)
+
+
+
+
+
+
+
+
+
+
 
 
 

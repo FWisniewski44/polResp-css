@@ -640,9 +640,9 @@ ggarrange(ukraine_TS_allg, ukraine_TS_Afd,
 # aktivste user zum thema covid in den parteien vergleichen
 # erstellen einer informativen, dashboard-artigen visualisierung
 
-# timePol_maximus_afd <- timePol_maximus %>% filter(partei == "AfD")
-# timePol_maximus_spd <- timePol_maximus %>% filter(partei == "SPD")
-# timePol_maximus_fdp <- timePol_maximus %>% filter(partei == "FDP")
+timePol_maximus_afd <- timePol_maximus %>% filter(partei == "AfD")
+timePol_maximus_spd <- timePol_maximus %>% filter(partei == "SPD")
+timePol_maximus_fdp <- timePol_maximus %>% filter(partei == "FDP")
 # unique(timePol_maximus_afd$user)
 
 activeCovidUsers <- timePol_maximus %>% group_by(user) %>% filter(sum(covid) >= 100)
@@ -658,7 +658,7 @@ a <- ggplot() +
   stat_summary(data = activeCovidUsers, aes(dateTime, covid, fill=partei), color="grey25", position = "fill", geom = "area", fun = sum, na.rm = T) +
   scale_x_date(breaks = "1 month", labels = date_format(format = "%b", locale = "de")) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
-  theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
+  theme_ipsum(base_family = "TeX Gyre Heros", base_size = 11.5) +
   ggtitle(label = "Das Thema COVID-19", subtitle = "Behandlung des Themas in Abhängigkeit von der Partei") +
   scale_fill_manual(name="Parteien", values = parteifarben) +
   xlab("") +
@@ -666,11 +666,11 @@ a <- ggplot() +
 
 b <- ggplot() +
   stat_summary(data = activeCovidUsers_afd, aes(dateTime, covid), color="#0087c1", geom = "line", fun = sum) +
-  stat_summary(data = activeCovidUsers_spd, aes(dateTime, covid), color="#e40006", geom = "line", fun = sum) + #effektiv karl lauterbach alleine
+  #stat_summary(data = activeCovidUsers_spd, aes(dateTime, covid), color="#e40006", geom = "line", fun = sum) + #effektiv karl lauterbach alleine
   stat_summary(data = activeCovidUsers_fdp, aes(dateTime, covid), color="#ffee00", geom = "line", fun = sum) +
   scale_x_date(breaks = "1 month", labels = date_format(format = "%b", locale = "de")) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
-  theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
+  theme_ipsum(base_family = "TeX Gyre Heros", base_size = 11.5) +
   ggtitle(label = "Behandlung des Themas COVID", subtitle = "Zeitverlauf für PolitikerInnen der AfD und der SPD im Vergleich") +
   scale_fill_manual(name="PolitikerInnen", values = sechzehnFarben) +
   xlab("") +
@@ -684,13 +684,13 @@ c <- timePol_userParty %>%
   ggplot(aes(y=user, x=covid, fill=partei)) +
   geom_bar(position="dodge", stat="identity") +
   scale_fill_manual(name="Parteizugehörigkeit", values = parteifarben) +
-  theme_ft_rc(base_family = "TeX Gyre Heros", base_size = 11.5) +
+  theme_ipsum(base_family = "TeX Gyre Heros", base_size = 11.5) +
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5)) +
   xlab("Posts zum Thema 'covid'") +
   ylab("Usernamen") +
   ggtitle(label = "POLITIKERINNEN zum Thema COVID", subtitle = "Graphik für jene mit mind. 100 Tweets/Thema")
 
-arrangement_politiker_covid <- ggarrange(a, ggarrange(b, c, ncol = 2), nrow = 2)
+arrangement_politiker_covid <- ggarrange(a, ggarrange(b, c, ncol = 2, labels = c("2)", "3)")), nrow = 2, labels = "1)")
 annotate_figure(arrangement_politiker_covid,
                 bottom=text_grob("Hinweis: Gezählte Beiträge der SPD in diesen Graphiken stammen allein von Gesundheitsminister K. Lauterbach.",
                                  face = "italic",
@@ -763,7 +763,7 @@ medienCovid1200 <- timeMedia_userBundesland %>%
   ylab("Usernamen") +
   ggtitle(label = "MEDIEN zum Thema COVID", subtitle = "Graphik für jene mit mind. 1200 Tweets/Thema")
 
-# UKRAINE TOPIC
+# UKRAINE TOPIC (wäre cool mit discursive power variablen, evtl neuer versuch starten mit zugehörigen datensätzen)
 medienUkraine1200 <- timeMedia_userBundesland %>%
   filter(ukraine >= 1200) %>%
   mutate(user = fct_reorder(user, desc(-ukraine))) %>%
@@ -781,11 +781,11 @@ ggarrange(legend = "bottom", common.legend = F, medienUkraine1200, medienCovid12
 
 normalize <- function(v, na.rm = FALSE) (v - min(v, na.rm = na.rm))/diff(range(v, na.rm = na.rm)) ## stackoverflow, macht aber das gleiche wie meine funktion, aber bezieht dabei die NAs mit ein, wobei sich keine darin befinden dürften -- an sich also obsolet
 
-obj <- lapply(timePol_topics[,-1], FUN = minMaxNorm)
+obj <- lapply(timePol_topics[,-c(1, 17:19)], FUN = minMaxNorm)
 obj <- as_tidytable(obj)
 obj$dateTime <- timePol_topics$dateTime
 
-objMed <- lapply(timeMedia_topics[,-1], FUN = minMaxNorm)
+objMed <- lapply(timeMedia_topics[,-c(1, 17:19)], FUN = minMaxNorm)
 objMed <- as_tidytable(objMed)
 objMed$dateTime <- timeMedia_topics$dateTime
 
