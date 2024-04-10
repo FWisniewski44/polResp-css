@@ -82,7 +82,7 @@ medienMinMax$weeknumber <- timeMedia_topics$weeknumber
 medienMinMax$monthAsDate <- timeMedia_topics$monthAsDate
 medienMinMax$monthNumber <- timeMedia_topics$monthNumber
 
-# =============================================================================================================================================================
+# =========================================================================================================================================================
 
 # ukraine: gesamtgraphik im vergleich der sphären mit min-max-normalisierter skala
 # interpretativ: wo sind die jeweiligen maximalen und minimalen themenwerte in den graphiken, macht vergleichbarkeit besser als prozentskala, da
@@ -221,6 +221,10 @@ covidMedien_maxima <- data.frame(xmin = as.Date("2022-01-09"), xmax = as.Date("2
     annotate(geom="text", label = "Russ.\nInvasion", x=as.Date("2022-03-01"), y=0.90, color = "#ff6347", size=3.5) +
     geom_vline(xintercept = as.Date("2022-01-26"), linewidth = 1.5, colour = "#ff6347aa") +
     annotate(geom="text", label = "Orientierungsdeb.\nImpfpflicht", x=as.Date("2022-02-02"), y=0.35, color = "#ff6347", size=3) +
+    geom_rect(data = covidMedien_maxima,
+              aes(xmax=xmax, ymax=ymax, xmin=xmin, ymin=ymin),
+              fill = "#ff6347aa", colour = "black", alpha = 0.5, inherit.aes = F) +
+    annotate(geom="text", label = "Proteste,\nImpfpflicht,\nOmikron", x=as.Date("2022-01-20"), y=0.4, color = "#ff6347", size=3) +
     scale_color_manual(name="Akteursgruppe", values = farbenPolitikerMedien) +
     scale_x_date(breaks = "1 week", labels = date_format(format = "%b\nKW %W", locale = "de"),
                  limits = as.Date(c("2022-01-01", "2022-03-31")), expand = c(0,0)) +
@@ -231,7 +235,7 @@ covidMedien_maxima <- data.frame(xmin = as.Date("2022-01-09"), xmax = as.Date("2
     theme(axis.text.x = element_text(size = 9, vjust = 0.5), legend.position = "bottom",
           legend.text = element_text(size = 9, face = "italic"), legend.title = element_text(face = "bold")) +
     ggtitle("Zoom: Anfang 2022, Prä-Kriegsphase"))
-# ggplotly(covidZoom_graphik_anfang2022)
+ggplotly(covidZoom_graphik_anfang2022)
 
 (covidZoom_graphik_impfpflicht <- ggplot() +
     geom_line(data = covidZoom_medien_impfpflicht, aes(x=dateTime, y=covid, colour = "Medien")) +
@@ -281,7 +285,8 @@ annotate_figure(block4Covid,
                 top = text_grob("Vergleichende Untersuchung der Akteurssphären für das Thema Covid", size = 20, face = "bold"),
                 bottom = text_grob("Zeitebene: täglich.", size = 8, face = "italic", hjust = 1, x = 1))
 
-View(alleMedien %>% filter(covid ==1) %>% filter(dateTime == "2022-02-01"))
+View(allePolitiker %>% filter(covid ==1) %>% filter(dateTime == "2022-01-11"))
+plot(aggregate(allePolitiker, covid~dateTime, FUN = mean), type = "l")
 
 # =========================================================================================================================================================
 

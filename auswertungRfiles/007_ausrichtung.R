@@ -74,6 +74,35 @@ library(flextable)
 
 setwd(dir = "~/Documents/uni/masterarbeit/scraping/polResp-css/auswertungRfiles/")
 
+## FORMELN
+
+# NORMALISIERUNG MIN-MAX
+minMaxNorm <- function(x) {
+  (x - min(x)) / (max(x) - min(x))
+}
+
+newNormalPol <- function(x) {
+  # summe <- sum(df_col)
+  x / 83658
+}
+
+newNormalMed <- function(x) {
+  # summe <- sum(df_col)
+  x / 607370
+}
+
+## PROZENTUALE THEMENANTEILE PRO FOKUSGRUPPE
+formel_prozentualisierung <- function(obj) {
+  obj / sum(obj)
+}
+
+# negation von %in%
+"%ni%" <- Negate("%in%")
+
+################################################################################
+################################################################################
+################################################################################
+
 # BATCH LOADING: POLITIKERDATEN
 filelist_pol <- list.files(path = "./politikerdaten",
                            pattern=".csv",
@@ -781,30 +810,5 @@ farbenPolitikerMedien <- c("PolitikerInnen"="#0000cd", "Medien"="#ffc125")
 # ===============================================================================================================================================
 # ===============================================================================================================================================
 # ===============================================================================================================================================
-
-## FORMELN
-
-# NORMALISIERUNG MIN-MAX
-minMaxNorm <- function(x) {
-  (x - min(x)) / (max(x) - min(x))
-}
-
-newNormalPol <- function(x) {
-  # summe <- sum(df_col)
-  x / 83658
-}
-
-newNormalMed <- function(x) {
-  # summe <- sum(df_col)
-  x / 607370
-}
-
-## PROZENTUALE THEMENANTEILE PRO FOKUSGRUPPE
-formel_prozentualisierung <- function(obj) {
-  obj / sum(obj)
-}
-
-# negation von %in%
-"%ni%" <- Negate("%in%")
 
 gc()
