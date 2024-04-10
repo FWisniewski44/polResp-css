@@ -1,0 +1,1805 @@
+---
+title: "Einpflegen bekannter Mediendaten"
+author: "FW"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=F, message=F, warning=F, include=F)
+```
+
+```{r libraries, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+library(tidyverse)
+library(tidytext)
+library(readr)
+library(summarytools)
+library(rvest)
+library(expss)
+library(hunspell)
+library(lubridate)
+library(quanteda)
+# library(tm)
+library(topicmodels)
+library(stopwords)
+library(stringi)
+#library(rvisidata)
+library(qdap)
+library(dirichletprocess)
+library(ggraph)
+library(igraph)
+library(esquisse)
+```
+
+
+# Zur Info
+Zur besseren Übersicht (wg. Outline unter anderem) wurde auf ein RMarkdown-Dokument umgesiedelt. Hierin werden alle Mediendaten aus der zuvor erhobenen Infodatei `sammlung_medien.ods` an die Tweet-Daten angehängt.
+
+Die Vorbereitung (d. h. Auftrennen des regionalen DF in die einzelnen Bundesländer) verbleibt in der Datei `010_regionalisierung.R`.
+
+```{r setwd, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+# if needed, set working directory
+setwd(dir="~/Documents/uni/masterarbeit/methods/representative-speech/")
+```
+
+```{r laden bei bedarf, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+load("../regionalisierung/bawü.RData")
+load("../regionalisierung/bayern.RData")
+load("../regionalisierung/berlin.RData")
+load("../regionalisierung/brandenburg.RData")
+load("../regionalisierung/bremen.RData")
+load("../regionalisierung/hamburg.RData")
+load("../regionalisierung/hessen.RData")
+load("../regionalisierung/meckPomm.RData")
+load("../regionalisierung/niedersachsen.RData")
+load("../regionalisierung/nrw.RData")
+load("../regionalisierung/rlp.RData")
+load("../regionalisierung/saarland.RData")
+load("../regionalisierung/sachsen.RData")
+load("../regionalisierung/sachsen_anhalt.RData")
+load("../regionalisierung/schleswig.RData")
+load("../regionalisierung/thüringen.RData")
+```
+
+# Skalen
+## Erreichbarkeit
+| **Wert**  | **Bedeutung**             |
+|-----------|---------------------------|
+| 1         | etabliert (überregional)  |
+| 2         | etabliert (regional)      |
+| 3         | alternativ                |
+| 4         | invididuell               |
+
+
+## Normen und Werte
+| **Wert**  | **Bedeutung**                 |
+|-----------|-------------------------------|
+| 1         | objektiv                      |
+| 2         | parteiisch                    |
+| 3         | marktgetrieben                |
+| 4         | NA                            |
+
+## Geschäftsmodelle
+| **Wert**  | **Bedeutung**             |
+|-----------|---------------------------|
+| 1         | öffentlich                |
+| 2         | kommerziell               |
+| 3         | Spenden etc.              |
+|-----------|---------------------------|
+
+# Baden-Württemberg
+## BaWü: Verkauf und Visits
+```{r RVerkauf, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+### RVerkauf: Reichweite nach verkaufter Auflage
+bawü <- bawü %>% mutate(RVerkauf = case_when(user == "BNN_BaNeuNa" ~ 99326,
+                                             user == "badischezeitung" ~ 120183,
+                                             user == "ez_online" ~ 22336,
+                                             user == "Gaeubote" ~ 9967,
+                                             user == "GT_Gmuend" ~ 10568,
+                                             user == "Pressehaus" ~ 22258,
+                                             user == "stimmeonline" ~ 68201,
+                                             user == "kanews" ~ NA,
+                                             user == "KontextWZ" ~ NA,
+                                             user == "LKZ_Leonberg" ~ 16630,
+                                             user == "LKZ_online" ~ 36033,
+                                             user == "mainecho_de" ~ 58593,
+                                             user == "online_MM" ~ 53697,
+                                             user == "MZ_nachrichten" ~ 4395,
+                                             user == "mittelbadische" ~ 36058,
+                                             user == "pznews" ~ 28059,
+                                             user == "remszeitung" ~ 11132,
+                                             user == "RNZonline" ~ 68402,
+                                             user == "SchwaePo" ~ 25614,
+                                             user == "Schwaebische" ~ 135319,
+                                             user == "Tagblatt" ~ 33907,
+                                             user == "schwarzwaelder" ~ 98189,
+                                             user == "StN_News" ~ 162861,
+                                             user == "StZ_News" ~ 162861,
+                                             user == "Suedkurier_News" ~ 101802,
+                                             user == "SWPde" ~ 242191,
+                                             user == "Der_Teckbote" ~ 12385,
+                                             user == "wnoz" ~ 19053,
+                                             user == "ZAK_Redaktion" ~ 18049))
+
+### RVisits: Seitenaufrufe der Onlineauftritte
+bawü <- bawü %>% mutate(RVisits = case_when(user == "BNN_BaNeuNa" ~ 2600000,
+                                             user == "badischezeitung" ~ 4600000,
+                                             user == "ez_online" ~ 515100,
+                                             user == "Gaeubote" ~ 91800,
+                                             user == "GT_Gmuend" ~ 162800,
+                                             user == "Pressehaus" ~ 405400,
+                                             user == "stimmeonline" ~ 1900000,
+                                             user == "kanews" ~ 1200000,
+                                             user == "KontextWZ" ~ 79800,
+                                             user == "LKZ_Leonberg" ~ 77200,
+                                             user == "LKZ_online" ~ 431400,
+                                             user == "mainecho_de" ~ 1100000,
+                                             user == "online_MM" ~ 1100000,
+                                             user == "MZ_nachrichten" ~ 17300,
+                                             user == "mittelbadische" ~ 693100,
+                                             user == "pznews" ~ 1900000,
+                                             user == "remszeitung" ~ 146100,
+                                             user == "RNZonline" ~ 1200000,
+                                             user == "SchwaePo" ~ 554800,
+                                             user == "Schwaebische" ~ 3300000,
+                                             user == "Tagblatt" ~ 1300000,
+                                             user == "schwarzwaelder" ~ 3100000,
+                                             user == "StN_News" ~ 7100000,
+                                             user == "StZ_News" ~ 6200000,
+                                             user == "Suedkurier_News" ~ 37000000,
+                                             user == "SWPde" ~ 8500000,
+                                             user == "Der_Teckbote" ~ 130800,
+                                             user == "wnoz" ~ 101000,
+                                             user == "ZAK_Redaktion" ~ 369200))
+```
+
+## BaWü: Discursive Power Vars
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+### Erreichbarkeit: Wertebereich für regionale Akteure => 2:4 (etablierte vs. alternative vs. individuelle)
+bawü <- bawü %>% mutate(erreichbarkeit = case_when(user == "BNN_BaNeuNa" ~ 2,
+                                            user == "badischezeitung" ~ 2,
+                                            user == "ez_online" ~ 2,
+                                            user == "Gaeubote" ~ 2,
+                                            user == "GT_Gmuend" ~ 2,
+                                            user == "Pressehaus" ~ 2,
+                                            user == "stimmeonline" ~ 2,
+                                            user == "kanews" ~ 3,
+                                            user == "KontextWZ" ~ 3,
+                                            user == "LKZ_Leonberg" ~ 2,
+                                            user == "LKZ_online" ~ 2,
+                                            user == "mainecho_de" ~ 2,
+                                            user == "online_MM" ~ 2,
+                                            user == "MZ_nachrichten" ~ 2,
+                                            user == "mittelbadische" ~ 2,
+                                            user == "pznews" ~ 2,
+                                            user == "remszeitung" ~ 2,
+                                            user == "RNZonline" ~ 2,
+                                            user == "SchwaePo" ~ 2,
+                                            user == "Schwaebische" ~ 2,
+                                            user == "Tagblatt" ~ 2,
+                                            user == "schwarzwaelder" ~ 2,
+                                            user == "StN_News" ~ 2,
+                                            user == "StZ_News" ~ 2,
+                                            user == "Suedkurier_News" ~ 2,
+                                            user == "SWPde" ~ 2,
+                                            user == "Der_Teckbote" ~ 2,
+                                            user == "wnoz" ~ 2,
+                                            user == "ZAK_Redaktion" ~ 2))
+
+### NormenWerte: Wertebereich => 1 = objektiv-ausbalanciert; 2 = parteiisch; 3 = marktgetrieben; 4 = NA
+bawü <- bawü %>% mutate(normenWerte = case_when(user == "BNN_BaNeuNa" ~ 1,
+                                                   user == "badischezeitung" ~ 1,
+                                                   user == "ez_online" ~ 1,
+                                                   user == "Gaeubote" ~ 1,
+                                                   user == "GT_Gmuend" ~ 1,
+                                                   user == "Pressehaus" ~ 1,
+                                                   user == "stimmeonline" ~ 1,
+                                                   user == "kanews" ~ 1,
+                                                   user == "KontextWZ" ~ 2,
+                                                   user == "LKZ_Leonberg" ~ 1,
+                                                   user == "LKZ_online" ~ 1,
+                                                   user == "mainecho_de" ~ 1,
+                                                   user == "online_MM" ~ 1,
+                                                   user == "MZ_nachrichten" ~ 1,
+                                                   user == "mittelbadische" ~ 1,
+                                                   user == "pznews" ~ 1,
+                                                   user == "remszeitung" ~ 1,
+                                                   user == "RNZonline" ~ 1,
+                                                   user == "SchwaePo" ~ 1,
+                                                   user == "Schwaebische" ~ 1,
+                                                   user == "Tagblatt" ~ 1,
+                                                   user == "schwarzwaelder" ~ 1,
+                                                   user == "StN_News" ~ 1,
+                                                   user == "StZ_News" ~ 1,
+                                                   user == "Suedkurier_News" ~ 1,
+                                                   user == "SWPde" ~ 1,
+                                                   user == "Der_Teckbote" ~ 1,
+                                                   user == "wnoz" ~ 1,
+                                                   user == "ZAK_Redaktion" ~ 1))
+
+### Geschäftsmodell: öffentlich (1) vs. kommerziell (2) vs. Spenden etc. (3)
+bawü <- bawü %>% mutate(geschäftsmodell = case_when(user == "BNN_BaNeuNa" ~ 2,
+                                                   user == "badischezeitung" ~ 2,
+                                                   user == "ez_online" ~ 2,
+                                                   user == "Gaeubote" ~ 2,
+                                                   user == "GT_Gmuend" ~ 2,
+                                                   user == "Pressehaus" ~ 2,
+                                                   user == "stimmeonline" ~ 2,
+                                                   user == "kanews" ~ 2,
+                                                   user == "KontextWZ" ~ 3,
+                                                   user == "LKZ_Leonberg" ~ 2,
+                                                   user == "LKZ_online" ~ 2,
+                                                   user == "mainecho_de" ~ 2,
+                                                   user == "online_MM" ~ 2,
+                                                   user == "MZ_nachrichten" ~ 2,
+                                                   user == "mittelbadische" ~ 2,
+                                                   user == "pznews" ~ 2,
+                                                   user == "remszeitung" ~ 2,
+                                                   user == "RNZonline" ~ 2,
+                                                   user == "SchwaePo" ~ 2,
+                                                   user == "Schwaebische" ~ 2,
+                                                   user == "Tagblatt" ~ 2,
+                                                   user == "schwarzwaelder" ~ 2,
+                                                   user == "StN_News" ~ 2,
+                                                   user == "StZ_News" ~ 2,
+                                                   user == "Suedkurier_News" ~ 2,
+                                                   user == "SWPde" ~ 2,
+                                                   user == "Der_Teckbote" ~ 2,
+                                                   user == "wnoz" ~ 2,
+                                                   user == "ZAK_Redaktion" ~ 2))
+```
+
+# Bayern
+## Bayern: Verkauf und Visits
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+### RVerkauf: Reichweite nach verkaufter Auflage // wenn keine angebbar, dann NA
+bayern <- bayern %>% mutate(RVerkauf = case_when(user == "Abendzeitung" ~ 33022,
+                                             user == "AZ_Allgaeu" ~ 83761,
+                                             user == "AZ_Augsburg" ~ 211333,
+                                             user == "GZ_AKTUELL" ~ 9665,
+                                             user == "Staatszeitung" ~ 14363,
+                                             user == "bt_tagblatt" ~ NA,
+                                             user == "donaukurier" ~ 86858,
+                                             user == "fraenkischertag" ~ 75601,
+                                             user == "hallo_muenchen" ~ 654429,
+                                             user == "HZOnline" ~ 5981,
+                                             user == "mainpost" ~ 104807,
+                                             user == "idowa" ~ 108516,
+                                             user == "MZ_Online" ~ 12060,
+                                             user == "mz_de" ~ 101560,
+                                             user == "merkur_de" ~ 211857,
+                                             user == "onetz_de" ~ 44050,
+                                             user == "NN_Online" ~ 202620,
+                                             user == "NZ_Online" ~ 162927,
+                                             user == "heimatzeitungen" ~ 51988,
+                                             user == "pnp" ~ 158805,
+                                             user == "sonntagsblatt" ~ 2921,
+                                             user == "tzmuenchen" ~ 81004,
+                                             user == "wochenblattnews" ~ 993578))
+
+### RVisits
+bayern <- bayern %>% mutate(RVisits = case_when(user == "Abendzeitung" ~ 5300000,
+                                                 user == "AZ_Allgaeu" ~ 1500000,
+                                                 user == "AZ_Augsburg" ~ 6600000,
+                                                 user == "GZ_AKTUELL" ~ 5000,
+                                                 user == "Staatszeitung" ~ 34600,
+                                                 user == "bt_tagblatt" ~ 292400,
+                                                 user == "donaukurier" ~ 1500000,
+                                                 user == "fraenkischertag" ~ 210500,
+                                                 user == "hallo_muenchen" ~ 158100,
+                                                 user == "HZOnline" ~ 1200000,
+                                                 user == "mainpost" ~ 3000000,
+                                                 user == "idowa" ~ 1600000,
+                                                 user == "MZ_Online" ~ 6600000,
+                                                 user == "mz_de" ~ 2400000,
+                                                 user == "merkur_de" ~ 44100000,
+                                                 user == "onetz_de" ~ 1700000,
+                                                 user == "NN_Online" ~ 7800000,
+                                                 user == "NZ_Online" ~ 7800000,
+                                                 user == "heimatzeitungen" ~ 390900,
+                                                 user == "pnp" ~ 4600000,
+                                                 user == "sonntagsblatt" ~ 235000,
+                                                 user == "tzmuenchen" ~ 24700000,
+                                                 user == "wochenblattnews" ~ 351600))
+```
+
+## Bayern: Discursive Power Vars
+```{r}
+### Erreichbarkeit => Wertebereich 2:4
+bayern <- bayern %>% mutate(erreichbarkeit = case_when(user == "Abendzeitung" ~ 2,
+                                                user == "AZ_Allgaeu" ~ 2,
+                                                user == "AZ_Augsburg" ~ 2,
+                                                user == "GZ_AKTUELL" ~ 3,
+                                                user == "Staatszeitung" ~ 3,
+                                                user == "bt_tagblatt" ~ 3,
+                                                user == "donaukurier" ~ 2,
+                                                user == "fraenkischertag" ~ 2,
+                                                user == "hallo_muenchen" ~ 3,
+                                                user == "HZOnline" ~ 2,
+                                                user == "mainpost" ~ 2,
+                                                user == "idowa" ~ 2,
+                                                user == "MZ_Online" ~ 2,
+                                                user == "mz_de" ~ 2,
+                                                user == "merkur_de" ~ 2,
+                                                user == "onetz_de" ~ 2,
+                                                user == "NN_Online" ~ 2,
+                                                user == "NZ_Online" ~ 2,
+                                                user == "heimatzeitungen" ~ 2,
+                                                user == "pnp" ~ 2,
+                                                user == "sonntagsblatt" ~ 3,
+                                                user == "tzmuenchen" ~ 2,
+                                                user == "wochenblattnews" ~ 2))
+
+# NormenWerte: objektiv (1) vs. parteiisch (2) vs. marktgetrieben (3)
+bayern <- bayern %>% mutate(normenWerte = case_when(user == "Abendzeitung" ~ 3,
+                                                       user == "AZ_Allgaeu" ~ 1,
+                                                       user == "AZ_Augsburg" ~ 1,
+                                                       user == "GZ_AKTUELL" ~ 2,
+                                                       user == "Staatszeitung" ~ 2,
+                                                       user == "bt_tagblatt" ~ 1,
+                                                       user == "donaukurier" ~ 1,
+                                                       user == "fraenkischertag" ~ 1,
+                                                       user == "hallo_muenchen" ~ 3,
+                                                       user == "HZOnline" ~ 1,
+                                                       user == "mainpost" ~ 1,
+                                                       user == "idowa" ~ 1,
+                                                       user == "MZ_Online" ~ 1,
+                                                       user == "mz_de" ~ 1,
+                                                       user == "merkur_de" ~ 1,
+                                                       user == "onetz_de" ~ 1,
+                                                       user == "NN_Online" ~ 1,
+                                                       user == "NZ_Online" ~ 1,
+                                                       user == "heimatzeitungen" ~ 1,
+                                                       user == "pnp" ~ 1,
+                                                       user == "sonntagsblatt" ~ 2,
+                                                       user == "tzmuenchen" ~ 3,
+                                                       user == "wochenblattnews" ~ 1))
+
+# Geschäftsmodell: öffentlich (1) vs. kommerziell (2) vs. Spenden etc. (3)
+bayern <- bayern %>% mutate(geschäftsmodell = case_when(user == "Abendzeitung" ~ 2,
+                                                    user == "AZ_Allgaeu" ~ 2,
+                                                    user == "AZ_Augsburg" ~ 2,
+                                                    user == "GZ_AKTUELL" ~ 2,
+                                                    user == "Staatszeitung" ~ 1,
+                                                    user == "bt_tagblatt" ~ 2,
+                                                    user == "donaukurier" ~ 2,
+                                                    user == "fraenkischertag" ~ 2,
+                                                    user == "hallo_muenchen" ~ 2,
+                                                    user == "HZOnline" ~ 2,
+                                                    user == "mainpost" ~ 2,
+                                                    user == "idowa" ~ 2,
+                                                    user == "MZ_Online" ~ 2,
+                                                    user == "mz_de" ~ 2,
+                                                    user == "merkur_de" ~ 2,
+                                                    user == "onetz_de" ~ 2,
+                                                    user == "NN_Online" ~ 2,
+                                                    user == "NZ_Online" ~ 2,
+                                                    user == "heimatzeitungen" ~ 2,
+                                                    user == "pnp" ~ 2,
+                                                    user == "sonntagsblatt" ~ 2,
+                                                    user == "tzmuenchen" ~ 2,
+                                                    user == "wochenblattnews" ~ 2))
+```
+
+# Berlin
+## Berlin: Verkauf und Visits
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+### RVerkauf: Reichweite nach verkaufter Auflage // wenn keine angebbar, dann NA
+berlin <- berlin %>% mutate(RVerkauf = case_when(user == "BerlAbendblatt" ~ 1300070,
+                                                 user == "BERLINER_KURIER" ~ 81202,
+                                                 user == "morgenpost" ~ 42092,
+                                                 user == "berlinerwoche" ~ 1140000,
+                                                 user == "berlinerzeitung" ~ 103005,
+                                                 user == "bzberlin" ~ 78933,
+                                                 user == "JuedischeOnline" ~ 10700,
+                                                 user == "Junge_Freiheit" ~ 26461,
+                                                 user == "Jungle_World" ~ NA,
+                                                 user == "ndaktuell" ~ 16608,
+                                                 user == "pukzeitung" ~ 5000,
+                                                 user == "tag_des_herrn" ~ 16657,
+                                                 user == "Tagesspiegel" ~ 103652,
+                                                 user == "TspCheckpoint" ~ NA,
+                                                 user == "vorwaerts" ~ 330823))
+
+# RVisits
+berlin <- berlin %>% mutate(RVisits = case_when(user == "BerlAbendblatt" ~ 59500,
+                                                 user == "BERLINER_KURIER" ~ 6300000,
+                                                 user == "morgenpost" ~ 9900000,
+                                                 user == "berlinerwoche" ~ 257700,
+                                                 user == "berlinerzeitung" ~ 11900000,
+                                                 user == "bzberlin" ~ 16200000,
+                                                 user == "JuedischeOnline" ~ 347200,
+                                                 user == "Junge_Freiheit" ~ 2900000,
+                                                 user == "Jungle_World" ~ 183700,
+                                                 user == "ndaktuell" ~ 866200,
+                                                 user == "pukzeitung" ~ 5500,
+                                                 user == "tag_des_herrn" ~ 25000,
+                                                 user == "Tagesspiegel" ~ 24200000,
+                                                 user == "TspCheckpoint" ~ NA,
+                                                 user == "vorwaerts" ~ 100200))
+```
+
+## Berlin: Discursive Power Vars
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+# Erreichbarkeit: 2:4
+berlin <- berlin %>% mutate(erreichbarkeit = case_when(user == "BerlAbendblatt" ~ 2,
+                                                user == "BERLINER_KURIER" ~ 2,
+                                                user == "morgenpost" ~ 2,
+                                                user == "berlinerwoche" ~ 2,
+                                                user == "berlinerzeitung" ~ 2,
+                                                user == "bzberlin" ~ 2,
+                                                user == "JuedischeOnline" ~ 2,
+                                                user == "Junge_Freiheit" ~ 2,
+                                                user == "Jungle_World" ~ 3,
+                                                user == "ndaktuell" ~ 2,
+                                                user == "pukzeitung" ~ 3,
+                                                user == "tag_des_herrn" ~ 3,
+                                                user == "Tagesspiegel" ~ 2,
+                                                user == "TspCheckpoint" ~ 2,
+                                                user == "vorwaerts" ~ 3))
+
+# NormenWerte: objektiv (1) vs. parteiisch (2) vs. marktgetrieben (3)
+berlin <- berlin %>% mutate(normenWerte = case_when(user == "BerlAbendblatt" ~ 1,
+                                                       user == "BERLINER_KURIER" ~ 1,
+                                                       user == "morgenpost" ~ 1,
+                                                       user == "berlinerwoche" ~ 1,
+                                                       user == "berlinerzeitung" ~ 1,
+                                                       user == "bzberlin" ~ 1,
+                                                       user == "JuedischeOnline" ~ 1,
+                                                       user == "Junge_Freiheit" ~ 2,
+                                                       user == "Jungle_World" ~ 2,
+                                                       user == "ndaktuell" ~ 2,
+                                                       user == "pukzeitung" ~ 1,
+                                                       user == "tag_des_herrn" ~ 2,
+                                                       user == "Tagesspiegel" ~ 1,
+                                                       user == "TspCheckpoint" ~ 1,
+                                                       user == "vorwaerts" ~ 2))
+
+# Geschäftsmodell: öffentlich (1) vs. kommerziell (2) vs. Spenden etc. (3)
+berlin <- berlin %>% mutate(geschäftsmodell = case_when(user == "BerlAbendblatt" ~ 2,
+                                                       user == "BERLINER_KURIER" ~ 2,
+                                                       user == "morgenpost" ~ 2,
+                                                       user == "berlinerwoche" ~ 2,
+                                                       user == "berlinerzeitung" ~ 2,
+                                                       user == "bzberlin" ~ 2,
+                                                       user == "JuedischeOnline" ~ 2,
+                                                       user == "Junge_Freiheit" ~ 2,
+                                                       user == "Jungle_World" ~ 2,
+                                                       user == "ndaktuell" ~ 2,
+                                                       user == "pukzeitung" ~ 2,
+                                                       user == "tag_des_herrn" ~ 2,
+                                                       user == "Tagesspiegel" ~ 2,
+                                                       user == "TspCheckpoint" ~ 2,
+                                                       user == "vorwaerts" ~ 2))
+```
+
+# Brandenburg
+## Brandenburg: Verkauf und Visits
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+brandenburg <- brandenburg %>% mutate(RVerkauf = case_when(user == "lr_online" ~ 53783,
+                                                                 user == "maz_online" ~ 81107,
+                                                                 user == "mozde" ~ NA,
+                                                                 user == "NCasnik" ~ NA,
+                                                                 user == "PNN_de" ~ NA))
+
+brandenburg <- brandenburg %>% mutate(RVisits = case_when(user == "lr_online" ~ 1300000,
+                                                                 user == "maz_online" ~ 2300000,
+                                                                 user == "mozde" ~ 2000000,
+                                                                 user == "NCasnik" ~ 5000,
+                                                                 user == "PNN_de" ~ 24200000))
+```
+
+## Brandenburg: Discursive Power Vars
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+brandenburg <- brandenburg %>% mutate(erreichbarkeit = case_when(user == "lr_online" ~ 2,
+                                                                 user == "maz_online" ~ 2,
+                                                                 user == "mozde" ~ 2,
+                                                                 user == "NCasnik" ~ NA,
+                                                                 user == "PNN_de" ~ 2))
+
+brandenburg <- brandenburg %>% mutate(normenWerte = case_when(user == "lr_online" ~ 1,
+                                                                 user == "maz_online" ~ 1,
+                                                                 user == "mozde" ~ 1,
+                                                                 user == "NCasnik" ~ NA,
+                                                                 user == "PNN_de" ~ 1))
+
+brandenburg <- brandenburg %>% mutate(geschäftsmodell = case_when(user == "lr_online" ~ 2,
+                                                                 user == "maz_online" ~ 2,
+                                                                 user == "mozde" ~ 2,
+                                                                 user == "NCasnik" ~ 2,
+                                                                 user == "PNN_de" ~ 2))
+```
+
+# Bremen
+## Bremen: Verkauf und Visits
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+bremen <- bremen %>% mutate(RVerkauf = case_when(user == "nordseezeitung" ~ 36943,
+                                                                 user == "weserkurier" ~ 111178,
+                                                                 user == "Wuemme_Zeitung" ~ 10209))
+
+bremen <- bremen %>% mutate(RVisits = case_when(user == "nordseezeitung" ~ 437600,
+                                                                 user == "weserkurier" ~ 1900000,
+                                                                 user == "Wuemme_Zeitung" ~ 1900000))
+```
+
+## Bremen: Discursive Power Vars
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+bremen <- bremen %>% mutate(erreichbarkeit = case_when(user == "nordseezeitung" ~ 2,
+                                                                 user == "weserkurier" ~ 2,
+                                                                 user == "Wuemme_Zeitung" ~ 2))
+
+bremen <- bremen %>% mutate(normenWerte = case_when(user == "nordseezeitung" ~ 1,
+                                                                 user == "weserkurier" ~ 1,
+                                                                 user == "Wuemme_Zeitung" ~ 1))
+
+bremen <- bremen %>% mutate(geschäftsmodell = case_when(user == "nordseezeitung" ~ 2,
+                                                                 user == "weserkurier" ~ 2,
+                                                                 user == "Wuemme_Zeitung" ~ 2))
+```
+
+# Hamburg
+## Hamburg: Verkauf und Visits
+```{r}
+hamburg <- hamburg %>% mutate(RVerkauf = case_when(user == "abendblatt" ~ 129108,
+                                                                 user == "mopo" ~ 19301))
+
+hamburg <- hamburg %>% mutate(RVisits = case_when(user == "abendblatt" ~ 4700000,
+                                                                 user == "mopo" ~ 13000000))
+```
+
+## Hamburg: Discursive Power Vars
+```{r}
+hamburg <- hamburg %>% mutate(erreichbarkeit = case_when(user == "abendblatt" ~ 2,
+                                                                 user == "mopo" ~ 2))
+
+hamburg <- hamburg %>% mutate(normenWerte = case_when(user == "abendblatt" ~ 2,
+                                                                 user == "mopo" ~ 3))
+
+hamburg <- hamburg %>% mutate(geschäftsmodell = case_when(user == "abendblatt" ~ 2,
+                                                                 user == "mopo" ~ 2))
+
+```
+
+# Hessen
+## Hessen: Verkauf und Visits
+```{r}
+hessen <- hessen %>% mutate(RVerkauf = case_when(user == "boersenzeitung" ~ NA,
+                                                 user == "mittelhessende" ~ 13478,
+                                                 user == "Echo_Online" ~ 69554,
+                                                 user == "fnp_zeitung" ~ 43093,
+                                                 user == "fuldaerzeitung" ~ 21782,
+                                                 user == "HNA_online" ~ 159435,
+                                                 user == "KAgezwitscher" ~ 8914,
+                                                 user == "mspnachrichten" ~ 8645,
+                                                 user == "opmarburg" ~ 31599,
+                                                 user == "oberhessische" ~ 4962,
+                                                 user == "wknachrichten" ~ 41933))
+
+hessen <- hessen %>% mutate(RVisits = case_when(user == "boersenzeitung" ~ NA,
+                                                 user == "mittelhessende" ~ 768800,
+                                                 user == "Echo_Online" ~ 1100000,
+                                                 user == "fnp_zeitung" ~ 4100000,
+                                                 user == "fuldaerzeitung" ~ 1100000,
+                                                 user == "HNA_online" ~ 12200000,
+                                                 user == "KAgezwitscher" ~ 47700,
+                                                 user == "mspnachrichten" ~ 70000,
+                                                 user == "opmarburg" ~ 226900,
+                                                 user == "oberhessische" ~ 57400,
+                                                 user == "wknachrichten" ~ 320500))
+```
+
+## Hessen: Discursive Power Vars
+```{r}
+hessen <- hessen %>% mutate(erreichbarkeit = case_when(user == "boersenzeitung" ~ NA,
+                                                 user == "mittelhessende" ~ 2,
+                                                 user == "Echo_Online" ~ 2,
+                                                 user == "fnp_zeitung" ~ 2,
+                                                 user == "fuldaerzeitung" ~ 2,
+                                                 user == "HNA_online" ~ 2,
+                                                 user == "KAgezwitscher" ~ 2,
+                                                 user == "mspnachrichten" ~ 2,
+                                                 user == "opmarburg" ~ 2,
+                                                 user == "oberhessische" ~ 2,
+                                                 user == "wknachrichten" ~ 2))
+
+hessen <- hessen %>% mutate(normenWerte = case_when(user == "boersenzeitung" ~ 1,
+                                                 user == "mittelhessende" ~ 1,
+                                                 user == "Echo_Online" ~ 1,
+                                                 user == "fnp_zeitung" ~ 1,
+                                                 user == "fuldaerzeitung" ~ 1,
+                                                 user == "HNA_online" ~ 1,
+                                                 user == "KAgezwitscher" ~ 1,
+                                                 user == "mspnachrichten" ~ 1,
+                                                 user == "opmarburg" ~ 1,
+                                                 user == "oberhessische" ~ 1,
+                                                 user == "wknachrichten" ~ 1))
+
+hessen <- hessen %>% mutate(geschäftsmodell = case_when(user == "boersenzeitung" ~ 2,
+                                                 user == "mittelhessende" ~ 2,
+                                                 user == "Echo_Online" ~ 2,
+                                                 user == "fnp_zeitung" ~ 2,
+                                                 user == "fuldaerzeitung" ~ 2,
+                                                 user == "HNA_online" ~ 2,
+                                                 user == "KAgezwitscher" ~ 2,
+                                                 user == "mspnachrichten" ~ 2,
+                                                 user == "opmarburg" ~ 2,
+                                                 user == "oberhessische" ~ 2,
+                                                 user == "wknachrichten" ~ 2))
+```
+
+# Mecklenburg-Vorpommern
+## MeckPomm: Verkauf und Visits
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+meckPomm <- meckPomm %>% mutate(RVerkauf = case_when(user == "Nordkurier" ~ 52386,
+                                                 user == "OZlive" ~ 96069))
+
+meckPomm <- meckPomm %>% mutate(RVisits = case_when(user == "Nordkurier" ~ 3500000,
+                                                 user == "OZlive" ~ 1700000))
+```
+
+## MeckPomm: Discursive Power Vars
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+meckPomm <- meckPomm %>% mutate(erreichbarkeit = case_when(user == "Nordkurier" ~ 2,
+                                                 user == "OZlive" ~ 2))
+
+meckPomm <- meckPomm %>% mutate(normenWerte = case_when(user == "Nordkurier" ~ 1,
+                                                 user == "OZlive" ~ 1))
+
+meckPomm <- meckPomm %>% mutate(geschäftsmodell = case_when(user == "Nordkurier" ~ 2,
+                                                 user == "OZlive" ~ 2))
+```
+
+# Niedersachsen
+## NDS: Verkauf und Visits
+```{r}
+niedersachsen <- niedersachsen %>% mutate(RVerkauf = case_when(user == "azgifhorn" ~ 24931,
+                                                 user == "Harlinger1862" ~ 10580,
+                                                 user == "BS_Zeitung" ~ 82777,
+                                                 user == "cezett" ~ 21771,
+                                                 user == "Dewezet" ~ 37660,
+                                                 user == "Kreisblatt" ~ 12641,
+                                                 user == "einmorgenpost" ~ 6282,
+                                                 user == "ga_online" ~ 7251,
+                                                 user == "goslarsche" ~ 18583,
+                                                 user == "goetageblatt" ~ 24902,
+                                                 user == "HAZ" ~ 355015,
+                                                 user == "Die_Harke" ~ 14835,
+                                                 user == "HarzKurier" ~ 10320,
+                                                 user == "hinews" ~ 26378,
+                                                 user == "Wochenblatt1791" ~ 5868,
+                                                 user == "Kreiszeitung" ~ 24247,
+                                                 user == "kzw_redaktion" ~ 3622,
+                                                 user == "lzgezwitscher" ~ 23324,
+                                                 user == "neuepresse" ~ 120406,
+                                                 user == "noz_de" ~ 59337,
+                                                 user == "nwzonline" ~ 105076,
+                                                 user == "oz_online_de" ~ 26820,
+                                                 user == "on_online_de" ~ 11068,
+                                                 user == "pazpeine" ~ 12958,
+                                                 user == "Rundblick_NDS" ~ NA,
+                                                 user == "sn_online" ~ 11414,
+                                                 user == "SZLZ1" ~ 4739,
+                                                 user == "TAGEBLATTonline" ~ 17003,
+                                                 user == "WZonline" ~ 13138,
+                                                 user == "wazwolfsburg" ~ 24931))
+
+niedersachsen <- niedersachsen %>% mutate(RVisits = case_when(user == "azgifhorn" ~ 438000,
+                                                 user == "Harlinger1862" ~ 13100,
+                                                 user == "BS_Zeitung" ~ 1500000,
+                                                 user == "cezett" ~ 123800,
+                                                 user == "Dewezet" ~ 318300,
+                                                 user == "Kreisblatt" ~ 69800,
+                                                 user == "einmorgenpost" ~ 8400,
+                                                 user == "ga_online" ~ 184100,
+                                                 user == "goslarsche" ~ 776100,
+                                                 user == "goetageblatt" ~ 536700,
+                                                 user == "HAZ" ~ 3400000,
+                                                 user == "Die_Harke" ~ 427900,
+                                                 user == "HarzKurier" ~ 197500,
+                                                 user == "hinews" ~ 1100000,
+                                                 user == "Wochenblatt1791" ~ 3200000,
+                                                 user == "Kreiszeitung" ~ 7900000,
+                                                 user == "kzw_redaktion" ~ 21300,
+                                                 user == "lzgezwitscher" ~ 259300,
+                                                 user == "neuepresse" ~ 280000,
+                                                 user == "noz_de" ~ 5000000,
+                                                 user == "nwzonline" ~ 3200000,
+                                                 user == "oz_online_de" ~ 570700,
+                                                 user == "on_online_de" ~ 254200,
+                                                 user == "pazpeine" ~ 157800,
+                                                 user == "Rundblick_NDS" ~ 21000,
+                                                 user == "sn_online" ~ 157500,
+                                                 user == "SZLZ1" ~ 175300,
+                                                 user == "TAGEBLATTonline" ~ 914500,
+                                                 user == "WZonline" ~ 3200000,
+                                                 user == "wazwolfsburg" ~ 438000))
+```
+
+## NDS: Discursive Power Vars
+```{r}
+niedersachsen <- niedersachsen %>% mutate(erreichbarkeit = case_when(user == "azgifhorn" ~ 2,
+                                                 user == "Harlinger1862" ~ 2,
+                                                 user == "BS_Zeitung" ~ 2,
+                                                 user == "cezett" ~ 2,
+                                                 user == "Dewezet" ~ 2,
+                                                 user == "Kreisblatt" ~ 2,
+                                                 user == "einmorgenpost" ~ 2,
+                                                 user == "ga_online" ~ 2,
+                                                 user == "goslarsche" ~ 2,
+                                                 user == "goetageblatt" ~ 2,
+                                                 user == "HAZ" ~ 2,
+                                                 user == "Die_Harke" ~ 2,
+                                                 user == "HarzKurier" ~ 2,
+                                                 user == "hinews" ~ 2,
+                                                 user == "Wochenblatt1791" ~ 2,
+                                                 user == "Kreiszeitung" ~ 2,
+                                                 user == "kzw_redaktion" ~ 2,
+                                                 user == "lzgezwitscher" ~ 2,
+                                                 user == "neuepresse" ~ 2,
+                                                 user == "noz_de" ~ 2,
+                                                 user == "nwzonline" ~ 2,
+                                                 user == "oz_online_de" ~ 2,
+                                                 user == "on_online_de" ~ 2,
+                                                 user == "pazpeine" ~ 2,
+                                                 user == "Rundblick_NDS" ~ 3,
+                                                 user == "sn_online" ~ 2,
+                                                 user == "SZLZ1" ~ 2,
+                                                 user == "TAGEBLATTonline" ~ 2,
+                                                 user == "WZonline" ~ 2,
+                                                 user == "wazwolfsburg" ~ 2))
+
+niedersachsen <- niedersachsen %>% mutate(normenWerte = case_when(user == "azgifhorn" ~ 1,
+                                                 user == "Harlinger1862" ~ 1,
+                                                 user == "BS_Zeitung" ~ 1,
+                                                 user == "cezett" ~ 1,
+                                                 user == "Dewezet" ~ 1,
+                                                 user == "Kreisblatt" ~ 1,
+                                                 user == "einmorgenpost" ~ 1,
+                                                 user == "ga_online" ~ 1,
+                                                 user == "goslarsche" ~ 1,
+                                                 user == "goetageblatt" ~ 1,
+                                                 user == "HAZ" ~ 1,
+                                                 user == "Die_Harke" ~ 1,
+                                                 user == "HarzKurier" ~ 1,
+                                                 user == "hinews" ~ 1,
+                                                 user == "Wochenblatt1791" ~ 1,
+                                                 user == "Kreiszeitung" ~ 1,
+                                                 user == "kzw_redaktion" ~ 1,
+                                                 user == "lzgezwitscher" ~ 1,
+                                                 user == "neuepresse" ~ 1,
+                                                 user == "noz_de" ~ 1,
+                                                 user == "nwzonline" ~ 1,
+                                                 user == "oz_online_de" ~ 1,
+                                                 user == "on_online_de" ~ 1,
+                                                 user == "pazpeine" ~ 1,
+                                                 user == "Rundblick_NDS" ~ 1,
+                                                 user == "sn_online" ~ 1,
+                                                 user == "SZLZ1" ~ 1,
+                                                 user == "TAGEBLATTonline" ~ 1,
+                                                 user == "WZonline" ~ 1,
+                                                 user == "wazwolfsburg" ~ 1))
+
+niedersachsen <- niedersachsen %>% mutate(geschäftsmodell = case_when(user == "azgifhorn" ~ 2,
+                                                 user == "Harlinger1862" ~ 2,
+                                                 user == "BS_Zeitung" ~ 2,
+                                                 user == "cezett" ~ 2,
+                                                 user == "Dewezet" ~ 2,
+                                                 user == "Kreisblatt" ~ 2,
+                                                 user == "einmorgenpost" ~ 2,
+                                                 user == "ga_online" ~ 2,
+                                                 user == "goslarsche" ~ 2,
+                                                 user == "goetageblatt" ~ 2,
+                                                 user == "HAZ" ~ 2,
+                                                 user == "Die_Harke" ~ 2,
+                                                 user == "HarzKurier" ~ 2,
+                                                 user == "hinews" ~ 2,
+                                                 user == "Wochenblatt1791" ~ 2,
+                                                 user == "Kreiszeitung" ~ 2,
+                                                 user == "kzw_redaktion" ~ 2,
+                                                 user == "lzgezwitscher" ~ 2,
+                                                 user == "neuepresse" ~ 2,
+                                                 user == "noz_de" ~ 2,
+                                                 user == "nwzonline" ~ 2,
+                                                 user == "oz_online_de" ~ 2,
+                                                 user == "on_online_de" ~ 2,
+                                                 user == "pazpeine" ~ 2,
+                                                 user == "Rundblick_NDS" ~ 2,
+                                                 user == "sn_online" ~ 2,
+                                                 user == "SZLZ1" ~ 2,
+                                                 user == "TAGEBLATTonline" ~ 2,
+                                                 user == "WZonline" ~ 2,
+                                                 user == "wazwolfsburg" ~ 2))
+```
+
+# Nordrhein-Westfalen
+## NRW: Verkauf und Visits
+```{r}
+nrw <- nrw %>% mutate(RVerkauf = case_when(user == "aachenerzeitung" ~ 77306,
+                                                 user == "blickaktuell" ~ 426680,
+                                                 user == "DZ_Duelmen" ~ 6774,
+                                                 user == "gabonn" ~ 54202,
+                                                 user == "DieGlocke" ~ 45870,
+                                                 user == "handwerksblatt" ~ 331873,
+                                                 user == "express24" ~ 41859,
+                                                 user == "KreisblattHalle" ~ 10473,
+                                                 user == "handelsblatt" ~ 134787,
+                                                 user == "KSTA" ~ 182141,
+                                                 user == "KoelnischeR" ~ 182141,
+                                                 user == "lzonline" ~ 31119,
+                                                 user == "MT_Online" ~ 24008,
+                                                 user == "nwnews" ~ 120356,
+                                                 user == "rgaonline" ~ 12562,
+                                                 user == "rponline" ~ 261861,
+                                                 user == "RN_DORTMUND" ~ 106771,
+                                                 user == "Sauerlandkurier" ~ 203350,
+                                                 user == "SiegenerZeitung" ~ 41579,
+                                                 user == "soesteranzeiger" ~ 26377,
+                                                 user == "SGTageblatt" ~ 15866,
+                                                 user == "UnsereKirche" ~ 24276,
+                                                 user == "UnsereZeit_UZ" ~ 6000,
+                                                 user == "WAZ_Redaktion" ~ 388185,
+                                                 user == "wznewsline" ~ 46019,
+                                                 user == "westfalenblatt" ~ 89764,
+                                                 user == "DasSauerland" ~ 388185,
+                                                 user == "WN_Redaktion" ~ 96965,
+                                                 user == "WA_online" ~ 25440,
+                                                 user == "WRundschau" ~ 162000))
+
+nrw <- nrw %>% mutate(RVisits = case_when(user == "aachenerzeitung" ~ 2300000,
+                                                 user == "blickaktuell" ~ 359900,
+                                                 user == "DZ_Duelmen" ~ 484900,
+                                                 user == "gabonn" ~ 2500000,
+                                                 user == "DieGlocke" ~ 669600,
+                                                 user == "handwerksblatt" ~ 134900,
+                                                 user == "express24" ~ 22100000,
+                                                 user == "KreisblattHalle" ~ 756400,
+                                                 user == "handelsblatt" ~ 17500000,
+                                                 user == "KSTA" ~ 7200000,
+                                                 user == "KoelnischeR" ~ 1400000,
+                                                 user == "lzonline" ~ 609300,
+                                                 user == "MT_Online" ~ 1700000,
+                                                 user == "nwnews" ~ 4100000,
+                                                 user == "rgaonline" ~ 379000,
+                                                 user == "rponline" ~ 15200000,
+                                                 user == "RN_DORTMUND" ~ 5200000,
+                                                 user == "Sauerlandkurier" ~ 356600,
+                                                 user == "SiegenerZeitung" ~ 516300,
+                                                 user == "soesteranzeiger" ~ 1500000,
+                                                 user == "SGTageblatt" ~ 189100,
+                                                 user == "UnsereKirche" ~ 5100,
+                                                 user == "UnsereZeit_UZ" ~ 71000,
+                                                 user == "WAZ_Redaktion" ~ 7000000,
+                                                 user == "wznewsline" ~ 1700000,
+                                                 user == "westfalenblatt" ~ 1700000,
+                                                 user == "DasSauerland" ~ 2900000,
+                                                 user == "WN_Redaktion" ~ 2000000,
+                                                 user == "WA_online" ~ 6100000,
+                                                 user == "WRundschau" ~ 307700))
+```
+
+## NRW: Discursive Power Vars
+```{r}
+nrw <- nrw %>% mutate(erreichbarkeit = case_when(user == "aachenerzeitung" ~ 2,
+                                                 user == "blickaktuell" ~ 2,
+                                                 user == "DZ_Duelmen" ~ 2,
+                                                 user == "gabonn" ~ 2,
+                                                 user == "DieGlocke" ~ 2,
+                                                 user == "handwerksblatt" ~ 2,
+                                                 user == "express24" ~ 2,
+                                                 user == "KreisblattHalle" ~ 2,
+                                                 user == "handelsblatt" ~ 1,
+                                                 user == "KSTA" ~ 2,
+                                                 user == "KoelnischeR" ~ 2,
+                                                 user == "lzonline" ~ 2,
+                                                 user == "MT_Online" ~ 2,
+                                                 user == "nwnews" ~ 2,
+                                                 user == "rgaonline" ~ 2,
+                                                 user == "rponline" ~ 2,
+                                                 user == "RN_DORTMUND" ~ 2,
+                                                 user == "Sauerlandkurier" ~ 2,
+                                                 user == "SiegenerZeitung" ~ 2,
+                                                 user == "soesteranzeiger" ~ 2,
+                                                 user == "SGTageblatt" ~ 2,
+                                                 user == "UnsereKirche" ~ 3,
+                                                 user == "UnsereZeit_UZ" ~ 3,
+                                                 user == "WAZ_Redaktion" ~ 2,
+                                                 user == "wznewsline" ~ 2,
+                                                 user == "westfalenblatt" ~ 2,
+                                                 user == "DasSauerland" ~ 2,
+                                                 user == "WN_Redaktion" ~ 2,
+                                                 user == "WA_online" ~ 2,
+                                                 user == "WRundschau" ~ 2))
+
+nrw <- nrw %>% mutate(normenWerte = case_when(user == "aachenerzeitung" ~ 1,
+                                                 user == "blickaktuell" ~ 1,
+                                                 user == "DZ_Duelmen" ~ 1,
+                                                 user == "gabonn" ~ 1,
+                                                 user == "DieGlocke" ~ 1,
+                                                 user == "handwerksblatt" ~ 1,
+                                                 user == "express24" ~ 3,
+                                                 user == "KreisblattHalle" ~ 1,
+                                                 user == "handelsblatt" ~ 1,
+                                                 user == "KSTA" ~ 1,
+                                                 user == "KoelnischeR" ~ 1,
+                                                 user == "lzonline" ~ 1,
+                                                 user == "MT_Online" ~ 1,
+                                                 user == "nwnews" ~ 1,
+                                                 user == "rgaonline" ~ 1,
+                                                 user == "rponline" ~ 1,
+                                                 user == "RN_DORTMUND" ~ 1,
+                                                 user == "Sauerlandkurier" ~ 1,
+                                                 user == "SiegenerZeitung" ~ 1,
+                                                 user == "soesteranzeiger" ~ 1,
+                                                 user == "SGTageblatt" ~ 1,
+                                                 user == "UnsereKirche" ~ 2,
+                                                 user == "UnsereZeit_UZ" ~ 2,
+                                                 user == "WAZ_Redaktion" ~ 1,
+                                                 user == "wznewsline" ~ 1,
+                                                 user == "westfalenblatt" ~ 1,
+                                                 user == "DasSauerland" ~ 1,
+                                                 user == "WN_Redaktion" ~ 1,
+                                                 user == "WA_online" ~ 1,
+                                                 user == "WRundschau" ~ 1))
+
+nrw <- nrw %>% mutate(geschäftsmodell = case_when(user == "aachenerzeitung" ~ 2,
+                                                 user == "blickaktuell" ~ 2,
+                                                 user == "DZ_Duelmen" ~ 2,
+                                                 user == "gabonn" ~ 2,
+                                                 user == "DieGlocke" ~ 2,
+                                                 user == "handwerksblatt" ~ 2,
+                                                 user == "express24" ~ 2,
+                                                 user == "KreisblattHalle" ~ 2,
+                                                 user == "handelsblatt" ~ 2,
+                                                 user == "KSTA" ~ 2,
+                                                 user == "KoelnischeR" ~ 2,
+                                                 user == "lzonline" ~ 2,
+                                                 user == "MT_Online" ~ 2,
+                                                 user == "nwnews" ~ 2,
+                                                 user == "rgaonline" ~ 2,
+                                                 user == "rponline" ~ 2,
+                                                 user == "RN_DORTMUND" ~ 2,
+                                                 user == "Sauerlandkurier" ~ 2,
+                                                 user == "SiegenerZeitung" ~ 2,
+                                                 user == "soesteranzeiger" ~ 2,
+                                                 user == "SGTageblatt" ~ 2,
+                                                 user == "UnsereKirche" ~ 2,
+                                                 user == "UnsereZeit_UZ" ~ 3,
+                                                 user == "WAZ_Redaktion" ~ 2,
+                                                 user == "wznewsline" ~ 2,
+                                                 user == "westfalenblatt" ~ 2,
+                                                 user == "DasSauerland" ~ 2,
+                                                 user == "WN_Redaktion" ~ 2,
+                                                 user == "WA_online" ~ 2,
+                                                 user == "WRundschau" ~ 2))
+```
+
+# Rheinland-Pfalz
+## RLP: Verkauf und Visits
+```{r}
+rlp <- rlp %>% mutate(RVerkauf = case_when(user == "aznachrichten" ~ 15229,
+                                                 user == "rheinpfalz" ~ 271494,
+                                                 user == "RheinZeitung" ~ 145451,
+                                                 user == "Volksfreund" ~ 59820,
+                                                 user == "wznachrichten" ~ 11158))
+
+rlp <- rlp %>% mutate(RVisits = case_when(user == "aznachrichten" ~ 581800,
+                                                 user == "rheinpfalz" ~ 2800000,
+                                                 user == "RheinZeitung" ~ 2000000,
+                                                 user == "Volksfreund" ~ 1300000,
+                                                 user == "wznachrichten" ~ 123600))
+```
+
+## RLP: Discursive Power Vars
+```{r}
+rlp <- rlp %>% mutate(erreichbarkeit = case_when(user == "aznachrichten" ~ 2,
+                                                 user == "rheinpfalz" ~ 2,
+                                                 user == "RheinZeitung" ~ 2,
+                                                 user == "Volksfreund" ~ 2,
+                                                 user == "wznachrichten" ~ 2))
+
+rlp <- rlp %>% mutate(normenWerte = case_when(user == "aznachrichten" ~ 1,
+                                                 user == "rheinpfalz" ~ 1,
+                                                 user == "RheinZeitung" ~ 1,
+                                                 user == "Volksfreund" ~ 1,
+                                                 user == "wznachrichten" ~ 1))
+
+rlp <- rlp %>% mutate(geschäftsmodell = case_when(user == "aznachrichten" ~ 2,
+                                                 user == "rheinpfalz" ~ 2,
+                                                 user == "RheinZeitung" ~ 2,
+                                                 user == "Volksfreund" ~ 2,
+                                                 user == "wznachrichten" ~ 2))
+```
+
+# Saarland
+## Saarland: Verkauf und Visits
+```{r}
+saarland <- saarland %>% mutate(RVerkauf = case_when(user == "szaktuell" ~ 97678))
+
+saarland <- saarland %>% mutate(RVisits = case_when(user == "szaktuell" ~ 3500000))
+```
+
+## Saarland: Discursive Power Vars
+```{r}
+saarland <- saarland %>% mutate(erreichbarkeit = case_when(user == "szaktuell" ~ 2))
+
+saarland <- saarland %>% mutate(normenWerte = case_when(user == "szaktuell" ~ 1))
+
+saarland <- saarland %>% mutate(geschäftsmodell = case_when(user == "szaktuell" ~ 2))
+```
+
+# Sachsen
+## Sachsen: Verkauf und Visits
+```{r}
+sachsen <- sachsen %>% mutate(RVerkauf = case_when(user == "dnn_online" ~ 13950,
+                                                 user == "freie_presse" ~ 238122,
+                                                 user == "LIZ_de" ~ NA,
+                                                 user == "LVZ" ~ 123991,
+                                                 user == "saechsischeDE" ~ 174704,
+                                                 user == "sonntagticker" ~ 6688))
+
+sachsen <- sachsen %>% mutate(RVisits = case_when(user == "dnn_online" ~ 548800,
+                                                 user == "freie_presse" ~ 4700000,
+                                                 user == "LIZ_de" ~ 320600,
+                                                 user == "LVZ" ~ 3800000,
+                                                 user == "saechsischeDE" ~ 8100000,
+                                                 user == "sonntagticker" ~ 18100))
+```
+
+## Sachsen: Discursive Power Vars
+```{r}
+sachsen <- sachsen %>% mutate(erreichbarkeit = case_when(user == "dnn_online" ~ 2,
+                                                 user == "freie_presse" ~ 2,
+                                                 user == "LIZ_de" ~ 3,
+                                                 user == "LVZ" ~ 2,
+                                                 user == "saechsischeDE" ~ 2,
+                                                 user == "sonntagticker" ~ 2))
+
+sachsen <- sachsen %>% mutate(normenWerte = case_when(user == "dnn_online" ~ 1,
+                                                 user == "freie_presse" ~ 1,
+                                                 user == "LIZ_de" ~ 1,
+                                                 user == "LVZ" ~ 1,
+                                                 user == "saechsischeDE" ~ 1,
+                                                 user == "sonntagticker" ~ 2))
+
+sachsen <- sachsen %>% mutate(geschäftsmodell = case_when(user == "dnn_online" ~ 2,
+                                                 user == "freie_presse" ~ 2,
+                                                 user == "LIZ_de" ~ 2,
+                                                 user == "LVZ" ~ 2,
+                                                 user == "saechsischeDE" ~ 2,
+                                                 user == "sonntagticker" ~ 2))
+```
+
+# Sachsen-Anhalt
+## Sachsen-Anhalt: Verkauf und Visits
+```{r}
+sachsen_anhalt <- sachsen_anhalt %>% mutate(RVerkauf = case_when(user == "glaubeundheimat" ~ 6258,
+                                                 user == "mzwebde" ~ 136530,
+                                                 user == "Volksstimme" ~ 135792,
+                                                 user == "volksstimme_md" ~ 32328))
+
+sachsen_anhalt <- sachsen_anhalt %>% mutate(RVisits = case_when(user == "glaubeundheimat" ~ 9100,
+                                                 user == "mzwebde" ~ 1400000,
+                                                 user == "Volksstimme" ~ 2600000,
+                                                 user == "volksstimme_md" ~ 2600000))
+```
+
+## Sachsen-Anhalt: Discursive Power Vars
+```{r}
+sachsen_anhalt <- sachsen_anhalt %>% mutate(erreichbarkeit = case_when(user == "glaubeundheimat" ~ 2,
+                                                 user == "mzwebde" ~ 2,
+                                                 user == "Volksstimme" ~ 2,
+                                                 user == "volksstimme_md" ~ 2))
+
+sachsen_anhalt <- sachsen_anhalt %>% mutate(normenWerte = case_when(user == "glaubeundheimat" ~ 2,
+                                                 user == "mzwebde" ~ 1,
+                                                 user == "Volksstimme" ~ 1,
+                                                 user == "volksstimme_md" ~ 1))
+
+sachsen_anhalt <- sachsen_anhalt %>% mutate(geschäftsmodell = case_when(user == "glaubeundheimat" ~ 2,
+                                                 user == "mzwebde" ~ 2,
+                                                 user == "Volksstimme" ~ 2,
+                                                 user == "volksstimme_md" ~ 2))
+```
+
+# Schleswig-Holstein
+## SH: Verkauf und Visits
+```{r}
+schleswig <- schleswig %>% mutate(RVerkauf = case_when(user == "BoyensMedien" ~ 19246,
+                                                 user == "Flensborg_Avis" ~ 4556,
+                                                 user == "FTageblatt" ~ 18524,
+                                                 user == "kn_online" ~ 67053,
+                                                 user == "LN_Online" ~ 62597,
+                                                 user == "shz_de" ~ 170121))
+
+schleswig <- schleswig %>% mutate(RVisits = case_when(user == "BoyensMedien" ~ 256700,
+                                                 user == "Flensborg_Avis" ~ 86400,
+                                                 user == "FTageblatt" ~ NA,
+                                                 user == "kn_online" ~ 1600000,
+                                                 user == "LN_Online" ~ 1100000,
+                                                 user == "shz_de" ~ 3700000))
+```
+
+## SH: Discursive Power Vars
+```{r}
+schleswig <- schleswig %>% mutate(erreichbarkeit = case_when(user == "BoyensMedien" ~ 2,
+                                                 user == "Flensborg_Avis" ~ 2,
+                                                 user == "FTageblatt" ~ 2,
+                                                 user == "kn_online" ~ 2,
+                                                 user == "LN_Online" ~ 2,
+                                                 user == "shz_de" ~ 2))
+
+schleswig <- schleswig %>% mutate(normenWerte = case_when(user == "BoyensMedien" ~ 1,
+                                                 user == "Flensborg_Avis" ~ 1,
+                                                 user == "FTageblatt" ~ 1,
+                                                 user == "kn_online" ~ 1,
+                                                 user == "LN_Online" ~ 1,
+                                                 user == "shz_de" ~ 1))
+
+schleswig <- schleswig %>% mutate(geschäftsmodell = case_when(user == "BoyensMedien" ~ 2,
+                                                 user == "Flensborg_Avis" ~ 1,
+                                                 user == "FTageblatt" ~ 2,
+                                                 user == "kn_online" ~ 2,
+                                                 user == "LN_Online" ~ 2,
+                                                 user == "shz_de" ~ 2))
+```
+
+# Thüringen
+## Thüringen: Verkauf und Visits
+```{r}
+thüringen <- thüringen %>% mutate(RVerkauf = case_when(user == "freieswort" ~ 42070,
+                                                 user == "OTZonline" ~ 61283,
+                                                 user == "TAOnline" ~ 107008,
+                                                 user == "TLZnews" ~ 106756))
+
+thüringen <- thüringen %>% mutate(RVisits = case_when(user == "freieswort" ~ 1400000,
+                                                 user == "OTZonline" ~ 1900000,
+                                                 user == "TAOnline" ~ 2500000,
+                                                 user == "TLZnews" ~ 293700))
+```
+
+## Thüringen: Discursive Power Vars
+```{r}
+thüringen <- thüringen %>% mutate(erreichbarkeit = case_when(user == "freieswort" ~ 2,
+                                                 user == "OTZonline" ~ 2,
+                                                 user == "TAOnline" ~ 2,
+                                                 user == "TLZnews" ~ 2))
+
+thüringen <- thüringen %>% mutate(normenWerte = case_when(user == "freieswort" ~ 1,
+                                                 user == "OTZonline" ~ 1,
+                                                 user == "TAOnline" ~ 1,
+                                                 user == "TLZnews" ~ 1))
+
+thüringen <- thüringen %>% mutate(geschäftsmodell = case_when(user == "freieswort" ~ 2,
+                                                 user == "OTZonline" ~ 2,
+                                                 user == "TAOnline" ~ 2,
+                                                 user == "TLZnews" ~ 2))
+```
+
+# Speichern der Bundesländer-Daten
+Die so erstellten Daten mit den recherchierten Zahlen sowie den Variablen-Zuordnungen zur *discursive power* sollen nun nochmals gespeichert werden.
+
+Auf Basis dieser Daten sollten dann nochmal die passenden Topic Models laufen gelassen werden. Dazu notwendig ist eine endgültige Einschätzung folgender Fragen:
+
+- *welche alpha-Werte* sollten verwendet werden?
+- *welche beta-Werte* sollten verwendet werden?
+- *wie viele Topics* sollten angegeben werden (30, 50, 100, mehr)?
+- *wie viele Terms pro Topic* sollten ausgegeben werden, um das Vocabulary für die BoW-Klassifizierung zu bestimmen?
+
+Die abgeschlossenen Topic Models sollten dann zur Einteilung der Tweets genutzt werden. Es werden nur eindeutige Wörter aus den Wörterlisten verwendet.
+
+```{r}
+save(bawü, file="../regionalisierung/bawü_discPow.RData")
+save(bayern, file="../regionalisierung/bayern_discPow.RData")
+save(berlin, file="../regionalisierung/berlin_discPow.RData")
+save(brandenburg, file="../regionalisierung/brandenburg_discPow.RData")
+save(bremen, file="../regionalisierung/bremen_discPow.RData")
+save(hamburg, file="../regionalisierung/hamburg_discPow.RData")
+save(hessen, file="../regionalisierung/hessen_discPow.RData")
+save(meckPomm, file="../regionalisierung/meckPomm_discPow.RData")
+save(niedersachsen, file="../regionalisierung/niedersachsen_discPow.RData")
+save(nrw, file="../regionalisierung/nrw_discPow.RData")
+save(rlp, file="../regionalisierung/rlp_discPow.RData")
+save(saarland, file="../regionalisierung/saarland_discPow.RData")
+save(sachsen, file="../regionalisierung/sachsen_discPow.RData")
+save(sachsen_anhalt, file="../regionalisierung/sachsen_anhalt_discPow.RData")
+save(schleswig, file="../regionalisierung/schleswig_discPow.RData")
+save(thüringen, file="../regionalisierung/thüringen_discPow.RData")
+
+write_csv(bawü, file="../regionalisierung/bawü_discPow.csv")
+write_csv(bayern, file="../regionalisierung/bayern_discPow.csv")
+write_csv(berlin, file="../regionalisierung/berlin_discPow.csv")
+write_csv(brandenburg, file="../regionalisierung/brandenburg_discPow.csv")
+write_csv(bremen, file="../regionalisierung/bremen_discPow.csv")
+write_csv(hamburg, file="../regionalisierung/hamburg_discPow.csv")
+write_csv(hessen, file="../regionalisierung/hessen_discPow.csv")
+write_csv(meckPomm, file="../regionalisierung/meckPomm_discPow.csv")
+write_csv(niedersachsen, file="../regionalisierung/niedersachsen_discPow.csv")
+write_csv(nrw, file="../regionalisierung/nrw_discPow.csv")
+write_csv(rlp, file="../regionalisierung/rlp_discPow.csv")
+write_csv(saarland, file="../regionalisierung/saarland_discPow.csv")
+write_csv(sachsen, file="../regionalisierung/sachsen_discPow.csv")
+write_csv(sachsen_anhalt, file="../regionalisierung/sachsen_anhalt_discPow.csv")
+write_csv(schleswig, file="../regionalisierung/schleswig_discPow.csv")
+write_csv(thüringen, file="../regionalisierung/thüringen_discPow.csv")
+```
+
+Anschließend wird sich über das BoW-Modell Gedanken gemacht:
+
+- *TfIdfVectorizer vs. CountVectorizer*: genau über Unterschiede informieren
+- *Evaluation*: keine wirkliche Möglichkeit, Evaluationsmaße wie accuracy, precision, recall, sensitivity usw. zu berechnen --- hier evtl. mit Jungherr abklären, dass einzig die Wortlisten ausschlaggebend sein können, wenn das nicht reichen sollte, muss ein richtiger ML-Classifier gebildet werden
+    - das führt dann jedoch mit sich, dass nicht mehr ein multi-label, sondern ein multi-class Design vorliegt. Es wird dann nur noch in eine Kategorie klassifiziert, was ja rein theoretisch den Sinn der Topic Models obsolet machen würde
+    - außerdem würde dies forschungstechnisch auch weniger Sinn machen: ein Tweet hat durchaus das Potential, mehr als 1 Thema allein anzuschneiden, also sollte er auch von mir die Möglichkeit erhalten, in mehr als eine Kategorie zu fallen
+
+# Daten digitaler Medien
+```{r}
+digiGes <- read_csv(file = "../../../scraping/polResp-css/mergerDaten/digiGes.csv")
+```
+
+## Digitale: Discursive Power
+```{r erreichbarkeit digi}
+digiGes <- digiGes %>% mutate(erreichbarkeit = case_when(user == "a_watch" ~ 3,
+                                                 user == "Achgut_com" ~ 3,
+                                                 user == "jreichelt" ~ 4,
+                                                 user == "acTVismMunich" ~ 3,
+                                                 user == "apolut_net" ~ 3,
+                                                 user == "cicero_online" ~ 3,
+                                                 user == "langemannmedien" ~ 4,
+                                                 user == "comeon_de" ~ 2,
+                                                 user == "COMPACTmagazin" ~ 3,
+                                                 user == "correctiv_org" ~ 3,
+                                                 user == "derfreitag" ~ 2,
+                                                 user == "Weltwoche" ~ 4,
+                                                 user == "GMX" ~ 1,
+                                                 user == "HalleSpektrum" ~ 4,
+                                                 user == "Hintergrund_de" ~ 3,
+                                                 user == "infosperber" ~ 3,
+                                                 user == "inFranken" ~ 2,
+                                                 user == "JungNaiv" ~ 3,
+                                                 user == "stv_klartext" ~ 1,
+                                                 user == "krassundkonkret" ~ 3,
+                                                 user == "krautreporter" ~ 3,
+                                                 user == "LRM_dietalkshow" ~ 1,
+                                                 user == "lobbycontrol" ~ 3,
+                                                 user == "mucbook" ~ 4,
+                                                 user == "NachDenkSeiten" ~ 3,
+                                                 user == "NNNonline" ~ 2,
+                                                 user == "nordbayern" ~ 2,
+                                                 user == "NuoVisoTV" ~ 4,
+                                                 user == "OvertonMagazin" ~ 3,
+                                                 user == "pressenza_ger" ~ 3,
+                                                 user == "reitschuster" ~ 3,
+                                                 user == "ruhrbarone" ~ 2,
+                                                 user == "ServusTV_News" ~ 1,
+                                                 user == "svz_de" ~ 2,
+                                                 user == "tonline" ~ 1,
+                                                 user == "TAG24" ~ 2,
+                                                 user == "talkimhangar7" ~ 1,
+                                                 user == "telepolis_news" ~ 3,
+                                                 user == "theeuropean" ~ 3,
+                                                 user == "TichysEinblick" ~ 3,
+                                                 user == "uebermedien" ~ 3,
+                                                 user == "Verfassungsblog" ~ 4,
+                                                 user == "Volksverpetzer" ~ 3,
+                                                 user == "WEBDENews" ~ 1))
+```
+
+```{r normenWerte digi}
+digiGes <- digiGes %>% mutate(normenWerte = case_when(user == "a_watch" ~ 2,
+                                                 user == "Achgut_com" ~ 2,
+                                                 user == "jreichelt" ~ 2,
+                                                 user == "acTVismMunich" ~ 2,
+                                                 user == "apolut_net" ~ 2,
+                                                 user == "cicero_online" ~ 2,
+                                                 user == "langemannmedien" ~ 2,
+                                                 user == "comeon_de" ~ 1,
+                                                 user == "COMPACTmagazin" ~ 2,
+                                                 user == "correctiv_org" ~ 2,
+                                                 user == "derfreitag" ~ 1,
+                                                 user == "Weltwoche" ~ 2,
+                                                 user == "GMX" ~ 1,
+                                                 user == "HalleSpektrum" ~ 1,
+                                                 user == "Hintergrund_de" ~ 2,
+                                                 user == "infosperber" ~ 2,
+                                                 user == "inFranken" ~ 1,
+                                                 user == "JungNaiv" ~ 2,
+                                                 user == "stv_klartext" ~ 1,
+                                                 user == "krassundkonkret" ~ 2,
+                                                 user == "krautreporter" ~ 1,
+                                                 user == "LRM_dietalkshow" ~ 1,
+                                                 user == "lobbycontrol" ~ 2,
+                                                 user == "mucbook" ~ 4,
+                                                 user == "NachDenkSeiten" ~ 2,
+                                                 user == "NNNonline" ~ 1,
+                                                 user == "nordbayern" ~ 1,
+                                                 user == "NuoVisoTV" ~ 2,
+                                                 user == "OvertonMagazin" ~ 2,
+                                                 user == "pressenza_ger" ~ 1,
+                                                 user == "reitschuster" ~ 2,
+                                                 user == "ruhrbarone" ~ 1,
+                                                 user == "ServusTV_News" ~ 1,
+                                                 user == "svz_de" ~ 1,
+                                                 user == "tonline" ~ 1,
+                                                 user == "TAG24" ~ 3,
+                                                 user == "talkimhangar7" ~ 1,
+                                                 user == "telepolis_news" ~ 1,
+                                                 user == "theeuropean" ~ 1,
+                                                 user == "TichysEinblick" ~ 2,
+                                                 user == "uebermedien" ~ 1,
+                                                 user == "Verfassungsblog" ~ 2,
+                                                 user == "Volksverpetzer" ~ 2,
+                                                 user == "WEBDENews" ~ 1))
+```
+
+```{r geschäftsmodell}
+digiGes <- digiGes %>% mutate(geschäftsmodell = case_when(user == "a_watch" ~ 3,
+                                                 user == "Achgut_com" ~ 3,
+                                                 user == "jreichelt" ~ NA,
+                                                 user == "acTVismMunich" ~ 3,
+                                                 user == "apolut_net" ~ 3,
+                                                 user == "cicero_online" ~ 2,
+                                                 user == "langemannmedien" ~ 3,
+                                                 user == "comeon_de" ~ 2,
+                                                 user == "COMPACTmagazin" ~ 2,
+                                                 user == "correctiv_org" ~ 3,
+                                                 user == "derfreitag" ~ 2,
+                                                 user == "Weltwoche" ~ 2,
+                                                 user == "GMX" ~ 2,
+                                                 user == "HalleSpektrum" ~ 3,
+                                                 user == "Hintergrund_de" ~ 2,
+                                                 user == "infosperber" ~ 3,
+                                                 user == "inFranken" ~ 2,
+                                                 user == "JungNaiv" ~ 3,
+                                                 user == "stv_klartext" ~ 2,
+                                                 user == "krassundkonkret" ~ 2,
+                                                 user == "krautreporter" ~ 3,
+                                                 user == "LRM_dietalkshow" ~ 2,
+                                                 user == "lobbycontrol" ~ 3,
+                                                 user == "mucbook" ~ 3,
+                                                 user == "NachDenkSeiten" ~ 3,
+                                                 user == "NNNonline" ~ 2,
+                                                 user == "nordbayern" ~ 2,
+                                                 user == "NuoVisoTV" ~ 3,
+                                                 user == "OvertonMagazin" ~ 2,
+                                                 user == "pressenza_ger" ~ NA,
+                                                 user == "reitschuster" ~ 3,
+                                                 user == "ruhrbarone" ~ 3,
+                                                 user == "ServusTV_News" ~ 2,
+                                                 user == "svz_de" ~ 2,
+                                                 user == "tonline" ~ 2,
+                                                 user == "TAG24" ~ 2,
+                                                 user == "talkimhangar7" ~ 2,
+                                                 user == "telepolis_news" ~ 2,
+                                                 user == "theeuropean" ~ 2,
+                                                 user == "TichysEinblick" ~ 2,
+                                                 user == "uebermedien" ~ 3,
+                                                 user == "Verfassungsblog" ~ 3,
+                                                 user == "Volksverpetzer" ~ 3,
+                                                 user == "WEBDENews" ~ 2))
+```
+
+# Überregionale Medien
+```{r}
+uregGes <- read_csv(file = "../../../scraping/polResp-css/mergerDaten/uregGes.csv")
+```
+
+## Überregionale: Discursive Power
+```{r}
+uregGes <- uregGes %>% mutate(erreichbarkeit = case_when(user == "ardmoma" ~ 1,
+                                                 user == "ARD_Presseclub" ~ 1,
+                                                 user == "tagesschau" ~ 1,
+                                                 user == "tagesschau_eil" ~ 1,
+                                                 user == "tagesschau24" ~ 1,
+                                                 user == "tagesthemen" ~ 1,
+                                                 user == "BILD" ~ 1,
+                                                 user == "BILD_News" ~ 1,
+                                                 user == "dpa" ~ 1,
+                                                 user == "focusonline" ~ 1,
+                                                 user == "FOCUS_TopNews" ~ 1,
+                                                 user == "faznet" ~ 1,
+                                                 user == "FAZ_Eil" ~ 1,
+                                                 user == "fr" ~ 1,
+                                                 user == "jungewelt" ~ 1,
+                                                 user == "ntvde" ~ 1,
+                                                 user == "ntv_EIL" ~ 1,
+                                                 user == "NZZde" ~ 1,
+                                                 user == "NZZ" ~ 1,
+                                                 user == "phoenix_de" ~ 1,
+                                                 user == "reuters_de" ~ 1,
+                                                 user == "RND_de" ~ 1,
+                                                 user == "SPIEGEL_EIL" ~ 1,
+                                                 user == "derspiegel" ~ 1,
+                                                 user == "sternde" ~ 1,
+                                                 user == "SZ" ~ 1,
+                                                 user == "SZ_TopNews" ~ 1,
+                                                 user == "tazgezwitscher" ~ 1,
+                                                 user == "taz_news" ~ 1,
+                                                 user == "welt" ~ 1,
+                                                 user == "WELTAMSONNTAG" ~ 1,
+                                                 user == "ZDFheute" ~ 1,
+                                                 user == "heutejournal" ~ 1,
+                                                 user == "DIEZEIT" ~ 1,
+                                                 user == "zeitonline" ~ 1))
+```
+
+```{r ureg normenWerte}
+uregGes <- uregGes %>% mutate(normenWerte = case_when(user == "ardmoma" ~ 1,
+                                                 user == "ARD_Presseclub" ~ 1,
+                                                 user == "tagesschau" ~ 1,
+                                                 user == "tagesschau_eil" ~ 1,
+                                                 user == "tagesschau24" ~ 1,
+                                                 user == "tagesthemen" ~ 1,
+                                                 user == "BILD" ~ 3,
+                                                 user == "BILD_News" ~ 3,
+                                                 user == "dpa" ~ 1,
+                                                 user == "focusonline" ~ 1,
+                                                 user == "FOCUS_TopNews" ~ 1,
+                                                 user == "faznet" ~ 1,
+                                                 user == "FAZ_Eil" ~ 1,
+                                                 user == "fr" ~ 1,
+                                                 user == "jungewelt" ~ 2,
+                                                 user == "ntvde" ~ 1,
+                                                 user == "ntv_EIL" ~ 1,
+                                                 user == "NZZde" ~ 1,
+                                                 user == "NZZ" ~ 1,
+                                                 user == "phoenix_de" ~ 1,
+                                                 user == "reuters_de" ~ 1,
+                                                 user == "RND_de" ~ 1,
+                                                 user == "SPIEGEL_EIL" ~ 1,
+                                                 user == "derspiegel" ~ 1,
+                                                 user == "sternde" ~ 1,
+                                                 user == "SZ" ~ 1,
+                                                 user == "SZ_TopNews" ~ 1,
+                                                 user == "tazgezwitscher" ~ 2,
+                                                 user == "taz_news" ~ 2,
+                                                 user == "welt" ~ 1,
+                                                 user == "WELTAMSONNTAG" ~ 1,
+                                                 user == "ZDFheute" ~ 1,
+                                                 user == "heutejournal" ~ 1,
+                                                 user == "DIEZEIT" ~ 1,
+                                                 user == "zeitonline" ~ 1))
+```
+
+```{r}
+uregGes <- uregGes %>% mutate(geschäftsmodell = case_when(user == "ardmoma" ~ 1,
+                                                 user == "ARD_Presseclub" ~ 1,
+                                                 user == "tagesschau" ~ 1,
+                                                 user == "tagesschau_eil" ~ 1,
+                                                 user == "tagesschau24" ~ 1,
+                                                 user == "tagesthemen" ~ 1,
+                                                 user == "BILD" ~ 2,
+                                                 user == "BILD_News" ~ 2,
+                                                 user == "dpa" ~ 2,
+                                                 user == "focusonline" ~ 2,
+                                                 user == "FOCUS_TopNews" ~ 2,
+                                                 user == "faznet" ~ 2,
+                                                 user == "FAZ_Eil" ~ 2,
+                                                 user == "fr" ~ 2,
+                                                 user == "jungewelt" ~ 3,
+                                                 user == "ntvde" ~ 2,
+                                                 user == "ntv_EIL" ~ 2,
+                                                 user == "NZZde" ~ 2,
+                                                 user == "NZZ" ~ 2,
+                                                 user == "phoenix_de" ~ 1,
+                                                 user == "reuters_de" ~ 2,
+                                                 user == "RND_de" ~ 2,
+                                                 user == "SPIEGEL_EIL" ~ 2,
+                                                 user == "derspiegel" ~ 2,
+                                                 user == "sternde" ~ 2,
+                                                 user == "SZ" ~ 2,
+                                                 user == "SZ_TopNews" ~ 2,
+                                                 user == "tazgezwitscher" ~ 3,
+                                                 user == "taz_news" ~ 3,
+                                                 user == "welt" ~ 2,
+                                                 user == "WELTAMSONNTAG" ~ 2,
+                                                 user == "ZDFheute" ~ 1,
+                                                 user == "heutejournal" ~ 1,
+                                                 user == "DIEZEIT" ~ 2,
+                                                 user == "zeitonline" ~ 2))
+```
+
+# ÖRR
+```{r erreichbarkeit}
+orr <- read_csv(file = "../../../scraping/polResp-css/mergerDaten/orr.csv")
+```
+
+## ÖRR: Discursive Power
+```{r}
+orr <- orr %>% mutate(erreichbarkeit = case_when(user == "ARTEde" ~ 1,
+                                                 user == "BR_Presse" ~ 2,
+                                                 user == "BR24" ~ 2,
+                                                 user == "DeutscheWelle" ~ 1,
+                                                 user == "DLF" ~ 1,
+                                                 user == "dlfnova" ~ 1,
+                                                 user == "dlfkultur" ~ 1,
+                                                 user == "hessenschau" ~ 2,
+                                                 user == "hrPresse" ~ 2,
+                                                 user == "mdrde" ~ 2,
+                                                 user == "MDRAktuell" ~ 2,
+                                                 user == "MDRpresse" ~ 2,
+                                                 user == "MDR_SN" ~ 2,
+                                                 user == "MDR_SAN" ~ 2,
+                                                 user == "mdr_th" ~ 2,
+                                                 user == "NDRinfo" ~ 2,
+                                                 user == "NDRnds" ~ 2,
+                                                 user == "NDRsh" ~ 2,
+                                                 user == "ndr" ~ 2,
+                                                 user == "butenunbinnen" ~ 2,
+                                                 user == "rbbabendschau" ~ 2,
+                                                 user == "rbb24" ~ 2,
+                                                 user == "rbb24Inforadio" ~ 2,
+                                                 user == "SRKommunikation" ~ 2,
+                                                 user == "SRaktuell" ~ 2,
+                                                 user == "SWRAktuellBW" ~ 2,
+                                                 user == "SWRpresse" ~ 2,
+                                                 user == "SWRAktuellRP" ~ 2,
+                                                 user == "WDR" ~ 2,
+                                                 user == "WDRaktuell" ~ 2))
+```
+
+```{r normenWerte}
+orr <- orr %>% mutate(normenWerte = case_when(user == "ARTEde" ~ 1,
+                                                 user == "BR_Presse" ~ 1,
+                                                 user == "BR24" ~ 1,
+                                                 user == "DeutscheWelle" ~ 1,
+                                                 user == "DLF" ~ 1,
+                                                 user == "dlfnova" ~ 1,
+                                                 user == "dlfkultur" ~ 1,
+                                                 user == "hessenschau" ~ 1,
+                                                 user == "hrPresse" ~ 1,
+                                                 user == "mdrde" ~ 1,
+                                                 user == "MDRAktuell" ~ 1,
+                                                 user == "MDRpresse" ~ 1,
+                                                 user == "MDR_SN" ~ 1,
+                                                 user == "MDR_SAN" ~ 1,
+                                                 user == "mdr_th" ~ 1,
+                                                 user == "NDRinfo" ~ 1,
+                                                 user == "NDRnds" ~ 1,
+                                                 user == "NDRsh" ~ 1,
+                                                 user == "ndr" ~ 1,
+                                                 user == "butenunbinnen" ~ 1,
+                                                 user == "rbbabendschau" ~ 1,
+                                                 user == "rbb14" ~ 1,
+                                                 user == "rbb14Inforadio" ~ 1,
+                                                 user == "SRKommunikation" ~ 1,
+                                                 user == "SRaktuell" ~ 1,
+                                                 user == "SWRAktuellBW" ~ 1,
+                                                 user == "SWRpresse" ~ 1,
+                                                 user == "SWRAktuellRP" ~ 1,
+                                                 user == "WDR" ~ 1,
+                                                 user == "WDRaktuell" ~ 1))
+```
+
+```{r geschäftsmodell}
+orr <- orr %>% mutate(geschäftsmodell = case_when(user == "ARTEde" ~ 1,
+                                                 user == "BR_Presse" ~ 1,
+                                                 user == "BR24" ~ 1,
+                                                 user == "DeutscheWelle" ~ 1,
+                                                 user == "DLF" ~ 1,
+                                                 user == "dlfnova" ~ 1,
+                                                 user == "dlfkultur" ~ 1,
+                                                 user == "hessenschau" ~ 1,
+                                                 user == "hrPresse" ~ 1,
+                                                 user == "mdrde" ~ 1,
+                                                 user == "MDRAktuell" ~ 1,
+                                                 user == "MDRpresse" ~ 1,
+                                                 user == "MDR_SN" ~ 1,
+                                                 user == "MDR_SAN" ~ 1,
+                                                 user == "mdr_th" ~ 1,
+                                                 user == "NDRinfo" ~ 1,
+                                                 user == "NDRnds" ~ 1,
+                                                 user == "NDRsh" ~ 1,
+                                                 user == "ndr" ~ 1,
+                                                 user == "butenunbinnen" ~ 1,
+                                                 user == "rbbabendschau" ~ 1,
+                                                 user == "rbb14" ~ 1,
+                                                 user == "rbb14Inforadio" ~ 1,
+                                                 user == "SRKommunikation" ~ 1,
+                                                 user == "SRaktuell" ~ 1,
+                                                 user == "SWRAktuellBW" ~ 1,
+                                                 user == "SWRpresse" ~ 1,
+                                                 user == "SWRAktuellRP" ~ 1,
+                                                 user == "WDR" ~ 1,
+                                                 user == "WDRaktuell" ~ 1))
+```
+
+# Speichern Rest
+```{r saves}
+save(digiGes, file = "../regionalisierung/rest/digitale_discPow.RData")
+write_csv(digiGes, file = "../regionalisierung/rest/digitale_discPow.csv")
+
+save(uregGes, file = "../regionalisierung/rest/ureg_discPow.RData")
+write_csv(uregGes, file = "../regionalisierung/rest/ureg_discPow.csv")
+
+save(orr, file = "../regionalisierung/rest/orr_discPow.RData")
+write_csv(orr, file = "../regionalisierung/rest/orr_discPow.csv")
+```
+
+# Politiker zu Bundesländern
+```{r}
+politikR <- read_csv("../../../scraping/datensätze/politikR.csv")
+politikR_zusatz <- read_csv("../../../scraping/DBoeS-data-BTW21/data.csv")
+```
+
+```{r listen}
+sh <- politikR_zusatz %>%
+  filter(LAND_NR == 1 & MdB_2021 == 1 & TW_acc == 1) %>%
+  subset(select = TW_user) %>% 
+  as.list()
+
+hh <- politikR_zusatz %>%
+  filter(LAND_NR == 2 & MdB_2021 == 1 & TW_acc == 1) %>%
+  subset(select = TW_user) %>% 
+  as.list()
+
+nds <- politikR_zusatz %>%
+  filter(LAND_NR == 3 & MdB_2021 == 1 & TW_acc == 1) %>%
+  subset(select = TW_user) %>% 
+  as.list()
+
+bre <- politikR_zusatz %>%
+  filter(LAND_NR == 4 & MdB_2021 == 1 & TW_acc == 1) %>%
+  subset(select = TW_user) %>% 
+  as.list()
+
+nrw_pol <- politikR_zusatz %>%
+  filter(LAND_NR == 5 & MdB_2021 == 1 & TW_acc == 1) %>%
+  subset(select = TW_user) %>% 
+  as.list()
+
+hes <- politikR_zusatz %>%
+  filter(LAND_NR == 6 & MdB_2021 == 1 & TW_acc == 1) %>%
+  subset(select = TW_user) %>% 
+  as.list()
+
+rlp_pol <- politikR_zusatz %>%
+  filter(LAND_NR == 7 & MdB_2021 == 1 & TW_acc == 1) %>%
+  subset(select = TW_user) %>% 
+  as.list()
+
+bw <- politikR_zusatz %>%
+  filter(LAND_NR == 8 & MdB_2021 == 1 & TW_acc == 1) %>%
+  subset(select = TW_user) %>% 
+  as.list()
+
+ba <- politikR_zusatz %>%
+  filter(LAND_NR == 9 & MdB_2021 == 1 & TW_acc == 1) %>%
+  subset(select = TW_user) %>% 
+  as.list()
+
+saa <- politikR_zusatz %>%
+  filter(LAND_NR == 10 & MdB_2021 == 1 & TW_acc == 1) %>%
+  subset(select = TW_user) %>% 
+  as.list()
+
+ber <- politikR_zusatz %>%
+  filter(LAND_NR == 11 & MdB_2021 == 1 & TW_acc == 1) %>%
+  subset(select = TW_user) %>% 
+  as.list()
+
+bra <- politikR_zusatz %>%
+  filter(LAND_NR == 12 & MdB_2021 == 1 & TW_acc == 1) %>%
+  subset(select = TW_user) %>% 
+  as.list()
+
+mvp <- politikR_zusatz %>%
+  filter(LAND_NR == 13 & MdB_2021 == 1 & TW_acc == 1) %>%
+  subset(select = TW_user) %>% 
+  as.list()
+
+sa <- politikR_zusatz %>%
+  filter(LAND_NR == 14 & MdB_2021 == 1 & TW_acc == 1) %>%
+  subset(select = TW_user) %>% 
+  as.list()
+
+san <- politikR_zusatz %>%
+  filter(LAND_NR == 15 & MdB_2021 == 1 & TW_acc == 1) %>%
+  subset(select = TW_user) %>% 
+  as.list()
+
+thü <- politikR_zusatz %>%
+  filter(LAND_NR == 16 & MdB_2021 == 1 & TW_acc == 1) %>%
+  subset(select = TW_user) %>% 
+  as.list()
+```
+
+```{r}
+shList <- sh[["TW_user"]]
+hhList <- hh[["TW_user"]]
+ndsList <- nds[["TW_user"]]
+breList <- bre[["TW_user"]]
+nrwList <- nrw_pol[["TW_user"]]
+hesList <- hes[["TW_user"]]
+rlpList <- rlp_pol[["TW_user"]]
+bwList <- bw[["TW_user"]]
+bayList <- ba[["TW_user"]]
+saaList <- saa[["TW_user"]]
+berList <- ber[["TW_user"]]
+braList <- bra[["TW_user"]]
+mvpList <- mvp[["TW_user"]]
+saList <- sa[["TW_user"]]
+sanList <- san[["TW_user"]]
+thüList <- thü[["TW_user"]]
+```
+
+```{r}
+politikR <- politikR %>% mutate(bundesland = case_when(user %in% shList ~ "Schleswig-Holstein",
+                                                       user %in% hhList ~ "Hamburg",
+                                                       user %in% ndsList ~ "Niedersachsen",
+                                                       user %in% breList ~ "Bremen",
+                                                       user %in% nrwList ~ "Nordrhein-Westfalen",
+                                                       user %in% hesList ~ "Hessen",
+                                                       user %in% rlpList ~ "Rheinland-Pfalz",
+                                                       user %in% bwList ~ "Baden-Württemberg",
+                                                       user %in% bayList ~ "Bayern",
+                                                       user %in% saaList ~ "Saarland",
+                                                       user %in% berList ~ "Berlin",
+                                                       user %in% braList ~ "Brandenburg",
+                                                       user %in% mvpList ~ "Mecklenburg-Vorpommern",
+                                                       user %in% saList ~ "Sachsen",
+                                                       user %in% sanList ~ "Sachsen-Anhalt",
+                                                       user %in% thüList ~ "Thüringen"))
+```
+
+`kersten68` entfernen. Falscher Channel. Scraping momentan wg. X/Twitter nicht möglich, API Endpunkte zu.
+
+```{r}
+erststimmen <- politikR_zusatz %>% filter(Einzug == 1 & TW_acc == 1) %>% subset(select = TW_user) %>% as.list()
+zweitstimmen <- politikR_zusatz %>% filter(Einzug == 2 & TW_acc == 1) %>% subset(select = TW_user) %>% as.list()
+
+
+cdu <- politikR_zusatz %>% filter(MdB_2021 == 1 & Partei_NR == 1 & TW_acc == 1) %>% subset(select = TW_user) %>% as.list()
+spd <- politikR_zusatz %>% filter(MdB_2021 == 1 & Partei_NR == 2 & TW_acc == 1) %>% subset(select = TW_user) %>% as.list()
+afd <- politikR_zusatz %>% filter(MdB_2021 == 1 & Partei_NR == 3 & TW_acc == 1) %>% subset(select = TW_user) %>% as.list()
+fdp <- politikR_zusatz %>% filter(MdB_2021 == 1 & Partei_NR == 4 & TW_acc == 1) %>% subset(select = TW_user) %>% as.list()
+linke <- politikR_zusatz %>% filter(MdB_2021 == 1 & Partei_NR == 5 & TW_acc == 1) %>% subset(select = TW_user) %>% as.list()
+grüne <- politikR_zusatz %>% filter(MdB_2021 == 1 & Partei_NR == 6 & TW_acc == 1) %>% subset(select = TW_user) %>% as.list()
+csu <- politikR_zusatz %>% filter(MdB_2021 == 1 & Partei_NR == 7 & TW_acc == 1) %>% subset(select = TW_user) %>% as.list()
+ssw <- politikR_zusatz %>% filter(MdB_2021 == 1 & Partei_NR == 37 & TW_acc == 1) %>% subset(select = TW_user) %>% as.list()
+
+weiblich <- politikR_zusatz %>% filter(MdB_2021 == 1 & Geschlecht == 1 & TW_acc == 1) %>% subset(select = TW_user) %>% as.list()
+männlich <- politikR_zusatz %>% filter(MdB_2021 == 1 & Geschlecht == 2 & TW_acc == 1) %>% subset(select = TW_user) %>% as.list()
+divers <- politikR_zusatz %>% filter(MdB_2021 == 1 & Geschlecht == 3 & TW_acc == 1) %>% subset(select = TW_user) %>% as.list()
+```
+
+```{r}
+erststimmenList <- erststimmen[["TW_user"]]
+zweitstimmenList <- zweitstimmen[["TW_user"]]
+
+cduList <- cdu[["TW_user"]]
+spdList <- spd[["TW_user"]]
+afdList <- afd[["TW_user"]]
+fdpList <- fdp[["TW_user"]]
+linkeList <- linke[["TW_user"]]
+grüneList <- grüne[["TW_user"]]
+csuList <- csu[["TW_user"]]
+sswList <- ssw[["TW_user"]]
+
+weiblichList <- weiblich[["TW_user"]]
+männlichList <- männlich[["TW_user"]]
+```
+
+```{r}
+politikR <- politikR %>% mutate(einzug = case_when(user %in% erststimmenList ~ "Erststimme",
+                                                       user %in% zweitstimmenList ~ "Zweitstimme"))
+
+politikR <- politikR %>% mutate(partei = case_when(user %in% cduList ~ "CDU",
+                                                       user %in% spdList ~ "SPD",
+                                                       user %in% afdList ~ "AfD",
+                                                       user %in% fdpList ~ "FDP",
+                                                       user %in% linkeList ~ "Die Linke",
+                                                       user %in% grüneList ~ "B90/Die Grünen",
+                                                       user %in% csuList ~ "CSU",
+                                                       user %in% sswList ~ "Südschleswigscher Wählerverband"))
+
+politikR <- politikR %>% mutate(geschlecht = case_when(user %in% weiblichList ~ "weiblich",
+                                                       user %in% männlichList ~ "männlich"))
+```
+
+```{r}
+save(politikR, file = "../regionalisierung/rest/politikR_updated.RData")
+
+write_csv(politikR, file = "../regionalisierung/rest/politikR_updated.csv")
+```
+
+
+
